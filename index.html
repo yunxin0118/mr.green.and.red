@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dynamic Website</title>
+    <style>
+        /* --- 基礎設定 --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* --- 1. 開場影片層 --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+
+        #intro-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- 2. 主內容容器 --- */
+        #main-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.0s ease;
+            z-index: 1;
+        }
+
+        /* --- 3. 背景圖片 --- */
+        #main-bg {
+            position: absolute;
+            top: 43%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; 
+            height: auto;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        #main-bg.bg-visible {
+            opacity: 1 !important;
+        }
+
+        /* =========================================
+           【修改】移動車輛動畫設定 (Car Animation)
+           ========================================= */
+        #moving-car {
+            position: absolute;
+            z-index: 2;
+            
+            /* 【修改 1】起始位置改到左邊外面 */
+            /* 設為負值 (例如 -300px)，確保車子一開始藏在螢幕左邊框框外 */
+            left: -300px; 
+            
+            top: 90%;   
+            width: 200px; 
+            height: auto;
+            
+            opacity: 0; 
+            transition: opacity 1.2s ease; 
+            pointer-events: none; 
+
+            /* ★ 如果你的車子圖片原本是「車頭朝左」，現在往右跑變倒車的話，
+               請把下面這行的註解符號拿掉，讓圖片水平翻轉： */
+            /* transform: scaleX(-1); */
+        }
+
+        #moving-car.car-visible {
+            opacity: 1 !important;
+            /* 動畫名稱改為 driveRight */
+            animation: driveRight 8s linear infinite; 
+        }
+
+        /* 【修改 2】定義往右跑的動作 */
+        @keyframes driveRight {
+            0% {
+                transform: translateX(0); 
+                /* 如果上面有開 scaleX(-1)，這裡也要改成： transform: translateX(0) scaleX(-1); */
+            }
+            100% {
+                /* 終點：跑到畫面右邊外面 (120vw 代表跑到螢幕右側再多一點) */
+                transform: translateX(120vw); 
+                /* 如果上面有開 scaleX(-1)，這裡也要改成： transform: translateX(120vw) scaleX(-1); */
+            }
+        }
+
+        /* --- 4. 互動物件共用設定 (Class) --- */
+        .obj-container {
+            position: absolute;
+            display: block; 
+            z-index: 5; 
+            opacity: 0;
+            transition: opacity 1.2s ease; 
+            cursor: pointer;
+            text-decoration: none; 
+            outline: none; 
+        }
+
+        .obj-container.obj-visible {
+            opacity: 1 !important;
+        }
+
+        .obj-container img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: none;
+        }
+        
+        /* 黑白底圖 */
+        .img-bw {
+            position: relative;
+        }
+
+        /* 彩色上圖 */
+        .img-color {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Hover 效果 */
+        .obj-container:hover .img-color {
+            opacity: 1;
+        }
+
+        /* =========================================
+           【物件位置與大小設定區】
+           ========================================= */
+        
+        /* 1. 電腦 (Computer) */
+        #obj-computer {
+            top: 35%;
+            left: 41%;
+            width: 250px;
+        }
+
+        /* 2. 活動 (Activity) */
+        #obj-activity {
+            top: 15%;
+            left: 29%;
+            width: 230px;
+        }
+
+        /* 3. 日曆 (Calender) */
+        #obj-calender {
+            top: 19%;
+            left: 50%;
+            width: 70px;
+        }
+
+        /* 4. 書本右 (Book Right) */
+        #obj-bookri {
+            top: 65%;
+            left: 65%;
+            width: 130px;
+        }
+
+        /* 5. 書本左 (Book Left) */
+        #obj-bookle {
+            top: 66%;
+            left: 25%;
+            width: 180px;
+        }
+
+        /* 6. 奶茶 (milk) */
+        #obj-milk {
+            top: 46%;
+            left: 30%;
+            width: 55px;
+        }
+
+
+        /* --- 5. Logo --- */
+        #main-logo {
+            position: absolute;
+            z-index: 10;
+            top: 40%;
+            left: 40%;
+            transform: translate(-50%, -50%) scale(1);
+            width: 500px;
+            height: auto;
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
+        }
+
+        #main-logo.logo-final-state {
+            top: 30px;
+            left: 40px;
+            transform: translate(0, 0) scale(0.4);
+            transform-origin: top left;
+            pointer-events: auto;
+        }
+
+        /* 輔助 class */
+        .hidden { opacity: 0; pointer-events: none; }
+        .visible { opacity: 1 !important; }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-overlay">
+        <video id="intro-video" muted autoplay playsinline>
+            <source src="logo motion3.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <main id="main-content">
+        
+        <img id="main-bg" src="firstpic/first.png" alt="Background Room">
+
+        <img id="moving-car" src="firstpic/car.gif" alt="Moving Car">
+
+        
+
+        <a href="activity.html" id="obj-activity" class="obj-container">
+            <img src="firstpic/activity.png" class="img-bw" alt="Activity BW">
+            <img src="firstpic/activity - color.png" class="img-color" alt="Activity Color">
+        </a>
+
+        <a href="computer.html" id="obj-computer" class="obj-container">
+            <img src="firstpic/computer.png" class="img-bw" alt="Computer BW">
+            <img src="firstpic/computer-color.png" class="img-color" alt="Computer Color">
+        </a>
+
+        <a href="calender.html" id="obj-calender" class="obj-container">
+            <img src="firstpic/calender.png" class="img-bw" alt="Calender BW">
+            <img src="firstpic/calender - color.png" class="img-color" alt="Calender Color">
+        </a>
+
+        <a href="bookri.html" id="obj-bookri" class="obj-container">
+            <img src="firstpic/bookri.png" class="img-bw" alt="Book Right BW">
+            <img src="firstpic/bookri - color.png" class="img-color" alt="Book Right Color">
+        </a>
+
+        <a href="bookle.html" id="obj-bookle" class="obj-container">
+            <img src="firstpic/bookle.png" class="img-bw" alt="Book Left BW">
+            <img src="firstpic/bookle - color.png" class="img-color" alt="Book Left Color">
+        </a>
+
+        <a href="dinosaur.html" id="obj-milk" class="obj-container">
+            <img src="firstpic/milk.png" class="img-bw" alt="milk BW">
+            <img src="firstpic/milk - color.png" class="img-color" alt="milk Color">
+        </a>
+
+        <img id="main-logo" src="firstpic/logo.png" alt="Logo">
+
+    </main>
+
+    <script>
+        const introOverlay = document.getElementById('intro-overlay');
+        const introVideo = document.getElementById('intro-video');
+        const mainContent = document.getElementById('main-content');
+        const mainLogo = document.getElementById('main-logo');
+        const mainBg = document.getElementById('main-bg');
+        const body = document.body;
+
+        const movingCar = document.getElementById('moving-car');
+
+        const objComputer = document.getElementById('obj-computer');
+        const objActivity = document.getElementById('obj-activity');
+        const objCalender = document.getElementById('obj-calender');
+        const objBookri = document.getElementById('obj-bookri');
+        const objBookle = document.getElementById('obj-bookle');
+        const objmilk = document.getElementById('obj-milk');
+
+        introVideo.addEventListener('ended', () => {
+            console.log("影片結束");
+            introOverlay.classList.add('hidden');
+            mainContent.classList.add('visible');
+            setTimeout(() => { introOverlay.style.display = 'none'; }, 800);
+            setTimeout(() => { startTransition(); }, 1000); 
+        });
+
+        function startTransition() {
+            console.log("開始轉場");
+            
+            mainLogo.classList.add('logo-final-state');
+            mainBg.classList.add('bg-visible');
+            movingCar.classList.add('car-visible');
+
+            objComputer.classList.add('obj-visible');
+            objActivity.classList.add('obj-visible');
+            objCalender.classList.add('obj-visible');
+            objBookri.classList.add('obj-visible');
+            objBookle.classList.add('obj-visible');
+            objmilk.classList.add('obj-visible');
+
+            setTimeout(() => {
+                body.style.overflow = 'auto';
+            }, 1200);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Intro</title>
+    <style>
+        /* --- 1. 字體設定 --- */
+        @font-face {
+            font-family: 'Cubic';
+            src: url('Cubic_11.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column; 
+            height: 100vh;
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+            overflow: hidden; 
+        }
+
+        /* --- 2. 獨立頂部導覽列 (Header) --- */
+        .ui-header {
+            position: relative; 
+            width: 100%;
+            height: 80px;       
+            background-color: #ffffff; 
+            border-bottom: 2px solid #333; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center; 
+            padding: 0 40px;     
+            z-index: 1000;
+        }
+
+        .home-btn {
+            display: block;
+            width: 50px;
+            height: 50px;
+            transition: transform 0.2s;
+        }
+        
+        .home-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .menu-container {
+            position: relative;
+            font-family: 'Cubic', sans-serif;
+        }
+
+        .hamburger-icon {
+            width: 35px;
+            height: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .hamburger-icon span {
+            display: block;
+            width: 100%;
+            height: 4px;
+            background-color: #333;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-list {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background-color: #ffffff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            width: 140px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            z-index: 1001;
+        }
+
+        .menu-list.show {
+            display: flex;
+        }
+
+        .menu-list a {
+            text-decoration: none;
+            color: #333;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+            transition: background 0.2s;
+        }
+
+        .menu-list a:last-child {
+            border-bottom: none;
+        }
+
+        .menu-list a:hover {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+
+        .menu-container.active .hamburger-icon span:nth-child(1) {
+            transform: translateY(13px) rotate(45deg);
+        }
+        .menu-container.active .hamburger-icon span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-container.active .hamburger-icon span:nth-child(3) {
+            transform: translateY(-13px) rotate(-45deg);
+        }
+
+        /* --- 3. 主要內容區域 --- */
+        #main-display {
+            position: relative;
+            width: 100%;
+            flex: 1; 
+            overflow: hidden;
+            /* 建議：加上一個背景色，避免圖片縮小時旁邊留白太突兀 */
+            background-color: #ffffff; 
+        }
+
+        /* === 場景 1：開場畫面 (Start Screen) === */
+        #scene-start {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            background-image: url('startpic/start.png');
+            
+            background-size: 100%; 
+    
+            /* 保持置中 */
+            background-position: center center; 
+            
+            background-repeat: no-repeat;
+            transition: opacity 0.5s ease;
+                }
+
+        /* 車子動畫設定 */
+        #moving-car {
+            position: absolute;
+            left: -300px; 
+            
+            /* 注意：如果圖片變小，車子的 90% 位置可能需要微調 */
+            top: 87%; 
+            
+            width: 200px;
+            height: auto;
+            z-index: 10;
+            animation: driveRight 4s linear infinite; 
+        }
+
+        @keyframes driveRight {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(100vw + 400px)); }
+        }
+
+        /* === 場景 2：下一個畫面 (Next Screen) === */
+        #scene-next {
+            display: none; 
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #222; 
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .hidden { opacity: 0 !important; pointer-events: none; }
+        .visible { opacity: 1 !important; pointer-events: auto; }
+
+    </style>
+</head>
+<body>
+
+    <div class="ui-header">
+        <a href="index.html" class="home-btn">
+            <img src="firstpic/home.png" alt="Home">
+        </a>
+        <div class="menu-container" id="menuContainer">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="menu-list" id="menuList">
+                <a href="#">關於</a>
+                <a href="#">周邊</a>
+                <a href="#">活動</a>
+                <a href="#">品牌</a>
+                <a href="#">地圖</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-display">
+        
+        <div id="scene-start">
+            <img id="moving-car" src="firstpic/car.gif" alt="Moving Car">
+        </div>
+
+        <div id="scene-next">
+            <h1>Waiting for next content...</h1>
+        </div>
+
+    </div>
+
+    <script>
+        // 選單邏輯
+        function toggleMenu() {
+            const menuList = document.getElementById('menuList');
+            const menuContainer = document.getElementById('menuContainer');
+            menuList.classList.toggle('show');
+            menuContainer.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const menuContainer = document.getElementById('menuContainer');
+            const menuList = document.getElementById('menuList');
+            if (!menuContainer.contains(event.target)) {
+                menuList.classList.remove('show');
+                menuContainer.classList.remove('active');
+            }
+        });
+
+        // 轉場邏輯 (3秒)
+        setTimeout(() => {
+            const sceneStart = document.getElementById('scene-start');
+            const sceneNext = document.getElementById('scene-next');
+
+            sceneStart.classList.add('hidden');
+            sceneNext.style.display = 'flex'; 
+            
+            setTimeout(() => {
+                sceneNext.classList.add('visible'); 
+            }, 50);
+
+            setTimeout(() => {
+                sceneStart.style.display = 'none';
+            }, 500); 
+
+        }, 3000); 
+    </script>
+</body>
+</html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小恐龍遊戲</title>
+    <style>
+        /* --- 1. 字體設定 --- */
+        @font-face {
+            font-family: 'Cubic';
+            src: url('Cubic_11.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* 【修改】改為垂直排列 (Column)，讓Header在最上面，遊戲在下面 */
+            display: flex;
+            flex-direction: column; 
+            height: 100vh;
+            background-color: #f7f7f7;
+            font-family: Arial, sans-serif;
+            overflow: hidden; 
+        }
+
+        /* --- 2. UI 介面層 (獨立頂部區塊) --- */
+        .ui-header {
+            /* 【修改】取消 absolute，改為相對定位，佔據實體空間 */
+            position: relative; 
+            width: 100%;
+            height: 80px;       /* 設定區塊高度 */
+            background-color: #ffffff; /* 【新增】白色背景，讓它變成獨立區塊 */
+            
+            /* 【新增】底部分隔線 (你可以調整粗細和顏色) */
+            border-bottom: 2px solid #333; 
+            
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* 讓內容垂直置中 */
+            padding: 0 40px;     /* 左右留白 */
+            z-index: 1000;
+        }
+
+        /* 左上角 Home 鍵 */
+        .home-btn {
+            display: block;
+            width: 50px;
+            height: 50px;
+            transition: transform 0.2s;
+        }
+        
+        .home-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .home-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 右上角 漢堡選單容器 */
+        .menu-container {
+            position: relative;
+            font-family: 'Cubic', sans-serif;
+        }
+
+        /* 漢堡圖示 */
+        .hamburger-icon {
+            width: 35px;
+            height: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .hamburger-icon span {
+            display: block;
+            width: 100%;
+            height: 4px;
+            background-color: #333;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        /* 展開後的選單列表 */
+        .menu-list {
+            position: absolute;
+            top: 60px; /* 因為header變高了，選單顯示位置也要往下調 */
+            right: 0;
+            background-color: #ffffff;
+            border: 2px solid #333;
+            border-radius: 8px;
+            width: 140px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            overflow: hidden;
+            z-index: 1001;
+        }
+
+        .menu-list.show {
+            display: flex;
+        }
+
+        .menu-list a {
+            text-decoration: none;
+            color: #333;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+            transition: background 0.2s;
+        }
+
+        .menu-list a:last-child {
+            border-bottom: none;
+        }
+
+        .menu-list a:hover {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+
+        /* 漢堡變換成 X 的動畫 */
+        .menu-container.active .hamburger-icon span:nth-child(1) {
+            transform: translateY(13px) rotate(45deg);
+        }
+        .menu-container.active .hamburger-icon span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-container.active .hamburger-icon span:nth-child(3) {
+            transform: translateY(-13px) rotate(-45deg);
+        }
+
+
+        /* --- 遊戲區域 CSS --- */
+        #gameArea {
+            /* 【新增】讓遊戲區域在剩下的空間裡自動置中 */
+            margin: auto; 
+            
+            width: 800px;
+            height: 300px;
+            position: relative;
+            background-image: url("https://github.com/yen143/u/blob/main/bg3.png?raw=true");
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-size: 100% 75%;
+            border: 2px solid #ccc; 
+            background-color: #fff;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        #dino, #obstacle {
+            position: absolute;
+            z-index: 5;
+        }
+
+        #dino {
+            bottom: 20px;
+            right: 50px;
+            width: 50px;
+            height: 70px;
+        }
+
+        #obstacle {
+            bottom: 15px;
+            left: -50px; 
+            width: 50px;
+            height: 50px;
+        }
+
+        #startMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: black;
+            font-family: Arial, sans-serif;
+            z-index: 10;
+            background: rgba(255,255,255,0.9);
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 1px solid #999;
+        }
+
+        #scoreDisplay {
+            display: none; 
+            font-family: "Arial", "微軟正黑體", sans-serif;
+            position: absolute;
+            top: 10px; 
+            left: 10px;
+            font-size: 25px;
+            font-weight: bold;
+            color: #333;
+            z-index: 5;
+        }
+
+        .cloud {
+            position: absolute;
+            width: 50px;
+            height: auto;
+            opacity: 0.9;
+            display: none; 
+        }
+
+        .near { z-index: 3; opacity: 1; }
+        .far { z-index: 1; opacity: 0.8; transform: scale(0.8); }
+
+        #ground {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #444;
+            z-index: 4;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ui-header">
+        <a href="index.html" class="home-btn">
+            <img src="firstpic/home.png" alt="Home">
+        </a>
+
+        <div class="menu-container" id="menuContainer">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="menu-list" id="menuList">
+                <a href="#">關於</a>
+                <a href="#">周邊</a>
+                <a href="#">活動</a>
+                <a href="#">品牌</a>
+                <a href="#">地圖</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameArea">
+        <div id="ground"></div>
+        <img id="dino" src="https://github.com/yen143/u/blob/main/walk_1.gif?raw=true" alt="dino">
+        <img id="obstacle" src="https://github.com/yen143/u/blob/main/Trafficcone.png?raw=true" alt="traffic cone"> 
+        <img id="cloud1" class="cloud near" src="https://github.com/yen143/u/blob/main/flycat1.png?raw=true" alt="cloud">
+        <img id="cloud2" class="cloud far" src="https://github.com/yen143/u/blob/main/flycat1.png?raw=true" alt="cloud">
+        
+        <div id="scoreDisplay">SCORE: 000000</div>
+        <div id="startMessage">按空白鍵開始 (Press Space)</div>
+    </div>
+
+    <script>
+        // --- 選單開關邏輯 ---
+        function toggleMenu() {
+            const menuList = document.getElementById('menuList');
+            const menuContainer = document.getElementById('menuContainer');
+            
+            menuList.classList.toggle('show');
+            menuContainer.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const menuContainer = document.getElementById('menuContainer');
+            const menuList = document.getElementById('menuList');
+            
+            if (!menuContainer.contains(event.target)) {
+                menuList.classList.remove('show');
+                menuContainer.classList.remove('active');
+            }
+        });
+
+        // --- 遊戲邏輯 ---
+        const dino = document.getElementById('dino');
+        const obstacle = document.getElementById('obstacle');
+        const startMessage = document.getElementById('startMessage');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const cloud1 = document.getElementById('cloud1');
+        const cloud2 = document.getElementById('cloud2');
+
+        let isJumping = false;
+        let gameOver = false;
+        let gameStarted = false;
+        let obstacleX = -50; 
+        let score = 0;
+        let scoreInterval; 
+
+        let cloud1X = 0;
+        let cloud2X = 0;
+        let cloud1Y = 0;
+        let cloud2Y = 0;
+
+        dino.style.bottom = "20px";
+        scoreDisplay.innerText = `SCORE: ${score.toString().padStart(6, '0')}`;
+
+        function startGame() {
+            if (gameStarted) return;
+            gameStarted = true;
+            gameOver = false;
+            score = 0; 
+            obstacleX = -50; 
+
+            startMessage.style.display = 'none';
+            scoreDisplay.style.display = 'block';
+            cloud1.style.display = "block";
+            cloud2.style.display = "block";
+
+            cloud1X = 800 * 0.2;
+            cloud2X = 800 * 0.4;
+
+            moveObstacle();
+            moveClouds();
+            startScoreTimer();
+        }
+
+        function startScoreTimer() {
+            if (scoreInterval) clearInterval(scoreInterval);
+            scoreInterval = setInterval(() => {
+                if (!gameOver) {
+                    score += 10;
+                    scoreDisplay.innerText = `SCORE: ${score.toString().padStart(6, '0')}`;
+                }
+            }, 1000); 
+        }
+
+        function jump() {
+            if (isJumping) return;
+            isJumping = true;
+
+            let jumpHeight = 0;
+            const up = setInterval(() => {
+                if (jumpHeight < 100) { 
+                    jumpHeight += 5; 
+                    dino.style.bottom = (20 + jumpHeight) + "px";
+                } else {
+                    clearInterval(up);
+                    const down = setInterval(() => {
+                        if (jumpHeight > 0) {
+                            jumpHeight -= 5;
+                            dino.style.bottom = (20 + jumpHeight) + "px";
+                        } else {
+                            clearInterval(down);
+                            isJumping = false;
+                            dino.style.bottom = "20px"; 
+                        }
+                    }, 20);
+                }
+            }, 20);
+        }
+
+        document.addEventListener("keydown", e => {
+            if (e.code === "Space") { 
+                if (!gameStarted) {
+                    startGame();
+                } else {
+                    jump();
+                }
+            }
+        });
+        
+        startMessage.addEventListener("click", startGame);
+
+        function moveClouds() {
+            if (gameOver) return;
+            cloud1X -= 1; 
+            cloud2X -= 0.5; 
+            cloud1Y = 50 + Math.sin(Date.now() / 500) * 10;
+            cloud2Y = 30 + Math.sin(Date.now() / 700) * 8;
+
+            cloud1.style.left = cloud1X + "px";
+            cloud1.style.top = cloud1Y + "px";
+            cloud2.style.left = cloud2X + "px";
+            cloud2.style.top = cloud2Y + "px";
+
+            if (cloud1X < -100) cloud1X = 800;
+            if (cloud2X < -100) cloud2X = 800;
+            requestAnimationFrame(moveClouds);
+        }
+
+        function moveObstacle() {
+            if (gameOver) return;
+            obstacleX += 8; 
+            obstacle.style.left = obstacleX + "px";
+
+            if (obstacleX > 800) obstacleX = -50;
+
+            const dinoBottom = parseInt(dino.style.bottom);
+            const dinoLeft = 800 - 50 - 50; 
+            const dinoRight = 800 - 50; 
+            const obstacleLeft = obstacleX;
+            const obstacleRight = obstacleX + 50;
+
+            const horizontalCollision = (obstacleRight > dinoLeft) && (obstacleLeft < dinoRight);
+            const verticalCollision = dinoBottom < 60; 
+
+            if (horizontalCollision && verticalCollision) {
+                gameOver = true;
+                clearInterval(scoreInterval); 
+                setTimeout(() => {
+                    alert(`遊戲結束！ 你的分數是: ${score}`);
+                    location.reload(); 
+                }, 10);
+                return;
+            }
+            requestAnimationFrame(moveObstacle);
+        }
+    </script>
+</body>
+</html>
