@@ -334,19 +334,25 @@
             opacity: 0;
             transform: translateX(50px); 
             transition: all 1s ease;
-            z-index: 6;
+            z-index: 7; /* 【修改】原本是 6，改成 7，讓它在車子上面 */
         }
         .obj-green { width: 100%; }
         .green-in { opacity: 1; transform: translateX(0); }
 
+        /* --- 修改這段：車子方向與圖層 --- */
         .car-container-monday {
             position: absolute;
             bottom: 40px;
             left: 100vw; 
             width: 250px;
-            z-index: 7;
+            z-index: 6; /* 【修改】原本是 7，改成 6，讓它在小綠人下面 */
         }
-        .obj-car-monday { width: 100%; transform: scaleX(-1); }
+        
+        /* 【修改】移除 transform: scaleX(-1) 讓車子恢復原圖方向 */
+        .obj-car-monday { 
+            width: 100%; 
+            /* transform: scaleX(-1);  <-- 這行刪掉 */
+        }
 
         @keyframes carDriveBy {
             0% { left: 110vw; }
@@ -366,6 +372,7 @@
             overflow: hidden;
             transition: transform 1s ease;
             z-index: 30;
+            font-family: 'Cubic', sans-serif;
         }
         #scene-tuesday.active { transform: translateX(-100%); }
 
@@ -486,13 +493,13 @@
         #scene-wednesday {
             position: absolute;
             top: 0;
-            left: 100%; /* 初始在右側 */
+            left: 100%;
             width: 100%;
             height: 100%;
             background-color: #ffffff;
             overflow: hidden;
             transition: transform 1s ease;
-            z-index: 40; /* 層級比 Tuesday 高 */
+            z-index: 40;
         }
         
         #scene-wednesday.active {
@@ -506,56 +513,62 @@
             z-index: 20;
             font-family: 'Cubic', sans-serif;
             text-align: left;
+            transition: opacity 1s ease; 
         }
 
-        /* 物件與背景 */
         .wed-obj-container {
             position: absolute;
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
+            pointer-events: none; 
+            transition: opacity 1s ease; 
         }
 
         /* 1. 三角錐 Triangle */
-        .obj-triangle {
+        .obj-triangle-wrapper {
             position: absolute;
-            bottom: 10%;
-            left: 10%;
-            width: 80px;
+            bottom: 35%;
+            left: 30%;
+            width: 100px;
             opacity: 0;
             transform: translateX(-50px);
             transition: all 1s ease;
-            cursor: pointer;
             transform-origin: bottom center;
             z-index: 5;
+            pointer-events: none;
         }
         
         /* 2. 坑洞 Hole */
-        .obj-hole-group {
+        .obj-hole-wrapper {
             position: absolute;
-            bottom: 10%;
-            right: 15%;
-            width: 200px;
+            bottom: 25%;
+            right: 35%;
+            width: 250px;
             opacity: 0;
             transform: translateX(50px);
             transition: all 1s ease;
             z-index: 5;
+            pointer-events: none;
         }
-        .obj-hole { width: 100%; cursor: pointer; }
         
-        /* 綠色人 (一開始在坑洞上) */
+        #btn-triangle, #btn-hole {
+            width: 100%;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        
         .obj-greenwed {
             position: absolute;
-            bottom: 20px; /* 站在洞上 */
+            bottom: 90px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
+            width: 220px;
             z-index: 6;
-            transition: transform 1.5s ease-in; /* 掉下去的動畫 */
+            transition: transform 1.5s ease-in;
         }
 
-        /* 互動後的文字 */
         .obj-bubble-wed {
             position: absolute;
             opacity: 0;
@@ -564,95 +577,110 @@
             pointer-events: none;
             width: 150px;
         }
-        #txt-triangle { top: -80px; left: 0; }
-        #txt-hole { top: -100px; right: 0; }
+        
+        #txt-triangle { top: -100px; left: 0px; }
+        #txt-hole { top: -120px; right: 0px; }
 
-        /* 進場動畫 Class */
         .wed-enter-left { opacity: 1; transform: translateX(0); }
         .wed-enter-right { opacity: 1; transform: translateX(0); }
 
-        /* 不定時晃動動畫 */
+        .fade-out-scene { opacity: 0 !important; pointer-events: none; }
+
         @keyframes shake-irregular {
             0% { transform: rotate(0deg); }
             10% { transform: rotate(5deg); }
             20% { transform: rotate(-5deg); }
             30% { transform: rotate(3deg); }
             40% { transform: rotate(0deg); }
-            100% { transform: rotate(0deg); } /* 長時間靜止 */
+            100% { transform: rotate(0deg); }
         }
         .anim-shake-random { animation: shake-irregular 4s infinite; }
 
-        /* 掉下去動畫 Class */
         .green-fall {
-            transform: translateX(-50%) translateY(500px) !important; /* 往下掉出畫面 */
+            transform: translateX(-50%) translateY(500px) !important;
         }
 
-        /* 3. 黑色轉場層 */
         .black-transition {
             position: absolute;
-            bottom: -100%; /* 初始在下方 */
+            bottom: -100%;
             left: 0;
             width: 100%;
-            height: 100%; /* black.png 高度 */
+            height: 100%;
             z-index: 30;
-            transition: bottom 1.5s ease;
+            transition: bottom 2s cubic-bezier(0.25, 1, 0.5, 1);
             display: flex;
             align-items: flex-end;
+            pointer-events: none;
         }
         .obj-black { width: 100%; height: auto; display: block; }
         
-        /* 黑色升起 */
         .black-rise { bottom: 0; }
 
-        /* 全黑背景層 (black1) */
         .black-bg-layer {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000; /* 或用 black1.png */
+            background-color: #000;
             opacity: 0;
-            z-index: 29; /* 在 black.png 後面一點，讓過渡平滑 */
-            transition: opacity 1s ease;
+            z-index: 29; 
+            transition: opacity 1.5s ease;
+            pointer-events: none;
         }
-        .bg-dark-active { opacity: 1; z-index: 35; /* 蓋過除了最上層以外的所有東西 */ }
-
-        /* 4. 最終全黑互動層 */
+        
+        .bg-dark-active { 
+            opacity: 1; 
+            z-index: 35; 
+            pointer-events: auto;
+        }
+        
         .final-dark-scene {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('startpic/allblack.png'); /* 全黑圖 */
+            background-image: url('startpic/allblack.png');
             background-size: cover;
             opacity: 0;
-            z-index: 50; /* 最上層 */
-            pointer-events: none; /* 預設不擋滑鼠，顯示後開啟 */
-            transition: opacity 1s ease;
+            z-index: 50;
+            pointer-events: none;
+            transition: opacity 2s ease;
         }
         
         .final-active { 
             opacity: 1; 
             pointer-events: auto; 
-            /* 滑鼠變成聚光燈 */
-            cursor: url('startpic/spotlight.png') 32 32, auto; /* 32 32 是游標熱點位置，可調整 */
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='15' fill='white'/%3E%3C/svg%3E") 16 16, pointer;
         }
 
-        /* Greenwed2 旋轉 */
         .obj-greenwed2 {
             position: absolute;
             top: 50%;
-            left: 50%;
-            width: 100px;
+            left: 30%;
+            width: 230px;
             margin-top: -50px;
             margin-left: -50px;
             animation: spin 5s linear infinite;
+            z-index: 52; /* 確保在 spotlight 之下，但也很高 */
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* 漂浮數字 */
+        /* 【新增】過場用的 spotlight 圖片 */
+        #wed-expand-spotlight {
+            position: absolute;
+            top: 50%;
+            left: 30%; /* 必須跟 greenwed2 對齊 */
+            width: 230px; /* 初始大小跟 greenwed2 差不多 */
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            z-index: 55; /* 蓋在綠人上面 */
+            pointer-events: none;
+            transition: opacity 0.5s ease; /* 淡入效果 */
+            /* Scale 的動畫由 JS 控制，不需要 transition，這樣滾動才跟手 */
+        }
+
         .float-num {
             position: absolute;
             width: 30px;
@@ -664,6 +692,81 @@
             100% { transform: translateY(0px) translateX(0px); }
         }
         .float-anim { animation: float 6s ease-in-out infinite; }
+
+        /* === 場景 5：Thursday 樣式 (新增) === */
+        #scene-thursday {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff; /* 白底 */
+            z-index: 70; /* 最高層 */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* 讓文字影片置中 */
+            overflow: hidden;
+            font-family: 'Cubic', sans-serif;
+        }
+
+        /* 啟動 Scene 5 */
+        #scene-thursday.active {
+            opacity: 1;
+            pointer-events: auto;
+            cursor: default; /* 恢復預設滑鼠 */
+        }
+
+        /* 文字群組 (沿用樣式並微調) */
+        #thurs-text-group {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 80;
+        }
+        
+        /* 影片容器 */
+        .video-container {
+            width: 80%; /* 設定佔據畫面的百分比，例如 80% */
+            max-width: none; /* 【修改這裡】移除最大寬度限制 */
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 1.5s ease;
+            z-index: 75;
+        }
+        .video-container video { width: 100%; height: auto; }
+        .video-in { opacity: 1; transform: scale(1); }
+
+        /* 駕照圖片 */
+        #thurs-license {
+            position: absolute;
+            top: -100%; /* 初始在上面外面 */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            transition: top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 85;
+        }
+        .license-drop { top: 30% !important; }
+
+        /* 禁止標誌 */
+        #thurs-no {
+            position: absolute;
+            top: 95%;
+            left: 65%;
+            width: 100px;
+            margin-left: -200px; /* 置中修正 */
+            margin-top: -200px;
+            transform: scale(5); /* 初始巨大 */
+            opacity: 0;
+            transition: all 1s ease-in;
+            z-index: 90;
+        }
+        .no-shrink { transform: scale(1) !important; opacity: 1 !important; }
 
     </style>
 </head>
@@ -711,11 +814,11 @@
                 <img src="startpic/water.png" class="obj-water" id="img-water">
             </div>
             <img src="startpic/rain.png" class="obj-rain" id="img-rain">
-            <div class="green-man-container" id="grp-green">
-                <img src="startpic/green.png" class="obj-green" id="img-green">
-            </div>
             <div class="car-container-monday" id="grp-car">
                 <img src="startpic/car.png" class="obj-car-monday">
+            </div>
+            <div class="green-man-container" id="grp-green">
+                <img src="startpic/green.png" class="obj-green" id="img-green">
             </div>
         </div>
 
@@ -757,14 +860,14 @@
             </div>
 
             <div class="wed-obj-container">
-                <div class="obj-triangle" id="wed-triangle">
-                    <img src="startpic/triangle.png" style="width:100%">
+                <div class="obj-triangle-wrapper" id="grp-triangle">
                     <img src="startpic/triangletext.png" class="obj-bubble-wed" id="txt-triangle">
+                    <img src="startpic/triangle.png" id="btn-triangle">
                 </div>
                 
-                <div class="obj-hole-group" id="wed-hole-group">
-                    <img src="startpic/hole.png" class="obj-hole" id="btn-hole">
+                <div class="obj-hole-wrapper" id="grp-hole">
                     <img src="startpic/holetext.png" class="obj-bubble-wed" id="txt-hole">
+                    <img src="startpic/hole.png" id="btn-hole">
                     <img src="startpic/greenwed.png" class="obj-greenwed" id="wed-green-fall">
                 </div>
             </div>
@@ -775,19 +878,35 @@
             <div class="black-bg-layer" id="wed-black-bg"></div>
 
             <div class="final-dark-scene" id="wed-final-scene">
+                <img src="startpic/spotlight.png" id="wed-expand-spotlight">
+
                 <img src="startpic/greenwed2.png" class="obj-greenwed2" id="wed-green-spin">
                 
-                <img src="startpic/1.png" class="float-num float-anim" style="top:20%; left:10%; animation-delay:0s;">
-                <img src="startpic/2.png" class="float-num float-anim" style="top:70%; left:15%; animation-delay:1s;">
-                <img src="startpic/3.png" class="float-num float-anim" style="top:40%; left:25%; animation-delay:2s;">
-                <img src="startpic/4.png" class="float-num float-anim" style="top:10%; left:60%; animation-delay:0.5s;">
-                <img src="startpic/5.png" class="float-num float-anim" style="top:80%; left:50%; animation-delay:1.5s;">
-                <img src="startpic/6.png" class="float-num float-anim" style="top:30%; left:80%; animation-delay:2.5s;">
-                <img src="startpic/7.png" class="float-num float-anim" style="top:60%; left:85%; animation-delay:0.2s;">
-                <img src="startpic/8.png" class="float-num float-anim" style="top:50%; left:45%; animation-delay:1.2s;">
-                <img src="startpic/9.png" class="float-num float-anim" style="top:15%; left:35%; animation-delay:2.2s;">
+                <img src="startpic/1.png" class="float-num float-anim" style="top:20%; left:10%; width: 50px; animation-delay:0s;">
+                <img src="startpic/2.png" class="float-num float-anim" style="top:70%; left:15%; width: 50px; animation-delay:1s;">
+                <img src="startpic/3.png" class="float-num float-anim" style="top:40%; left:25%; width: 30px; animation-delay:2s;">
+                <img src="startpic/4.png" class="float-num float-anim" style="top:10%; left:60%; width: 30px; animation-delay:0.5s;">
+                <img src="startpic/5.png" class="float-num float-anim" style="top:80%; left:50%; width: 40px; animation-delay:1.5s;">
+                <img src="startpic/6.png" class="float-num float-anim" style="top:30%; left:80%; width: 30px; animation-delay:2.5s;">
+                <img src="startpic/7.png" class="float-num float-anim" style="top:60%; left:85%; width: 30px; animation-delay:0.2s;">
+                <img src="startpic/8.png" class="float-num float-anim" style="top:50%; left:45%; width: 70px; animation-delay:1.2s;">
+                <img src="startpic/9.png" class="float-num float-anim" style="top:15%; left:35%; width: 50px; animation-delay:2.2s;">
             </div>
 
+        </div>
+
+        <div id="scene-thursday">
+            <div id="thurs-text-group">
+                <div class="title-text" id="thurs-title">星期四</div>
+                <div class="sub-text" id="thurs-sub">考到駕照的第一天.......</div>
+            </div>
+            
+            <div class="video-container" id="thurs-video-box">
+                <video id="thurs-video" src="startpic/car.mp4" muted loop playsinline></video>
+            </div>
+
+            <img src="startpic/license.png" id="thurs-license">
+            <img src="startpic/no.png" id="thurs-no">
         </div>
 
     </div>
@@ -831,6 +950,12 @@
         // 步驟計數器
         let tuesdayStep = 0; 
         let wednesdayStep = 0;
+        let thursdayStep = 0; // 新增
+
+        // 轉場控制變數 (Wednesday -> Thursday)
+        let isHoveringGreen = false; // 是否碰到綠人
+        let wedSpotlightScale = 0;   // 聚光燈放大比例
+        let spotlightImg = document.getElementById('wed-expand-spotlight');
 
         window.addEventListener('wheel', (e) => {
             if (isTransitioning) return;
@@ -847,10 +972,44 @@
                     playNextTuesdayStep();
                 }
                 else if (currentScene === 4) {
-                    playNextWednesdayStep();
+                    // 如果還沒跑完星期三的流程
+                    if (wednesdayStep < 5) {
+                        playNextWednesdayStep();
+                    } 
+                    // 如果跑完了，且滑鼠碰到了綠人 -> 進入放大轉場模式
+                    else if (isHoveringGreen) {
+                        handleSpotlightExpand();
+                    }
+                }
+                else if (currentScene === 5) {
+                    playNextThursdayStep();
                 }
             }
         });
+
+        // -----------------------
+        // Spotlight Expansion Logic (New)
+        // -----------------------
+        function handleSpotlightExpand() {
+            // 階段 1: 淡入
+            if (getComputedStyle(spotlightImg).opacity == 0) {
+                spotlightImg.style.opacity = 1;
+                spotlightImg.style.transform = `translate(-50%, -50%) scale(1)`;
+                wedSpotlightScale = 1;
+                console.log("Spotlight 淡入");
+            } 
+            // 階段 2: 放大
+            else {
+                wedSpotlightScale += 5; // 每次滾動加大的幅度
+                spotlightImg.style.transform = `translate(-50%, -50%) scale(${wedSpotlightScale})`;
+                console.log("Spotlight 放大中:", wedSpotlightScale);
+
+                // 階段 3: 夠大時切換場景
+                if (wedSpotlightScale > 40) { // 放大到蓋滿畫面 (視情況調整數值)
+                    goToSceneThursday();
+                }
+            }
+        }
 
         // -----------------------
         // Scene Transitions
@@ -858,8 +1017,6 @@
         function goToSceneMonday() {
             isTransitioning = true;
             currentScene = 2;
-            console.log("切換至星期一...");
-
             const sceneStart = document.getElementById('scene-start');
             const sceneMonday = document.getElementById('scene-monday');
             sceneStart.classList.add('slide-up');
@@ -871,8 +1028,6 @@
         function goToSceneTuesday() {
             isTransitioning = true;
             currentScene = 3;
-            console.log("切換至星期二...");
-
             const sceneTuesday = document.getElementById('scene-tuesday');
             sceneTuesday.classList.add('active'); 
             setTimeout(() => { isTransitioning = false; }, 1000);
@@ -881,10 +1036,19 @@
         function goToSceneWednesday() {
             isTransitioning = true;
             currentScene = 4;
-            console.log("切換至星期三...");
-
             const sceneWednesday = document.getElementById('scene-wednesday');
-            sceneWednesday.classList.add('active'); // 滑入
+            sceneWednesday.classList.add('active'); 
+            setTimeout(() => { isTransitioning = false; }, 1000);
+        }
+
+        function goToSceneThursday() {
+            isTransitioning = true;
+            currentScene = 5;
+            console.log("切換至星期四...");
+
+            const sceneThursday = document.getElementById('scene-thursday');
+            sceneThursday.classList.add('active'); // 顯示白色場景
+            
             setTimeout(() => { isTransitioning = false; }, 1000);
         }
 
@@ -892,7 +1056,6 @@
         // Step Logic
         // -----------------------
         function playNextTuesdayStep() {
-            // 如果 Tuesday 還沒跑完，繼續跑步驟
             if(tuesdayStep < 5) {
                 tuesdayStep++;
                 isTransitioning = true;
@@ -923,52 +1086,73 @@
                         break;
                 }
             } else {
-                // Tuesday 跑完了，切換到 Wednesday
                 goToSceneWednesday();
             }
         }
 
         function playNextWednesdayStep() {
             wednesdayStep++;
-            console.log("星期三步驟:", wednesdayStep);
             isTransitioning = true;
-            setTimeout(() => { isTransitioning = false; }, 1000); // 冷卻久一點
+            setTimeout(() => { isTransitioning = false; }, 1000); 
 
             switch(wednesdayStep) {
-                case 1: // 文字淡入
+                case 1: 
                     document.getElementById('wed-title').classList.add('text-in');
                     setTimeout(() => { document.getElementById('wed-sub').classList.add('text-in'); }, 300);
                     break;
-
-                case 2: // Triangle & Hole 進場
-                    const tri = document.getElementById('wed-triangle');
-                    const holeGrp = document.getElementById('wed-hole-group');
+                case 2: 
+                    const tri = document.getElementById('grp-triangle');
+                    const holeGrp = document.getElementById('grp-hole');
                     tri.classList.add('wed-enter-left');
                     holeGrp.classList.add('wed-enter-right');
-                    
-                    // 進場後開始晃動
                     setTimeout(() => {
                         tri.classList.add('anim-shake-random');
-                        document.getElementById('btn-hole').classList.add('anim-shake-random');
+                        holeGrp.classList.add('anim-shake-random');
                     }, 1000);
                     break;
-
-                case 3: // GreenWed 掉下去
+                case 3: 
                     document.getElementById('wed-green-fall').classList.add('green-fall');
                     break;
-
-                case 4: // Black 往上蓋
+                case 4: 
+                    document.getElementById('wed-text-group').classList.add('fade-out-scene');
+                    document.querySelector('.wed-obj-container').classList.add('fade-out-scene');
                     const blackTrans = document.getElementById('wed-black-trans');
-                    blackTrans.classList.add('black-rise'); // 升起 black.png
-                    
-                    // 升起後，背景變全黑 (black1 效果)
+                    blackTrans.classList.add('black-rise'); 
                     setTimeout(() => {
                         document.getElementById('wed-black-bg').classList.add('bg-dark-active');
-                    }, 1500);
+                    }, 800); 
+                    break;
+                case 5: 
+                    document.getElementById('wed-final-scene').classList.add('final-active');
+                    break;
+            }
+        }
+
+        function playNextThursdayStep() {
+            thursdayStep++;
+            console.log("星期四步驟:", thursdayStep);
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 800);
+
+            switch(thursdayStep) {
+                case 1: // 文字淡入
+                    document.getElementById('thurs-title').classList.add('text-in');
+                    setTimeout(() => { document.getElementById('thurs-sub').classList.add('text-in'); }, 300);
+                    break;
+                
+                case 2: // 影片淡入 + 播放
+                    const vidBox = document.getElementById('thurs-video-box');
+                    const vid = document.getElementById('thurs-video');
+                    vidBox.classList.add('video-in');
+                    vid.play(); // 開始播放
                     break;
 
-                case 5: // 最終全黑場景 AllBlack + GreenWed2 + Spotlight
-                    document.getElementById('wed-final-scene').classList.add('final-active');
+                case 3: // 駕照掉下來
+                    document.getElementById('thurs-license').classList.add('license-drop');
+                    break;
+
+                case 4: // No 縮小進場
+                    document.getElementById('thurs-no').classList.add('no-shrink');
                     break;
             }
         }
@@ -1003,12 +1187,25 @@
             setTimeout(() => { green.classList.add('green-in'); }, 3500);
             setTimeout(() => {
                 car.classList.add('car-run'); 
+                
+                // 車子跑了 1秒後撞到水
                 setTimeout(() => {
+                    // 1. 變成 water1 (碰到)
                     imgWater.src = "startpic/water1.png";
                     imgGreen.src = "startpic/green1.png";
+                    
+                    // 2. 過 0.2秒 變成 water2 (濺起)
                     setTimeout(() => {
                         imgWater.src = "startpic/water2.png";
                         imgGreen.src = "startpic/green2.png";
+
+                        // 3. 【新增】再過 0.3秒 變回 water (恢復平靜)
+                        setTimeout(() => {
+                            imgWater.src = "startpic/water.png";
+                            // 如果你希望綠人被潑完水後也變回原狀，可以把下面這行的註解打開：
+                            // imgGreen.src = "startpic/green.png"; 
+                        }, 300);
+
                     }, 200);
                 }, 1000); 
             }, 4500);
@@ -1028,34 +1225,38 @@
         });
 
         // --- 互動邏輯：Wednesday ---
-        
-        // 1. 三角錐點擊
-        const wedTri = document.getElementById('wed-triangle');
+        const btnTri = document.getElementById('btn-triangle');
+        const grpTri = document.getElementById('grp-triangle');
         const txtTri = document.getElementById('txt-triangle');
-        wedTri.addEventListener('click', function() {
-            this.classList.remove('anim-shake-random'); // 停止晃動
+        
+        btnTri.addEventListener('click', function() {
+            grpTri.classList.remove('anim-shake-random'); 
             txtTri.classList.toggle('bubble-visible');
         });
 
-        // 2. 坑洞點擊
         const btnHole = document.getElementById('btn-hole');
+        const grpHole = document.getElementById('grp-hole');
         const txtHole = document.getElementById('txt-hole');
+        
         btnHole.addEventListener('click', function() {
-            this.classList.remove('anim-shake-random');
+            grpHole.classList.remove('anim-shake-random'); 
             txtHole.classList.toggle('bubble-visible');
         });
 
         // 3. 聚光燈偵測 (Greenwed2)
         const greenSpin = document.getElementById('wed-green-spin');
         
-        // 當滑鼠移入旋轉的小綠人時
+        // 修改：只偵測是否碰到，不自動跳轉
         greenSpin.addEventListener('mouseenter', function() {
-            // 只有在最後一個步驟才觸發
             if(wednesdayStep >= 5) {
-                console.log("Spotlight 捕捉到了！準備進入下一個場景...");
-                // 這裡可以寫 goToSceneThursday();
-                alert("抓到你了！(準備進入 Scene 5)");
+                isHoveringGreen = true;
+                console.log("Mouse over Green! Scroll to expand spotlight.");
             }
+        });
+        
+        // 離開時取消 (可選，看你要不要強制滑鼠一定要在上面才能滾)
+        greenSpin.addEventListener('mouseleave', function() {
+            // isHoveringGreen = false; // 如果你想讓使用者隨便放都能滾，就註解掉這行
         });
 
     </script>
