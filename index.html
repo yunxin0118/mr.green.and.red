@@ -289,16 +289,44 @@
         const objBookle = document.getElementById('obj-bookle');
         const objmilk = document.getElementById('obj-milk');
 
-        introVideo.addEventListener('ended', () => {
-            console.log("影片結束");
-            introOverlay.classList.add('hidden');
-            mainContent.classList.add('visible');
-            setTimeout(() => { introOverlay.style.display = 'none'; }, 800);
-            setTimeout(() => { startTransition(); }, 1000); 
-        });
+        // --- 新增邏輯：檢查網址是否有 ?skip=true ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldSkip = urlParams.get('skip') === 'true';
 
+        if (shouldSkip) {
+            // 【情況 A：跳過影片】
+            console.log("偵測到 skip 指令，跳過開場影片");
+            
+            // 直接隱藏影片層
+            introOverlay.style.display = 'none';
+            introVideo.pause(); // 停止播放以防萬一
+            
+            // 直接顯示主內容
+            mainContent.classList.add('visible');
+            
+            // 立即執行轉場動畫 (讓 Logo 縮小、車子跑動、物件浮現)
+            // 這裡加一點點延遲 (50ms) 確保 CSS transition 能抓到狀態變化
+            setTimeout(() => {
+                startTransition();
+            }, 50);
+
+        } else {
+            // 【情況 B：正常播放影片】
+            console.log("正常播放開場影片");
+            
+            introVideo.addEventListener('ended', () => {
+                console.log("影片結束");
+                introOverlay.classList.add('hidden'); // 淡出影片層
+                mainContent.classList.add('visible'); // 淡入主內容
+                
+                setTimeout(() => { introOverlay.style.display = 'none'; }, 800);
+                setTimeout(() => { startTransition(); }, 1000); 
+            });
+        }
+
+        // --- 共用的進場動畫函式 ---
         function startTransition() {
-            console.log("開始轉場");
+            console.log("執行物件進場動畫");
             
             mainLogo.classList.add('logo-final-state');
             mainBg.classList.add('bg-visible');

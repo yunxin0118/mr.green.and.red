@@ -18,7 +18,6 @@
         }
 
         body {
-            /* 【修改】改為垂直排列 (Column)，讓Header在最上面，遊戲在下面 */
             display: flex;
             flex-direction: column; 
             height: 100vh;
@@ -29,19 +28,15 @@
 
         /* --- 2. UI 介面層 (獨立頂部區塊) --- */
         .ui-header {
-            /* 【修改】取消 absolute，改為相對定位，佔據實體空間 */
             position: relative; 
             width: 100%;
-            height: 80px;       /* 設定區塊高度 */
-            background-color: #ffffff; /* 【新增】白色背景，讓它變成獨立區塊 */
-            
-            /* 【新增】底部分隔線 (你可以調整粗細和顏色) */
+            height: 80px;      
+            background-color: #ffffff; 
             border-bottom: 2px solid #333; 
-            
             display: flex;
             justify-content: space-between;
-            align-items: center; /* 讓內容垂直置中 */
-            padding: 0 40px;     /* 左右留白 */
+            align-items: center; 
+            padding: 0 40px;    
             z-index: 1000;
         }
 
@@ -69,29 +64,65 @@
             font-family: 'Cubic', sans-serif;
         }
 
-        /* 漢堡圖示 */
+        /* --- 修改：漢堡按鈕區域 --- */
         .hamburger-icon {
-            width: 35px;
+            width: 35px;  /* 維持原本按鈕大小 */
             height: 30px;
+            cursor: pointer;
+            position: relative; /* 讓內部圖片可以絕對定位 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 包裹原本的三條線 */
+        .lines-wrapper {
+            width: 100%;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            cursor: pointer;
+            transition: opacity 0.2s;
         }
 
-        .hamburger-icon span {
+        /* 線條樣式 */
+        .lines-wrapper span {
             display: block;
             width: 100%;
             height: 4px;
             background-color: #333;
             border-radius: 4px;
-            transition: all 0.3s ease;
         }
 
-        /* 展開後的選單列表 */
+        /* Hover 圖片樣式 (置中且放大) */
+        .hover-img {
+            width: 55px;  /* 圖片寬度 (比按鈕容器大) */
+            height: auto;
+            object-fit: contain;
+            display: none; /* 預設隱藏 */
+            position: absolute;
+            
+            /* 絕對置中 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* === 互動顯示邏輯 === */
+        
+        /* 1. 滑鼠移入：隱藏線條，顯示圖片 */
+        .hamburger-icon:hover .lines-wrapper { display: none; }
+        .hamburger-icon:hover .hover-img { display: block; }
+
+        /* 2. 選單開啟 (active)：隱藏線條，顯示圖片 */
+        .menu-container.active .hamburger-icon .lines-wrapper { display: none; }
+        .menu-container.active .hamburger-icon .hover-img { display: block; }
+
+        
+        /* --- 展開後的選單列表 --- */
         .menu-list {
             position: absolute;
-            top: 60px; /* 因為header變高了，選單顯示位置也要往下調 */
+            top: 60px; 
             right: 0;
             background-color: #ffffff;
             border: 2px solid #333;
@@ -127,23 +158,9 @@
             color: #000;
         }
 
-        /* 漢堡變換成 X 的動畫 */
-        .menu-container.active .hamburger-icon span:nth-child(1) {
-            transform: translateY(13px) rotate(45deg);
-        }
-        .menu-container.active .hamburger-icon span:nth-child(2) {
-            opacity: 0;
-        }
-        .menu-container.active .hamburger-icon span:nth-child(3) {
-            transform: translateY(-13px) rotate(-45deg);
-        }
-
-
         /* --- 遊戲區域 CSS --- */
         #gameArea {
-            /* 【新增】讓遊戲區域在剩下的空間裡自動置中 */
             margin: auto; 
-            
             width: 800px;
             height: 300px;
             position: relative;
@@ -229,22 +246,29 @@
 <body>
 
     <div class="ui-header">
-        <a href="index.html" class="home-btn">
+        <a href="index.html?skip=true" class="home-btn">
             <img src="firstpic/home.png" alt="Home">
         </a>
 
         <div class="menu-container" id="menuContainer">
             <div class="hamburger-icon" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+                
+                <div class="lines-wrapper">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
+                
             </div>
+
             <div class="menu-list" id="menuList">
                 <a href="#">關於</a>
                 <a href="#">周邊</a>
                 <a href="#">活動</a>
                 <a href="#">品牌</a>
-                <a href="#">地圖</a>
+                <a href="computer.html">地圖</a>
             </div>
         </div>
     </div>
@@ -280,7 +304,7 @@
             }
         });
 
-        // --- 遊戲邏輯 ---
+        // --- 遊戲邏輯 (保持不變) ---
         const dino = document.getElementById('dino');
         const obstacle = document.getElementById('obstacle');
         const startMessage = document.getElementById('startMessage');
