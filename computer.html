@@ -1,2527 +1,1264 @@
 <!DOCTYPE html>
-
 <html lang="zh-TW">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Computer Intro</title>
-
     <style>
-
         /* --- 1. 字體設定 --- */
-
         @font-face {
-
             font-family: 'Cubic';
-
             src: url('Cubic_11.ttf') format('truetype');
-
         }
-
-
 
         * {
-
             margin: 0;
-
             padding: 0;
-
             box-sizing: border-box;
-
         }
-
-
 
         body {
-
             display: flex;
-
-            flex-direction: column;
-
+            flex-direction: column; 
             height: 100vh;
-
-            background-color: #ffffff;
-
+            background-color: #ffffff; 
             font-family: Arial, sans-serif;
-
-            overflow: hidden;
-
+            overflow: hidden; 
         }
-
-
 
         /* --- 2. 獨立頂部導覽列 (Header) --- */
-
         .ui-header {
-
-            position: relative;
-
+            position: relative; 
             width: 100%;
-
-            height: 80px;      
-
-            background-color: #ffffff;
-
-            border-bottom: 2px solid #333;
-
+            height: 80px;       
+            background-color: #ffffff; 
+            border-bottom: 2px solid #333; 
             display: flex;
-
             justify-content: space-between;
-
-            align-items: center;
-
-            padding: 0 40px;    
-
+            align-items: center; 
+            padding: 0 40px;     
             z-index: 1000;
-
         }
-
-
 
         .home-btn {
-
             display: block;
-
             width: 50px;
-
             height: 50px;
-
             transition: transform 0.2s;
-
         }
-
-       
-
+        
         .home-btn img {
-
             width: 100%;
-
             height: 100%;
-
             object-fit: contain;
-
         }
-
-
 
         .home-btn:hover {
-
             transform: scale(1.1);
-
         }
-
-
 
         .menu-container {
-
             position: relative;
-
             font-family: 'Cubic', sans-serif;
-
         }
-
-
 
         .hamburger-icon {
-
             width: 35px;
-
             height: 30px;
-
             cursor: pointer;
-
             position: relative;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
-
         }
-
-
 
         .lines-wrapper {
-
             width: 100%;
-
             height: 100%;
-
             display: flex;
-
             flex-direction: column;
-
             justify-content: space-between;
-
             transition: opacity 0.2s;
-
         }
-
-
 
         .lines-wrapper span {
-
             display: block;
-
             width: 100%;
-
             height: 4px;
-
             background-color: #333;
-
             border-radius: 4px;
-
         }
-
-
 
         .hover-img {
-
-            width: 150%;
-
-            height: 150%;
-
+            width: 150%; 
+            height: 150%; 
             object-fit: contain;
-
             display: none;
-
             position: absolute;
-
             top: 50%;
-
             left: 50%;
-
-            transform: translate(-50%, -50%);
-
+            transform: translate(-50%, -50%); 
         }
-
-
 
         .hamburger-icon:hover .lines-wrapper,
-
         .menu-container.active .hamburger-icon .lines-wrapper {
-
             display: none;
-
         }
-
         .hamburger-icon:hover .hover-img,
-
         .menu-container.active .hamburger-icon .hover-img {
-
             display: block;
-
         }
-
-
 
         .menu-list {
-
             position: absolute;
-
             top: 60px;
-
             right: 0;
-
             background-color: #ffffff;
-
             border: 2px solid #333;
-
             border-radius: 8px;
-
             width: 140px;
-
             display: none;
-
             flex-direction: column;
-
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-
             z-index: 1001;
-
         }
-
-
 
         .menu-list.show {
-
             display: flex;
-
         }
-
-
 
         .menu-list a {
-
             text-decoration: none;
-
             color: #333;
-
             padding: 15px;
-
             text-align: center;
-
             border-bottom: 1px solid #eee;
-
             font-size: 18px;
-
             transition: background 0.2s;
-
         }
-
-
 
         .menu-list a:last-child {
-
             border-bottom: none;
-
         }
-
-
 
         .menu-list a:hover {
-
             background-color: #f0f0f0;
-
             color: #000;
-
         }
-
-
 
         /* --- 3. 主要內容區域 --- */
-
         #main-display {
-
             position: relative;
-
             width: 100%;
-
-            flex: 1;
-
+            flex: 1; 
             overflow: hidden;
-
-            background-color: #ffffff;
-
+            background-color: #ffffff; 
         }
-
-
 
         /* === 場景 1：Start (開場) === */
-
         #scene-start {
-
             position: absolute;
-
             top: 0;
-
             left: 0;
-
             width: 100%;
-
             height: 100%;
-
             background-image: url('startpic/start.png');
-
-            background-size: 100%;
-
-            background-position: center bottom;
-
+            background-size: 100%; 
+            background-position: center bottom; 
             background-repeat: no-repeat;
-
             transition: transform 0.8s ease, opacity 0.8s ease;
-
             z-index: 10;
-
         }
-
-
 
         #scene-start.slide-up {
-
             transform: translateY(-100%);
-
             opacity: 0;
-
         }
-
-
 
         #moving-car {
-
             position: absolute;
-
-            left: -300px;
-
-            top: 87%;
-
+            left: -300px; 
+            top: 87%; 
             width: 200px;
-
             height: auto;
-
             z-index: 10;
-
-            animation: driveRight 4s linear infinite;
-
+            animation: driveRight 4s linear infinite; 
         }
-
-
 
         @keyframes driveRight {
-
             0% { transform: translateX(0); }
-
             100% { transform: translateX(calc(100vw + 400px)); }
-
         }
-
-
 
         /* === 場景 2：Monday (星期一) === */
-
         #scene-monday {
-
             position: absolute;
-
             top: 0;
-
             left: 0;
-
             width: 100%;
-
             height: 100%;
-
             background-color: #ffffff;
-
-            display: none;
-
+            display: none; 
             overflow: hidden;
-
             font-family: 'Cubic', sans-serif;
-
             color: #333;
-
         }
-
-       
-
+        
         #scene-monday.visible {
-
             display: block;
-
         }
-
-
 
         /* --- Monday 場景物件樣式 --- */
-
         .text-group {
-
             position: absolute;
-
             top: 10%;
-
-            left: 25%;
-
-            transform: none;
-
-            text-align: left;
-
+            left: 25%; 
+            transform: none; 
+            text-align: left; 
             z-index: 20;
-
         }
-
-
 
         .title-text {
-
             font-size: 30px;
-
             font-weight: bold;
-
             opacity: 0;
-
             transform: translateY(20px);
-
             transition: all 0.8s ease;
-
             margin-bottom: 10px;
-
         }
-
-       
-
+        
         .sub-text {
-
             font-size: 18px;
-
             color: #666;
-
             opacity: 0;
-
             transform: translateY(20px);
-
             transition: all 0.8s ease;
-
         }
-
-
 
         .text-in { opacity: 1; transform: translateY(0); }
 
-
-
         .left-group {
-
             position: absolute;
-
             bottom: 50px;
-
             left: 5%;
-
-            width: 400px;
-
+            width: 400px; 
             height: auto;
-
             opacity: 0;
-
-            transform: translateX(-100px);
-
+            transform: translateX(-100px); 
             transition: all 1.2s ease;
-
             z-index: 5;
-
         }
-
         .obj-house { width: 100%; position: relative; z-index: 1;}
-
-       
-
-        .obj-cold {
-
+        
+        .obj-cold { 
             position: absolute; top: 122px; right: 205px; width: 70px; z-index: 2;
-
             cursor: pointer;
-
-            transform-origin: bottom center;
-
-        }
-
-        .obj-tower {
-
+            transform-origin: bottom center; 
+        } 
+        .obj-tower { 
             position: absolute; top: 38px; left: 250px; width: 30px; z-index: 2;
-
             cursor: pointer;
-
             transform-origin: bottom center;
-
         }
-
-
 
         /* 文字氣泡 */
-
         .obj-bubble {
-
             position: absolute;
-
             opacity: 0;
-
             transition: opacity 0.5s ease;
-
             z-index: 20;
-
             pointer-events: none;
-
             width: auto;
-
             height: auto;
-
             max-width: 210px;
-
         }
-
         #txt-tower { top: 100px; left: 260px; }
-
         #txt-cold { top: -120px; right: 200px; }
-
         .bubble-visible { opacity: 1; }
 
-
-
         /* 晃動動畫 */
-
         @keyframes shake-idle {
-
             0% { transform: rotate(0deg); }
-
             5% { transform: rotate(8deg); }
-
             10% { transform: rotate(-8deg); }
-
             15% { transform: rotate(8deg); }
-
             20% { transform: rotate(0deg); }
-
             100% { transform: rotate(0deg); }
-
         }
-
         .anim-shake {
-
-            animation: shake-idle 3s infinite;
-
+            animation: shake-idle 3s infinite; 
         }
-
-
 
         .right-group {
-
             position: absolute;
-
-            top: 0%;
-
+            top: 0%; 
             right: 5%;
-
             width: 165px;
-
             opacity: 0;
-
-            transform: translateX(100px);
-
+            transform: translateX(100px); 
             transition: all 1.2s ease;
-
             z-index: 15;
-
         }
-
         .obj-intersac { width: 100%; }
-
         .slide-in-active { opacity: 1; transform: translateX(0); }
 
-
-
         .bottom-group {
-
             position: absolute;
-
             bottom: 20px;
-
-            left: 55%;
-
+            left: 55%; 
             transform: translateX(-50%) translateY(50px);
-
             opacity: 0;
-
             transition: all 1s ease;
-
             z-index: 4;
-
         }
-
         .obj-water { width: 180px; }
-
         .slide-up-active { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-
-
         .obj-rain {
-
             position: absolute;
-
             top: 15%;
-
             left: 40%;
-
             width: 30%;
-
             opacity: 0;
-
             transition: all 1s ease;
-
             z-index: 8;
-
             pointer-events: none;
-
         }
-
         .rain-active { opacity: 0.6; }
 
-
-
         .green-man-container {
-
             position: absolute;
-
             bottom: 30px;
-
-            right: 25%;
-
+            right: 25%; 
             width: 230px;
-
             opacity: 0;
-
-            transform: translateX(50px);
-
+            transform: translateX(50px); 
             transition: all 1s ease;
-
             z-index: 7; /* 【修改】原本是 6，改成 7，讓它在車子上面 */
-
         }
-
         .obj-green { width: 100%; }
-
         .green-in { opacity: 1; transform: translateX(0); }
 
-
-
         /* --- 修改這段：車子方向與圖層 --- */
-
         .car-container-monday {
-
             position: absolute;
-
             bottom: 40px;
-
-            left: 100vw;
-
+            left: 100vw; 
             width: 250px;
-
             z-index: 6; /* 【修改】原本是 7，改成 6，讓它在小綠人下面 */
-
         }
-
-       
-
+        
         /* 【修改】移除 transform: scaleX(-1) 讓車子恢復原圖方向 */
-
-        .obj-car-monday {
-
-            width: 100%;
-
+        .obj-car-monday { 
+            width: 100%; 
             /* transform: scaleX(-1);  <-- 這行刪掉 */
-
         }
-
-
 
         @keyframes carDriveBy {
-
             0% { left: 110vw; }
-
-            40% { left: 55%; }
-
-            100% { left: -400px; }
-
+            40% { left: 55%; } 
+            100% { left: -400px; } 
         }
-
         .car-run { animation: carDriveBy 2.5s linear forwards; }
 
-
-
         /* === 場景 3：Tuesday 樣式 === */
-
         #scene-tuesday {
-
             position: absolute;
-
             top: 0;
-
             left: 100%;
-
             width: 100%;
-
             height: 100%;
-
             background-color: #ffffff;
-
             overflow: hidden;
-
             transition: transform 1s ease;
-
             z-index: 30;
-
             font-family: 'Cubic', sans-serif;
-
         }
-
         #scene-tuesday.active { transform: translateX(-100%); }
 
-
-
         #tues-text-group {
-
             position: absolute;
-
             top: 10%;
-
-            left: 25%;
-
-            transform: none;
-
-            text-align: left;
-
+            left: 25%; 
+            transform: none; 
+            text-align: left; 
             z-index: 20;
-
         }
-
         .obj-intersac2 {
-
             position: absolute;
-
             top: 5%;
-
             left: 10%;
-
             width: 150px;
-
             opacity: 0;
-
             transition: opacity 1s ease;
-
         }
-
         .obj-mrt {
-
             position: absolute;
-
             top: 13%;
-
             right: 14%;
-
             width: 550px;
-
             opacity: 0;
-
             transition: opacity 1s ease;
-
         }
-
         .bg-visible { opacity: 1; }
 
-
-
         .grandma-container {
-
             position: absolute;
-
-            bottom: 10%;
-
-            right: -300px;
-
-            width: 200px;
-
+            bottom: 10%; 
+            right: -300px; 
+            width: 200px; 
             height: auto;
-
             z-index: 10;
-
             pointer-events: none;
-
         }
-
         .obj-greenma { width: 100%; }
-
         @keyframes grandmaWalk {
-
             0% { right: -300px; }
-
-            100% { right: 57%; }
-
+            100% { right: 57%; } 
         }
-
         .grandma-walking { animation: grandmaWalk 4s linear forwards; }
 
-
-
         .flowers-on-road {
-
             position: absolute;
-
             width: 100%;
-
             height: 100%;
-
             top: 0;
-
             left: 0;
-
             pointer-events: none;
-
-            z-index: 5;
-
+            z-index: 5; 
         }
-
         .obj-flo {
-
             width: 30px;
-
             position: absolute;
-
-            bottom: 10%;
-
-            opacity: 0;
-
+            bottom: 10%; 
+            opacity: 0; 
         }
-
         .flo1 { right: 35%; }
-
         .flo2 { right: 40%; }
-
         .flo3 { right: 45%; }
-
         .flo4 { right: 50%; }
 
-
-
         @keyframes flowerDrop {
-
             0% { opacity: 0; transform: scale(0.5); }
-
             100% { opacity: 1; transform: scale(1); }
-
         }
-
         .flo-anim { animation: flowerDrop 1s ease-out forwards; }
 
-
-
         .red-container {
-
             position: absolute;
-
             bottom: 10%;
-
             right: -200px;
-
             width: 20px;
-
             opacity: 0;
-
             transition: all 1.5s ease;
-
             z-index: 6;
-
         }
-
         .obj-red { width: 120px; }
-
-        .obj-bag {
-
-            width: 60px;
-
-            position: absolute;
-
-            bottom: 3px;
-
-            right: -110px;
-
+        .obj-bag { 
+            width: 60px; 
+            position: absolute; 
+            bottom: 3px; 
+            right: -110px; 
         }
-
         .red-enter { opacity: 1; right: 31%; }
 
-
-
         .dialogue-container {
-
             position: absolute;
-
             bottom: 40%;
-
-            right: 10%;
-
+            right: 10%; 
             opacity: 0;
-
             transform: scale(0.5);
-
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
-
         .obj-line { width: 30px; position: absolute; bottom: -50px; right: 150px;}
-
         .obj-word { width: 100px; position: absolute; bottom: -100px; right: 300px;}
-
         .dialogue-show { opacity: 1; transform: scale(1); }
 
-
-
         .obj-bubble-tues {
-
             position: absolute;
-
             opacity: 0;
-
             transition: opacity 0.5s ease;
-
             z-index: 20;
-
-            pointer-events: none;
-
-            width: 230px;
-
+            pointer-events: none; 
+            width: 230px; 
             height: auto;
-
         }
-
         #btn-greenma { cursor: pointer; pointer-events: auto; }
-
         #txt-greenma { top: -100px; left: -250px; }
-
         #btn-bag { cursor: pointer; pointer-events: auto; z-index: 15; }
-
         #txt-bag { top: -120px; right: 0px; }
-
         .bubble-show { opacity: 1; }
 
-
-
         /* === 場景 4：Wednesday 樣式 === */
-
         #scene-wednesday {
-
             position: absolute;
-
             top: 0;
-
             left: 100%;
-
             width: 100%;
-
             height: 100%;
-
             background-color: #ffffff;
-
             overflow: hidden;
-
             transition: transform 1s ease;
-
             z-index: 40;
-
         }
-
-       
-
+        
         #scene-wednesday.active {
-
             transform: translateX(-100%);
-
         }
-
-
 
         #wed-text-group {
-
             position: absolute;
-
             top: 10%;
-
             left: 25%;
-
             z-index: 20;
-
             font-family: 'Cubic', sans-serif;
-
             text-align: left;
-
-            transition: opacity 1s ease;
-
+            transition: opacity 1s ease; 
         }
-
-
 
         .wed-obj-container {
-
             position: absolute;
-
             width: 100%;
-
             height: 100%;
-
             top: 0;
-
             left: 0;
-
-            pointer-events: none;
-
-            transition: opacity 1s ease;
-
+            pointer-events: none; 
+            transition: opacity 1s ease; 
         }
-
-
 
         /* 1. 三角錐 Triangle */
-
         .obj-triangle-wrapper {
-
             position: absolute;
-
             bottom: 35%;
-
             left: 30%;
-
             width: 100px;
-
             opacity: 0;
-
             transform: translateX(-50px);
-
             transition: all 1s ease;
-
             transform-origin: bottom center;
-
             z-index: 5;
-
             pointer-events: none;
-
         }
-
-       
-
+        
         /* 2. 坑洞 Hole */
-
         .obj-hole-wrapper {
-
             position: absolute;
-
             bottom: 25%;
-
             right: 35%;
-
             width: 250px;
-
             opacity: 0;
-
             transform: translateX(50px);
-
             transition: all 1s ease;
-
             z-index: 5;
-
             pointer-events: none;
-
         }
-
-       
-
+        
         #btn-triangle, #btn-hole {
-
             width: 100%;
-
             cursor: pointer;
-
             pointer-events: auto;
-
         }
-
-       
-
+        
         .obj-greenwed {
-
             position: absolute;
-
             bottom: 90px;
-
             left: 50%;
-
             transform: translateX(-50%);
-
             width: 220px;
-
             z-index: 6;
-
             transition: transform 1.5s ease-in;
-
         }
-
-
 
         .obj-bubble-wed {
-
             position: absolute;
-
             opacity: 0;
-
             transition: opacity 0.3s ease;
-
             z-index: 25;
-
             pointer-events: none;
-
             width: 150px;
-
         }
-
-       
-
+        
         #txt-triangle { top: -100px; left: 0px; }
-
         #txt-hole { top: -120px; right: 0px; }
 
-
-
         .wed-enter-left { opacity: 1; transform: translateX(0); }
-
         .wed-enter-right { opacity: 1; transform: translateX(0); }
-
-
 
         .fade-out-scene { opacity: 0 !important; pointer-events: none; }
 
-
-
         @keyframes shake-irregular {
-
             0% { transform: rotate(0deg); }
-
             10% { transform: rotate(5deg); }
-
             20% { transform: rotate(-5deg); }
-
             30% { transform: rotate(3deg); }
-
             40% { transform: rotate(0deg); }
-
             100% { transform: rotate(0deg); }
-
         }
-
         .anim-shake-random { animation: shake-irregular 4s infinite; }
 
-
-
         .green-fall {
-
             transform: translateX(-50%) translateY(500px) !important;
-
         }
-
-
 
         .black-transition {
-
             position: absolute;
-
             bottom: -100%;
-
             left: 0;
-
             width: 100%;
-
             height: 100%;
-
             z-index: 30;
-
             transition: bottom 2s cubic-bezier(0.25, 1, 0.5, 1);
-
             display: flex;
-
             align-items: flex-end;
-
             pointer-events: none;
-
         }
-
         .obj-black { width: 100%; height: auto; display: block; }
-
-       
-
+        
         .black-rise { bottom: 0; }
 
-
-
         .black-bg-layer {
-
             position: absolute;
-
             top: 0;
-
             left: 0;
-
             width: 100%;
-
             height: 100%;
-
             background-color: #000;
-
             opacity: 0;
-
-            z-index: 29;
-
+            z-index: 29; 
             transition: opacity 1.5s ease;
-
             pointer-events: none;
-
         }
-
-       
-
-        .bg-dark-active {
-
-            opacity: 1;
-
-            z-index: 35;
-
+        
+        .bg-dark-active { 
+            opacity: 1; 
+            z-index: 35; 
             pointer-events: auto;
-
         }
-
-       
-
+        
         .final-dark-scene {
-
             position: absolute;
-
             top: 0;
-
             left: 0;
-
             width: 100%;
-
             height: 100%;
-
             background-image: url('startpic/allblack.png');
-
             background-size: cover;
-
             opacity: 0;
-
             z-index: 50;
-
             pointer-events: none;
-
             transition: opacity 2s ease;
-
         }
-
-       
-
-        .final-active {
-
-            opacity: 1;
-
-            pointer-events: auto;
-
+        
+        .final-active { 
+            opacity: 1; 
+            pointer-events: auto; 
             cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='15' fill='white'/%3E%3C/svg%3E") 16 16, pointer;
-
         }
-
-
 
         .obj-greenwed2 {
-
             position: absolute;
-
             top: 50%;
-
             left: 30%;
-
             width: 230px;
-
             margin-top: -50px;
-
             margin-left: -50px;
-
             animation: spin 5s linear infinite;
-
             z-index: 52; /* 確保在 spotlight 之下，但也很高 */
-
         }
-
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-
-
         /* 【新增】過場用的 spotlight 圖片 */
-
         #wed-expand-spotlight {
-
             position: absolute;
-
             top: 50%;
-
             left: 30%; /* 必須跟 greenwed2 對齊 */
-
             width: 230px; /* 初始大小跟 greenwed2 差不多 */
-
             transform: translate(-50%, -50%) scale(0);
-
             opacity: 0;
-
             z-index: 55; /* 蓋在綠人上面 */
-
             pointer-events: none;
-
             transition: opacity 0.5s ease; /* 淡入效果 */
-
             /* Scale 的動畫由 JS 控制，不需要 transition，這樣滾動才跟手 */
-
         }
-
-
 
         .float-num {
-
             position: absolute;
-
             width: 30px;
-
             opacity: 0.7;
-
         }
-
         @keyframes float {
-
             0% { transform: translateY(0px) translateX(0px); }
-
             50% { transform: translateY(-20px) translateX(10px); }
-
             100% { transform: translateY(0px) translateX(0px); }
-
         }
-
         .float-anim { animation: float 6s ease-in-out infinite; }
 
-
-
         /* === 場景 5：Thursday 樣式 (新增) === */
-
         #scene-thursday {
-
             position: absolute;
-
             top: 0;
-
             left: 0;
-
             width: 100%;
-
             height: 100%;
-
             background-color: #ffffff; /* 白底 */
-
             z-index: 70; /* 最高層 */
-
             opacity: 0;
-
             pointer-events: none;
-
             transition: opacity 1.5s ease;
-
             display: flex;
-
             justify-content: center;
-
             align-items: center; /* 讓文字影片置中 */
-
             overflow: hidden;
-
             font-family: 'Cubic', sans-serif;
-
         }
-
-
 
         /* 啟動 Scene 5 */
-
         #scene-thursday.active {
-
             opacity: 1;
-
             pointer-events: auto;
-
             cursor: default; /* 恢復預設滑鼠 */
-
         }
-
-
 
         /* 文字群組 (沿用樣式並微調) */
-
         #thurs-text-group {
-
             position: absolute;
-
             top: 15%;
-
             left: 50%;
-
             transform: translateX(-50%);
-
             text-align: center;
-
             z-index: 80;
-
         }
-
-       
-
+        
         /* 影片容器 */
-
         .video-container {
-
             width: 80%; /* 設定佔據畫面的百分比，例如 80% */
-
             max-width: none; /* 【修改這裡】移除最大寬度限制 */
-
             opacity: 0;
-
             transform: scale(0.9);
-
             transition: all 1.5s ease;
-
             z-index: 75;
-
         }
-
         .video-container video { width: 100%; height: auto; }
-
         .video-in { opacity: 1; transform: scale(1); }
 
-
-
         /* 駕照圖片 */
-
         #thurs-license {
-
             position: absolute;
-
             top: -100%; /* 初始在上面外面 */
-
             left: 50%;
-
             transform: translateX(-50%);
-
             width: 400px;
-
             transition: top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
             z-index: 85;
-
         }
-
         .license-drop { top: 30% !important; }
 
-
-
         /* 禁止標誌 */
-
         #thurs-no {
-
             position: absolute;
-
             top: 95%;
-
             left: 65%;
-
             width: 100px;
-
             margin-left: -200px; /* 置中修正 */
-
             margin-top: -200px;
-
             transform: scale(5); /* 初始巨大 */
-
             opacity: 0;
-
             transition: all 1s ease-in;
-
             z-index: 90;
-
         }
-
         .no-shrink { transform: scale(1) !important; opacity: 1 !important; }
 
-
-
     </style>
-
 </head>
-
 <body>
 
-
-
     <div class="ui-header">
-
         <a href="index.html?skip=true" class="home-btn">
-
             <img src="firstpic/home.png" alt="Home">
-
         </a>
-
         <div class="menu-container" id="menuContainer">
-
             <div class="hamburger-icon" onclick="toggleMenu()">
-
                 <div class="lines-wrapper">
-
                     <span></span><span></span><span></span>
-
                 </div>
-
                 <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
-
             </div>
-
             <div class="menu-list" id="menuList">
-
                 <a href="#">關於</a><a href="#">周邊</a><a href="#">活動</a><a href="#">品牌</a><a href="#">地圖</a>
-
             </div>
-
         </div>
-
     </div>
-
-
 
     <div id="main-display">
-
-       
-
+        
         <div id="scene-start">
-
             <img id="moving-car" src="firstpic/car.gif" alt="Moving Car">
-
         </div>
-
-
 
         <div id="scene-monday">
-
             <div class="text-group">
-
                 <div class="title-text" id="text1">星期一</div>
-
                 <div class="sub-text" id="text2">討厭的開工日總會迎來雨天</div>
-
             </div>
-
             <div class="left-group" id="grp-left">
-
                 <img src="startpic/towertext.png" class="obj-bubble" id="txt-tower">
-
                 <img src="startpic/coldtext.png" class="obj-bubble" id="txt-cold">
-
                 <img src="startpic/tower.png" class="obj-tower" id="btn-tower">
-
                 <img src="startpic/cold.png" class="obj-cold" id="btn-cold">
-
                 <img src="startpic/house.png" class="obj-house">
-
             </div>
-
             <div class="right-group" id="grp-right">
-
                 <img src="startpic/intersac.png" class="obj-intersac">
-
             </div>
-
             <div class="bottom-group" id="grp-water">
-
                 <img src="startpic/water.png" class="obj-water" id="img-water">
-
             </div>
-
             <img src="startpic/rain.png" class="obj-rain" id="img-rain">
-
             <div class="car-container-monday" id="grp-car">
-
                 <img src="startpic/car.png" class="obj-car-monday">
-
             </div>
-
             <div class="green-man-container" id="grp-green">
-
                 <img src="startpic/green.png" class="obj-green" id="img-green">
-
             </div>
-
         </div>
-
-
 
         <div id="scene-tuesday">
-
             <div class="text-group" id="tues-text-group">
-
                 <div class="title-text" id="tues-title">星期二</div>
-
                 <div class="sub-text" id="tues-sub">阿嬤！你的花掉光光了！</div>
-
             </div>
-
             <div class="tues-bg-group">
-
                 <img src="startpic/intersac2.png" class="obj-intersac2" id="tues-intersac">
-
                 <img src="startpic/mrt.png" class="obj-mrt" id="tues-mrt">
-
             </div>
-
             <div class="flowers-on-road">
-
                 <img src="startpic/flo1.png" class="obj-flo flo1">
-
                 <img src="startpic/flo2.png" class="obj-flo flo2">
-
                 <img src="startpic/flo3.png" class="obj-flo flo3">
-
                 <img src="startpic/flo4.png" class="obj-flo flo4">
-
             </div>
-
             <div class="grandma-container" id="grp-grandma">
-
                 <img src="startpic/greenma.png" class="obj-greenma" id="btn-greenma">
-
                 <img src="startpic/greenmatext.png" class="obj-bubble-tues" id="txt-greenma">
-
             </div>
-
             <div class="red-container" id="grp-red">
-
                 <img src="startpic/bag.png" class="obj-bag" id="btn-bag">
-
                 <img src="startpic/red.png" class="obj-red">
-
                 <img src="startpic/bagtext.png" class="obj-bubble-tues" id="txt-bag">
-
             </div>
-
             <div class="dialogue-container" id="grp-dialogue">
-
                 <img src="startpic/line.png" class="obj-line">
-
                 <img src="startpic/word.png" class="obj-word">
-
             </div>
-
         </div>
-
-
 
         <div id="scene-wednesday">
-
-           
-
+            
             <div class="text-group" id="wed-text-group">
-
                 <div class="title-text" id="wed-title">星期三</div>
-
                 <div class="sub-text" id="wed-sub">走路不要滑手機啊！！！</div>
-
             </div>
-
-
 
             <div class="wed-obj-container">
-
                 <div class="obj-triangle-wrapper" id="grp-triangle">
-
                     <img src="startpic/triangletext.png" class="obj-bubble-wed" id="txt-triangle">
-
                     <img src="startpic/triangle.png" id="btn-triangle">
-
                 </div>
-
-               
-
+                
                 <div class="obj-hole-wrapper" id="grp-hole">
-
                     <img src="startpic/holetext.png" class="obj-bubble-wed" id="txt-hole">
-
                     <img src="startpic/hole.png" id="btn-hole">
-
                     <img src="startpic/greenwed.png" class="obj-greenwed" id="wed-green-fall">
-
                 </div>
-
             </div>
-
-
 
             <div class="black-transition" id="wed-black-trans">
-
                 <img src="startpic/black.png" class="obj-black">
-
             </div>
-
             <div class="black-bg-layer" id="wed-black-bg"></div>
 
-
-
             <div class="final-dark-scene" id="wed-final-scene">
-
                 <img src="startpic/spotlight.png" id="wed-expand-spotlight">
 
-
-
                 <img src="startpic/greenwed2.png" class="obj-greenwed2" id="wed-green-spin">
-
-               
-
+                
                 <img src="startpic/1.png" class="float-num float-anim" style="top:20%; left:10%; width: 50px; animation-delay:0s;">
-
                 <img src="startpic/2.png" class="float-num float-anim" style="top:70%; left:15%; width: 50px; animation-delay:1s;">
-
                 <img src="startpic/3.png" class="float-num float-anim" style="top:40%; left:25%; width: 30px; animation-delay:2s;">
-
                 <img src="startpic/4.png" class="float-num float-anim" style="top:10%; left:60%; width: 30px; animation-delay:0.5s;">
-
                 <img src="startpic/5.png" class="float-num float-anim" style="top:80%; left:50%; width: 40px; animation-delay:1.5s;">
-
                 <img src="startpic/6.png" class="float-num float-anim" style="top:30%; left:80%; width: 30px; animation-delay:2.5s;">
-
                 <img src="startpic/7.png" class="float-num float-anim" style="top:60%; left:85%; width: 30px; animation-delay:0.2s;">
-
                 <img src="startpic/8.png" class="float-num float-anim" style="top:50%; left:45%; width: 70px; animation-delay:1.2s;">
-
                 <img src="startpic/9.png" class="float-num float-anim" style="top:15%; left:35%; width: 50px; animation-delay:2.2s;">
-
             </div>
 
-
-
         </div>
-
-
 
         <div id="scene-thursday">
-
             <div id="thurs-text-group">
-
                 <div class="title-text" id="thurs-title">星期四</div>
-
                 <div class="sub-text" id="thurs-sub">考到駕照的第一天.......</div>
-
             </div>
-
-           
-
+            
             <div class="video-container" id="thurs-video-box">
-
                 <video id="thurs-video" src="startpic/car.mp4" muted loop playsinline></video>
-
             </div>
-
-
 
             <img src="startpic/license.png" id="thurs-license">
-
             <img src="startpic/no.png" id="thurs-no">
-
         </div>
-
-
 
     </div>
 
-
-
     <script>
-
         function toggleMenu() {
-
             const menuList = document.getElementById('menuList');
-
             const menuContainer = document.getElementById('menuContainer');
-
             menuList.classList.toggle('show');
-
             menuContainer.classList.toggle('active');
-
         }
-
         document.addEventListener('click', (e) => {
-
             const mc = document.getElementById('menuContainer');
-
             if (!mc.contains(e.target)) {
-
                 document.getElementById('menuList').classList.remove('show');
-
                 mc.classList.remove('active');
-
             }
-
         });
-
-
-
 
 
         // --- 互動邏輯：Monday ---
-
         const btnTower = document.getElementById('btn-tower');
-
         const btnCold = document.getElementById('btn-cold');
-
         const txtTower = document.getElementById('txt-tower');
-
         const txtCold = document.getElementById('txt-cold');
 
-
-
         btnTower.addEventListener('click', function() {
-
             this.classList.remove('anim-shake');
-
             txtTower.classList.add('bubble-visible');
-
         });
-
         btnCold.addEventListener('click', function() {
-
             this.classList.remove('anim-shake');
-
             txtCold.classList.add('bubble-visible');
-
         });
-
-
-
 
 
         // --- 轉場與動畫邏輯 ---
-
-        let currentScene = 1;
-
-        let isTransitioning = false;
-
-
+        let currentScene = 1; 
+        let isTransitioning = false; 
 
         // 步驟計數器
-
-        let tuesdayStep = 0;
-
+        let tuesdayStep = 0; 
         let wednesdayStep = 0;
-
         let thursdayStep = 0; // 新增
 
-
-
         // 轉場控制變數 (Wednesday -> Thursday)
-
         let isHoveringGreen = false; // 是否碰到綠人
-
         let wedSpotlightScale = 0;   // 聚光燈放大比例
-
         let spotlightImg = document.getElementById('wed-expand-spotlight');
 
-
-
         window.addEventListener('wheel', (e) => {
-
             if (isTransitioning) return;
 
-
-
             // 往下捲動 (deltaY > 0)
-
             if (e.deltaY > 0) {
-
                 if (currentScene === 1) {
-
                     goToSceneMonday();
-
                 }
-
                 else if (currentScene === 2) {
-
                     goToSceneTuesday();
-
                 }
-
                 else if (currentScene === 3) {
-
                     playNextTuesdayStep();
-
                 }
-
                 else if (currentScene === 4) {
-
                     // 如果還沒跑完星期三的流程
-
                     if (wednesdayStep < 5) {
-
                         playNextWednesdayStep();
-
-                    }
-
+                    } 
                     // 如果跑完了，且滑鼠碰到了綠人 -> 進入放大轉場模式
-
                     else if (isHoveringGreen) {
-
                         handleSpotlightExpand();
-
                     }
-
                 }
-
                 else if (currentScene === 5) {
-
                     playNextThursdayStep();
-
                 }
-
             }
-
         });
 
-
-
         // -----------------------
-
         // Spotlight Expansion Logic (New)
-
         // -----------------------
-
         function handleSpotlightExpand() {
-
             // 階段 1: 淡入
-
             if (getComputedStyle(spotlightImg).opacity == 0) {
-
                 spotlightImg.style.opacity = 1;
-
                 spotlightImg.style.transform = `translate(-50%, -50%) scale(1)`;
-
                 wedSpotlightScale = 1;
-
                 console.log("Spotlight 淡入");
-
-            }
-
+            } 
             // 階段 2: 放大
-
             else {
-
                 wedSpotlightScale += 5; // 每次滾動加大的幅度
-
                 spotlightImg.style.transform = `translate(-50%, -50%) scale(${wedSpotlightScale})`;
-
                 console.log("Spotlight 放大中:", wedSpotlightScale);
 
-
-
                 // 階段 3: 夠大時切換場景
-
                 if (wedSpotlightScale > 40) { // 放大到蓋滿畫面 (視情況調整數值)
-
                     goToSceneThursday();
-
                 }
-
             }
-
         }
 
-
-
         // -----------------------
-
         // Scene Transitions
-
         // -----------------------
-
         function goToSceneMonday() {
-
             isTransitioning = true;
-
             currentScene = 2;
-
             const sceneStart = document.getElementById('scene-start');
-
             const sceneMonday = document.getElementById('scene-monday');
-
             sceneStart.classList.add('slide-up');
-
             sceneMonday.classList.add('visible');
-
             playMondayAnimation();
-
             setTimeout(() => { isTransitioning = false; }, 1000);
-
         }
-
-
 
         function goToSceneTuesday() {
-
             isTransitioning = true;
-
             currentScene = 3;
-
             const sceneTuesday = document.getElementById('scene-tuesday');
-
-            sceneTuesday.classList.add('active');
-
+            sceneTuesday.classList.add('active'); 
             setTimeout(() => { isTransitioning = false; }, 1000);
-
         }
-
-
 
         function goToSceneWednesday() {
-
             isTransitioning = true;
-
             currentScene = 4;
-
             const sceneWednesday = document.getElementById('scene-wednesday');
-
-            sceneWednesday.classList.add('active');
-
+            sceneWednesday.classList.add('active'); 
             setTimeout(() => { isTransitioning = false; }, 1000);
-
         }
-
-
 
         function goToSceneThursday() {
-
             isTransitioning = true;
-
             currentScene = 5;
-
             console.log("切換至星期四...");
 
-
-
             const sceneThursday = document.getElementById('scene-thursday');
-
             sceneThursday.classList.add('active'); // 顯示白色場景
-
-           
-
+            
             setTimeout(() => { isTransitioning = false; }, 1000);
-
         }
 
-
-
         // -----------------------
-
         // Step Logic
-
         // -----------------------
-
         function playNextTuesdayStep() {
-
             if(tuesdayStep < 5) {
-
                 tuesdayStep++;
-
                 isTransitioning = true;
-
                 setTimeout(() => { isTransitioning = false; }, 800);
-
-               
-
+                
                 switch(tuesdayStep) {
-
-                    case 1:
-
+                    case 1: 
                         document.getElementById('tues-title').classList.add('text-in');
-
                         setTimeout(() => { document.getElementById('tues-sub').classList.add('text-in'); }, 300);
-
                         break;
-
-                    case 2:
-
+                    case 2: 
                         document.getElementById('tues-intersac').classList.add('bg-visible');
-
                         document.getElementById('tues-mrt').classList.add('bg-visible');
-
                         break;
-
-                    case 3:
-
+                    case 3: 
                         document.getElementById('grp-grandma').classList.add('grandma-walking');
-
                         const flos = document.querySelectorAll('.obj-flo');
-
-                        setTimeout(() => { flos[0].classList.add('flo-anim'); }, 2500);
-
-                        setTimeout(() => { flos[1].classList.add('flo-anim'); }, 3000);
-
-                        setTimeout(() => { flos[2].classList.add('flo-anim'); }, 3500);
-
-                        setTimeout(() => { flos[3].classList.add('flo-anim'); }, 4000);
-
+                        setTimeout(() => { flos[0].classList.add('flo-anim'); }, 2500); 
+                        setTimeout(() => { flos[1].classList.add('flo-anim'); }, 3000); 
+                        setTimeout(() => { flos[2].classList.add('flo-anim'); }, 3500); 
+                        setTimeout(() => { flos[3].classList.add('flo-anim'); }, 4000); 
                         break;
-
-                    case 4:
-
+                    case 4: 
                         document.getElementById('grp-red').classList.add('red-enter');
-
                         break;
-
-                    case 5:
-
+                    case 5: 
                         document.getElementById('grp-dialogue').classList.add('dialogue-show');
-
                         break;
-
                 }
-
             } else {
-
                 goToSceneWednesday();
-
             }
-
         }
-
-
 
         function playNextWednesdayStep() {
-
             wednesdayStep++;
-
             isTransitioning = true;
-
-            setTimeout(() => { isTransitioning = false; }, 1000);
-
-
+            setTimeout(() => { isTransitioning = false; }, 1000); 
 
             switch(wednesdayStep) {
-
-                case 1:
-
+                case 1: 
                     document.getElementById('wed-title').classList.add('text-in');
-
                     setTimeout(() => { document.getElementById('wed-sub').classList.add('text-in'); }, 300);
-
                     break;
-
-                case 2:
-
+                case 2: 
                     const tri = document.getElementById('grp-triangle');
-
                     const holeGrp = document.getElementById('grp-hole');
-
                     tri.classList.add('wed-enter-left');
-
                     holeGrp.classList.add('wed-enter-right');
-
                     setTimeout(() => {
-
                         tri.classList.add('anim-shake-random');
-
                         holeGrp.classList.add('anim-shake-random');
-
                     }, 1000);
-
                     break;
-
-                case 3:
-
+                case 3: 
                     document.getElementById('wed-green-fall').classList.add('green-fall');
-
                     break;
-
-                case 4:
-
+                case 4: 
                     document.getElementById('wed-text-group').classList.add('fade-out-scene');
-
                     document.querySelector('.wed-obj-container').classList.add('fade-out-scene');
-
                     const blackTrans = document.getElementById('wed-black-trans');
-
-                    blackTrans.classList.add('black-rise');
-
+                    blackTrans.classList.add('black-rise'); 
                     setTimeout(() => {
-
                         document.getElementById('wed-black-bg').classList.add('bg-dark-active');
-
-                    }, 800);
-
+                    }, 800); 
                     break;
-
-                case 5:
-
+                case 5: 
                     document.getElementById('wed-final-scene').classList.add('final-active');
-
                     break;
-
             }
-
         }
-
-
 
         function playNextThursdayStep() {
-
             thursdayStep++;
-
             console.log("星期四步驟:", thursdayStep);
-
             isTransitioning = true;
-
             setTimeout(() => { isTransitioning = false; }, 800);
 
-
-
             switch(thursdayStep) {
-
                 case 1: // 文字淡入
-
                     document.getElementById('thurs-title').classList.add('text-in');
-
                     setTimeout(() => { document.getElementById('thurs-sub').classList.add('text-in'); }, 300);
-
                     break;
-
-               
-
+                
                 case 2: // 影片淡入 + 播放
-
                     const vidBox = document.getElementById('thurs-video-box');
-
                     const vid = document.getElementById('thurs-video');
-
                     vidBox.classList.add('video-in');
-
                     vid.play(); // 開始播放
-
                     break;
-
-
 
                 case 3: // 駕照掉下來
-
                     document.getElementById('thurs-license').classList.add('license-drop');
-
                     break;
-
-
 
                 case 4: // No 縮小進場
-
                     document.getElementById('thurs-no').classList.add('no-shrink');
-
                     break;
-
             }
-
         }
 
-
-
         // -----------------------
-
         // Animations
-
         // -----------------------
-
         function playMondayAnimation() {
-
             const t1 = document.getElementById('text1');
-
             const t2 = document.getElementById('text2');
-
             const left = document.getElementById('grp-left');
-
             const right = document.getElementById('grp-right');
-
             const waterGrp = document.getElementById('grp-water');
-
             const rain = document.getElementById('img-rain');
-
             const green = document.getElementById('grp-green');
-
             const car = document.getElementById('grp-car');
-
             const imgWater = document.getElementById('img-water');
-
             const imgGreen = document.getElementById('img-green');
-
             const tower = document.getElementById('btn-tower');
-
             const cold = document.getElementById('btn-cold');
 
-
-
             setTimeout(() => { t1.classList.add('text-in'); }, 100);
-
             setTimeout(() => { t2.classList.add('text-in'); }, 800);
-
             setTimeout(() => {
-
                 left.classList.add('slide-in-active');
-
                 right.classList.add('slide-in-active');
-
                 waterGrp.classList.add('slide-up-active');
-
                 tower.classList.add('anim-shake');
-
                 cold.classList.add('anim-shake');
-
             }, 1500);
-
             setTimeout(() => { rain.classList.add('rain-active'); }, 2500);
-
             setTimeout(() => { green.classList.add('green-in'); }, 3500);
-
             setTimeout(() => {
-
-                car.classList.add('car-run');
-
-               
-
+                car.classList.add('car-run'); 
+                
                 // 車子跑了 1秒後撞到水
-
                 setTimeout(() => {
-
                     // 1. 變成 water1 (碰到)
-
                     imgWater.src = "startpic/water1.png";
-
                     imgGreen.src = "startpic/green1.png";
-
-                   
-
+                    
                     // 2. 過 0.2秒 變成 water2 (濺起)
-
                     setTimeout(() => {
-
                         imgWater.src = "startpic/water2.png";
-
                         imgGreen.src = "startpic/green2.png";
 
-
-
                         // 3. 【新增】再過 0.3秒 變回 water (恢復平靜)
-
                         setTimeout(() => {
-
                             imgWater.src = "startpic/water.png";
-
                             // 如果你希望綠人被潑完水後也變回原狀，可以把下面這行的註解打開：
-
-                            // imgGreen.src = "startpic/green.png";
-
+                            // imgGreen.src = "startpic/green.png"; 
                         }, 300);
 
-
-
                     }, 200);
-
-                }, 1000);
-
+                }, 1000); 
             }, 4500);
-
         }
 
-
-
         // --- 互動邏輯：Tuesday ---
-
         const btnGreenma = document.getElementById('btn-greenma');
-
         const txtGreenma = document.getElementById('txt-greenma');
-
         const btnBag = document.getElementById('btn-bag');
-
         const txtBag = document.getElementById('txt-bag');
 
-
-
         btnGreenma.addEventListener('click', function() {
-
             txtGreenma.classList.toggle('bubble-show');
-
         });
-
         btnBag.addEventListener('click', function() {
-
             txtBag.classList.toggle('bubble-show');
-
         });
-
-
 
         // --- 互動邏輯：Wednesday ---
-
         const btnTri = document.getElementById('btn-triangle');
-
         const grpTri = document.getElementById('grp-triangle');
-
         const txtTri = document.getElementById('txt-triangle');
-
-       
-
+        
         btnTri.addEventListener('click', function() {
-
-            grpTri.classList.remove('anim-shake-random');
-
+            grpTri.classList.remove('anim-shake-random'); 
             txtTri.classList.toggle('bubble-visible');
-
         });
-
-
 
         const btnHole = document.getElementById('btn-hole');
-
         const grpHole = document.getElementById('grp-hole');
-
         const txtHole = document.getElementById('txt-hole');
-
-       
-
+        
         btnHole.addEventListener('click', function() {
-
-            grpHole.classList.remove('anim-shake-random');
-
+            grpHole.classList.remove('anim-shake-random'); 
             txtHole.classList.toggle('bubble-visible');
-
         });
-
-
 
         // 3. 聚光燈偵測 (Greenwed2)
-
         const greenSpin = document.getElementById('wed-green-spin');
-
-       
-
+        
         // 修改：只偵測是否碰到，不自動跳轉
-
         greenSpin.addEventListener('mouseenter', function() {
-
             if(wednesdayStep >= 5) {
-
                 isHoveringGreen = true;
-
                 console.log("Mouse over Green! Scroll to expand spotlight.");
-
             }
-
         });
-
-       
-
+        
         // 離開時取消 (可選，看你要不要強制滑鼠一定要在上面才能滾)
-
         greenSpin.addEventListener('mouseleave', function() {
-
             // isHoveringGreen = false; // 如果你想讓使用者隨便放都能滾，就註解掉這行
-
         });
-
-
 
     </script>
-
 </body>
-
 </html>
