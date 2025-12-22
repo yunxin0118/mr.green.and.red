@@ -164,7 +164,8 @@
             height: 100%;
             background-image: url('startpic/start.png');
             background-size: 100%; 
-            background-position: center bottom; 
+            background-position: center -130px; 
+
             background-repeat: no-repeat;
             transition: transform 0.8s ease, opacity 0.8s ease;
             z-index: 10;
@@ -334,25 +335,19 @@
             opacity: 0;
             transform: translateX(50px); 
             transition: all 1s ease;
-            z-index: 7; /* 【修改】原本是 6，改成 7，讓它在車子上面 */
+            z-index: 7;
         }
         .obj-green { width: 100%; }
         .green-in { opacity: 1; transform: translateX(0); }
 
-        /* --- 修改這段：車子方向與圖層 --- */
         .car-container-monday {
             position: absolute;
             bottom: 40px;
             left: 100vw; 
             width: 250px;
-            z-index: 6; /* 【修改】原本是 7，改成 6，讓它在小綠人下面 */
+            z-index: 6;
         }
-        
-        /* 【修改】移除 transform: scaleX(-1) 讓車子恢復原圖方向 */
-        .obj-car-monday { 
-            width: 100%; 
-            /* transform: scaleX(-1);  <-- 這行刪掉 */
-        }
+        .obj-car-monday { width: 100%; }
 
         @keyframes carDriveBy {
             0% { left: 110vw; }
@@ -663,22 +658,20 @@
             margin-top: -50px;
             margin-left: -50px;
             animation: spin 5s linear infinite;
-            z-index: 52; /* 確保在 spotlight 之下，但也很高 */
+            z-index: 52; 
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* 【新增】過場用的 spotlight 圖片 */
         #wed-expand-spotlight {
             position: absolute;
             top: 50%;
-            left: 30%; /* 必須跟 greenwed2 對齊 */
-            width: 230px; /* 初始大小跟 greenwed2 差不多 */
+            left: 30%;
+            width: 230px;
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
-            z-index: 55; /* 蓋在綠人上面 */
+            z-index: 55;
             pointer-events: none;
-            transition: opacity 0.5s ease; /* 淡入效果 */
-            /* Scale 的動畫由 JS 控制，不需要 transition，這樣滾動才跟手 */
+            transition: opacity 0.5s ease;
         }
 
         .float-num {
@@ -693,33 +686,31 @@
         }
         .float-anim { animation: float 6s ease-in-out infinite; }
 
-        /* === 場景 5：Thursday 樣式 (新增) === */
+        /* === 場景 5：Thursday 樣式 === */
         #scene-thursday {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #ffffff; /* 白底 */
-            z-index: 70; /* 最高層 */
+            background-color: #ffffff;
+            z-index: 70; 
             opacity: 0;
             pointer-events: none;
             transition: opacity 1.5s ease;
             display: flex;
             justify-content: center;
-            align-items: center; /* 讓文字影片置中 */
+            align-items: center; 
             overflow: hidden;
             font-family: 'Cubic', sans-serif;
         }
 
-        /* 啟動 Scene 5 */
         #scene-thursday.active {
             opacity: 1;
             pointer-events: auto;
-            cursor: default; /* 恢復預設滑鼠 */
+            cursor: default; 
         }
 
-        /* 文字群組 (沿用樣式並微調) */
         #thurs-text-group {
             position: absolute;
             top: 15%;
@@ -729,10 +720,9 @@
             z-index: 80;
         }
         
-        /* 影片容器 */
         .video-container {
-            width: 80%; /* 設定佔據畫面的百分比，例如 80% */
-            max-width: none; /* 【修改這裡】移除最大寬度限制 */
+            width: 90%;
+            max-width: 1400px;
             opacity: 0;
             transform: scale(0.9);
             transition: all 1.5s ease;
@@ -741,10 +731,9 @@
         .video-container video { width: 100%; height: auto; }
         .video-in { opacity: 1; transform: scale(1); }
 
-        /* 駕照圖片 */
         #thurs-license {
             position: absolute;
-            top: -100%; /* 初始在上面外面 */
+            top: -100%; 
             left: 50%;
             transform: translateX(-50%);
             width: 400px;
@@ -753,20 +742,249 @@
         }
         .license-drop { top: 30% !important; }
 
-        /* 禁止標誌 */
         #thurs-no {
             position: absolute;
             top: 95%;
             left: 65%;
             width: 100px;
-            margin-left: -200px; /* 置中修正 */
+            margin-left: -200px;
             margin-top: -200px;
-            transform: scale(5); /* 初始巨大 */
+            transform: scale(5); 
             opacity: 0;
             transition: all 1s ease-in;
             z-index: 90;
         }
         .no-shrink { transform: scale(1) !important; opacity: 1 !important; }
+
+        /* === 場景 6：Friday 樣式 (新增) === */
+        #scene-friday {
+            position: absolute;
+            top: 0;
+            left: 100%; 
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            z-index: 80; /* 比 Thursday 高 */
+            transition: transform 1s ease;
+            overflow: hidden;
+            font-family: 'Cubic', sans-serif;
+        }
+        
+        #scene-friday.active {
+            transform: translateX(-100%); /* 滑入 */
+        }
+        
+        /* 樹葉遮罩 */
+        .leaf-mask {
+            position: absolute;
+            width: 60%; 
+            height: auto;
+            z-index: 10;
+            opacity: 1;
+            /* 使用 transform 讓移動更絲滑 */
+            transition: transform 2s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.5s ease;
+        }
+        /* 初始位置：四個角落 (預設狀態) */
+        #leaf1 { top: -60%; left: -60%; transform: rotate(0deg); }
+        #leaf2 { top: -60%; right: -60%; transform: rotate(90deg); }
+        #leaf3 { bottom: -60%; left: -60%; transform: rotate(-90deg); }
+        #leaf4 { bottom: -60%; right: -60%; transform: rotate(180deg); }
+
+        /* 聚攏遮住畫面 (跑到中間) */
+        .leaf-center {
+            top: 50% !important;
+            left: 50% !important;
+            right: auto !important;
+            bottom: auto !important;
+            transform: translate(-50%, -50%) scale(1.6) rotate(360deg) !important;
+        }
+
+        /* 散開跑出去 (比初始更遠) */
+        .leaf-fly-out {
+            transition: transform 1.5s ease-in;
+        }
+        #leaf1.leaf-fly-out { transform: translate(-100vw, -100vh) rotate(-45deg) !important; }
+        #leaf2.leaf-fly-out { transform: translate(100vw, -100vh) rotate(135deg) !important; }
+        #leaf3.leaf-fly-out { transform: translate(-100vw, 100vh) rotate(-135deg) !important; }
+        #leaf4.leaf-fly-out { transform: translate(100vw, 100vh) rotate(225deg) !important; }
+
+        /* 隱藏 (淡出) */
+        .leaf-hide {
+            opacity: 0 !important; 
+            pointer-events: none;
+        }
+
+        /* Leaf 背景圖層 */
+        #fri-bg-leaf {
+            position: absolute;
+            /* --- 1. 水平置中設定 --- */
+            left: 50%;
+            transform: translateX(-50%);
+
+            /* --- 2. 位置上去一點 --- */
+            /* 數值越小越靠上，甚至可以是負數 (例如 -50px) */
+            top: -10%; 
+            width: 100%;  /* 原本 80%，改小 */
+            height: 120%; /* 原本 100%，改小，避免太長 */
+            
+            background-image: url('startpic/leaf.png');
+            background-size: cover;
+            opacity: 0;
+            z-index: 8; 
+            transition: opacity 0.8s ease;
+        }
+        .bg-show { opacity: 1 !important; }
+
+        /* 互動花朵 */
+        .fri-flower {
+            position: absolute;
+            width: 50px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 15;
+            transition: opacity 1s ease;
+        }
+        #fl1 { top: 30%; left: 20%; }
+        #fl2 { top: 17%; right: 15%; }
+        #fl3 { top: 75%; left: 20%; }
+        #fl4 { bottom: 16%; right: 20%; }
+        
+        .fl-show { opacity: 1; }
+
+        #fri-fltext {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            opacity: 0;
+            z-index: 20;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        /* 右側文字 Word1 */
+        #fri-word {
+            position: absolute;
+            
+            /* --- 1. 垂直置中 (Vertical Center) --- */
+            top: 20%;
+            /* translateY(-50%) 會讓它以自身高度的一半往回拉，達成精準垂直置中 */
+            transform: translateY(-50%);
+
+            /* --- 2. 初始位置 (動畫開始前) --- */
+            /* 把它放在右邊螢幕外面，這樣等下會有滑入的效果 */
+            /* 修正：原本是用 left，現在統一用 right 避免衝突 */
+            right: -300px; 
+
+            width: 200px;
+            opacity: 0;
+            transition: all 1s ease;
+            z-index: 18;
+        }
+
+        .word-in { 
+            opacity: 1 !important; 
+            
+            /* --- 3. 進場後的位置 (靠右一點) --- */
+            /* 20% 代表距離右邊邊緣 20% 的距離 */
+            /* 如果覺得太右邊，把 20% 改大 (例如 30%) */
+            /* 如果覺得不夠右邊，把 20% 改小 (例如 10%) */
+            right: 30% !important; 
+        }
+
+        /* Friday 背景 */
+        #fri-bg-final {
+            position: absolute;
+            
+            /* --- 1. 水平置中設定 --- */
+            left: 50%;
+            transform: translateX(-50%);
+
+            /* --- 2. 位置上去一點 --- */
+            /* 數值越小越靠上，甚至可以是負數 (例如 -50px) */
+            top: -22%; 
+
+            /* --- 3. 圖片小一點 --- */
+            width: 100%;  /* 原本 80%，改小 */
+            height: 140%; /* 原本 100%，改小，避免太長 */
+
+            /* --- 4. 圖片顯示方式 --- */
+            background-image: url('startpic/friday.png');
+            /* 建議用 contain：確保整張圖完整顯示不變形 */
+            /* 如果你想要填滿框框但切掉邊緣，請改回 'cover' */
+            background-size: contain; 
+            background-repeat: no-repeat; /* 不重複 */
+            background-position: center top; /* 圖片在容器內靠上置中 */
+
+            /* --- 5. 動畫設定 --- */
+            opacity: 0;
+            z-index: 25;
+            transition: opacity 1s ease;
+        }
+
+        /* 禁止車與樓梯 */
+        #fri-nocar {
+            position: absolute;
+            bottom: 8%;
+            left: 40%;
+            width: 80px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 30;
+        }
+        #fri-stair {
+            position: absolute;
+            bottom: -10%;
+            right: 18%;
+            width: 800px;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 30;
+        }
+        .obj-fade-in { opacity: 1 !important; }
+
+        /* 機車 Motor 1-4 */
+        .fri-motor {
+            position: absolute;
+            bottom: 8%;
+            width: 75px;
+            opacity: 0;
+            z-index: 28;
+            transition: opacity 0.5s ease;
+        }
+        #motor4 { left: 47%; }
+        #motor3 { left: 52%; }
+        #motor2 { left: 57%; }
+        #motor1 { left: 62%; }
+
+        /* 灰色簾幕 Gray -> Allgray */
+        #fri-gray-curtain {
+            position: absolute;
+            top: -150%;
+            left: 0;
+            width: 100%;
+            height: 140%;
+            background-image: url('startpic/gray.png');
+            background-size: cover;
+            z-index: 40;
+            transition: top 2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .curtain-down { top: 0 !important; }
+        
+        #fri-allgray {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('startpic/allgray.png');
+            background-size: cover;
+            opacity: 0;
+            z-index: 41;
+            transition: opacity 1.5s ease;
+            pointer-events: none;
+        }
 
     </style>
 </head>
@@ -814,11 +1032,11 @@
                 <img src="startpic/water.png" class="obj-water" id="img-water">
             </div>
             <img src="startpic/rain.png" class="obj-rain" id="img-rain">
-            <div class="car-container-monday" id="grp-car">
-                <img src="startpic/car.png" class="obj-car-monday">
-            </div>
             <div class="green-man-container" id="grp-green">
                 <img src="startpic/green.png" class="obj-green" id="img-green">
+            </div>
+            <div class="car-container-monday" id="grp-car">
+                <img src="startpic/car.png" class="obj-car-monday">
             </div>
         </div>
 
@@ -879,9 +1097,7 @@
 
             <div class="final-dark-scene" id="wed-final-scene">
                 <img src="startpic/spotlight.png" id="wed-expand-spotlight">
-
                 <img src="startpic/greenwed2.png" class="obj-greenwed2" id="wed-green-spin">
-                
                 <img src="startpic/1.png" class="float-num float-anim" style="top:20%; left:10%; width: 50px; animation-delay:0s;">
                 <img src="startpic/2.png" class="float-num float-anim" style="top:70%; left:15%; width: 50px; animation-delay:1s;">
                 <img src="startpic/3.png" class="float-num float-anim" style="top:40%; left:25%; width: 30px; animation-delay:2s;">
@@ -900,13 +1116,42 @@
                 <div class="title-text" id="thurs-title">星期四</div>
                 <div class="sub-text" id="thurs-sub">考到駕照的第一天.......</div>
             </div>
-            
             <div class="video-container" id="thurs-video-box">
                 <video id="thurs-video" src="startpic/car.mp4" muted loop playsinline></video>
             </div>
-
             <img src="startpic/license.png" id="thurs-license">
             <img src="startpic/no.png" id="thurs-no">
+        </div>
+
+        <div id="scene-friday">
+            
+            <img src="startpic/leaf1.png" class="leaf-mask" id="leaf1">
+            <img src="startpic/leaf2.png" class="leaf-mask" id="leaf2">
+            <img src="startpic/leaf3.png" class="leaf-mask" id="leaf3">
+            <img src="startpic/leaf4.png" class="leaf-mask" id="leaf4">
+
+            <div id="fri-bg-leaf"></div>
+
+            <img src="startpic/fl1.png" class="fri-flower anim-shake-random" id="fl1">
+            <img src="startpic/fl2.png" class="fri-flower anim-shake-random" id="fl2">
+            <img src="startpic/fl3.png" class="fri-flower anim-shake-random" id="fl3">
+            <img src="startpic/fl4.png" class="fri-flower anim-shake-random" id="fl4">
+            <img src="startpic/fltext.png" id="fri-fltext"> 
+
+            <img src="startpic/word1.png" id="fri-word">
+
+            <div id="fri-bg-final"></div>
+
+            <img src="startpic/nocar.png" class="anim-shake-random" id="fri-nocar">
+
+            <img src="startpic/motor1.png" class="fri-motor" id="motor1">
+            <img src="startpic/motor2.png" class="fri-motor" id="motor2">
+            <img src="startpic/motor3.png" class="fri-motor" id="motor3">
+            <img src="startpic/motor4.png" class="fri-motor" id="motor4">
+
+            <div id="fri-gray-curtain"></div>
+            <div id="fri-allgray"></div>
+
         </div>
 
     </div>
@@ -947,65 +1192,51 @@
         let currentScene = 1; 
         let isTransitioning = false; 
 
-        // 步驟計數器
         let tuesdayStep = 0; 
         let wednesdayStep = 0;
-        let thursdayStep = 0; // 新增
+        let thursdayStep = 0;
+        let fridayStep = 0; // Initialize at 0
 
-        // 轉場控制變數 (Wednesday -> Thursday)
-        let isHoveringGreen = false; // 是否碰到綠人
-        let wedSpotlightScale = 0;   // 聚光燈放大比例
+        let isHoveringGreen = false; 
+        let wedSpotlightScale = 0;   
         let spotlightImg = document.getElementById('wed-expand-spotlight');
 
         window.addEventListener('wheel', (e) => {
             if (isTransitioning) return;
 
-            // 往下捲動 (deltaY > 0)
             if (e.deltaY > 0) {
-                if (currentScene === 1) {
-                    goToSceneMonday();
-                }
-                else if (currentScene === 2) {
-                    goToSceneTuesday();
-                }
-                else if (currentScene === 3) {
-                    playNextTuesdayStep();
-                }
+                if (currentScene === 1) { goToSceneMonday(); }
+                else if (currentScene === 2) { goToSceneTuesday(); }
+                else if (currentScene === 3) { playNextTuesdayStep(); }
                 else if (currentScene === 4) {
-                    // 如果還沒跑完星期三的流程
-                    if (wednesdayStep < 5) {
-                        playNextWednesdayStep();
-                    } 
-                    // 如果跑完了，且滑鼠碰到了綠人 -> 進入放大轉場模式
-                    else if (isHoveringGreen) {
-                        handleSpotlightExpand();
-                    }
+                    if (wednesdayStep < 5) { playNextWednesdayStep(); } 
+                    else if (isHoveringGreen) { handleSpotlightExpand(); }
                 }
                 else if (currentScene === 5) {
-                    playNextThursdayStep();
+                    if (thursdayStep < 4) {
+                        playNextThursdayStep();
+                    } else {
+                        goToSceneFriday();
+                    }
+                }
+                else if (currentScene === 6) {
+                    playNextFridayStep();
                 }
             }
         });
 
         // -----------------------
-        // Spotlight Expansion Logic (New)
+        // Spotlight Expansion
         // -----------------------
         function handleSpotlightExpand() {
-            // 階段 1: 淡入
             if (getComputedStyle(spotlightImg).opacity == 0) {
                 spotlightImg.style.opacity = 1;
                 spotlightImg.style.transform = `translate(-50%, -50%) scale(1)`;
                 wedSpotlightScale = 1;
-                console.log("Spotlight 淡入");
-            } 
-            // 階段 2: 放大
-            else {
-                wedSpotlightScale += 5; // 每次滾動加大的幅度
+            } else {
+                wedSpotlightScale += 5; 
                 spotlightImg.style.transform = `translate(-50%, -50%) scale(${wedSpotlightScale})`;
-                console.log("Spotlight 放大中:", wedSpotlightScale);
-
-                // 階段 3: 夠大時切換場景
-                if (wedSpotlightScale > 40) { // 放大到蓋滿畫面 (視情況調整數值)
+                if (wedSpotlightScale > 40) { 
                     goToSceneThursday();
                 }
             }
@@ -1044,11 +1275,24 @@
         function goToSceneThursday() {
             isTransitioning = true;
             currentScene = 5;
-            console.log("切換至星期四...");
-
             const sceneThursday = document.getElementById('scene-thursday');
-            sceneThursday.classList.add('active'); // 顯示白色場景
+            sceneThursday.classList.add('active');
+            setTimeout(() => { isTransitioning = false; }, 1000);
+        }
+
+        function goToSceneFriday() {
+            isTransitioning = true;
+            currentScene = 6;
+            console.log("切換至星期五...");
+
+            const sceneFriday = document.getElementById('scene-friday');
+            sceneFriday.classList.add('active'); 
             
+            // 自動觸發第一步 (葉子飛入)
+            setTimeout(() => {
+                playNextFridayStep();
+            }, 800); // 稍微等待場景滑入
+
             setTimeout(() => { isTransitioning = false; }, 1000);
         }
 
@@ -1130,29 +1374,96 @@
 
         function playNextThursdayStep() {
             thursdayStep++;
-            console.log("星期四步驟:", thursdayStep);
             isTransitioning = true;
             setTimeout(() => { isTransitioning = false; }, 800);
 
             switch(thursdayStep) {
-                case 1: // 文字淡入
+                case 1: 
                     document.getElementById('thurs-title').classList.add('text-in');
                     setTimeout(() => { document.getElementById('thurs-sub').classList.add('text-in'); }, 300);
                     break;
-                
-                case 2: // 影片淡入 + 播放
+                case 2: 
                     const vidBox = document.getElementById('thurs-video-box');
                     const vid = document.getElementById('thurs-video');
                     vidBox.classList.add('video-in');
-                    vid.play(); // 開始播放
+                    vid.play(); 
                     break;
-
-                case 3: // 駕照掉下來
+                case 3: 
                     document.getElementById('thurs-license').classList.add('license-drop');
                     break;
-
-                case 4: // No 縮小進場
+                case 4: 
                     document.getElementById('thurs-no').classList.add('no-shrink');
+                    break;
+            }
+        }
+
+        function playNextFridayStep() {
+            fridayStep++;
+            isTransitioning = true;
+            setTimeout(() => { isTransitioning = false; }, 1000);
+
+            switch(fridayStep) {
+                case 1: 
+                    // 自動觸發：葉子從角落飛入聚攏
+                    const leaves = document.querySelectorAll('.leaf-mask');
+                    leaves.forEach(l => l.classList.add('leaf-center'));
+                    break;
+
+                case 2: 
+                    // 背景切換 leaf.png，葉子消失(reset)
+                    document.getElementById('fri-bg-leaf').classList.add('bg-show');
+                    
+                    const leavesToHide = document.querySelectorAll('.leaf-mask');
+                    leavesToHide.forEach(l => {
+                        l.classList.add('leaf-hide'); // 淡出
+                        // 移除聚攏樣式，讓它偷偷回到角落
+                        l.classList.remove('leaf-center'); 
+                    });
+
+                    const flowers = document.querySelectorAll('.fri-flower');
+                    flowers.forEach(f => f.classList.add('fl-show'));
+                    break;
+
+                case 3: 
+                    // Word1 淡入
+                    document.getElementById('fri-word').classList.add('word-in');
+                    break;
+
+                case 4: 
+                    // 葉子再次出現並聚攏 (遮住畫面)
+                    const leavesReappear = document.querySelectorAll('.leaf-mask');
+                    leavesReappear.forEach(l => {
+                        l.classList.remove('leaf-hide'); // 移除隱藏
+                        l.classList.add('leaf-center');  // 再次聚攏
+                    });
+                    break;
+
+                case 5: 
+                    // 葉子飛出散開，背景切換 Friday
+                    const leavesAway = document.querySelectorAll('.leaf-mask');
+                    leavesAway.forEach(l => {
+                        l.classList.remove('leaf-center'); // 移除聚攏
+                        l.classList.add('leaf-fly-out');   // 飛到更遠的地方
+                    });
+                    
+                    document.getElementById('fri-bg-final').classList.add('bg-show');
+                    document.getElementById('fri-nocar').classList.add('obj-fade-in');
+                    document.getElementById('fri-stair').classList.add('obj-fade-in');
+                    break;
+
+                case 6: 
+                    setTimeout(() => { document.getElementById('motor1').classList.add('obj-fade-in'); }, 100);
+                    setTimeout(() => { document.getElementById('motor2').classList.add('obj-fade-in'); }, 400);
+                    setTimeout(() => { document.getElementById('motor3').classList.add('obj-fade-in'); }, 700);
+                    setTimeout(() => { document.getElementById('motor4').classList.add('obj-fade-in'); }, 1000);
+                    break;
+
+                case 7: 
+                    document.getElementById('fri-gray-curtain').classList.add('curtain-down');
+                    break;
+
+                case 8: 
+                    document.getElementById('fri-allgray').classList.add('bg-show');
                     break;
             }
         }
@@ -1187,25 +1498,15 @@
             setTimeout(() => { green.classList.add('green-in'); }, 3500);
             setTimeout(() => {
                 car.classList.add('car-run'); 
-                
-                // 車子跑了 1秒後撞到水
                 setTimeout(() => {
-                    // 1. 變成 water1 (碰到)
                     imgWater.src = "startpic/water1.png";
                     imgGreen.src = "startpic/green1.png";
-                    
-                    // 2. 過 0.2秒 變成 water2 (濺起)
                     setTimeout(() => {
                         imgWater.src = "startpic/water2.png";
                         imgGreen.src = "startpic/green2.png";
-
-                        // 3. 【新增】再過 0.3秒 變回 water (恢復平靜)
                         setTimeout(() => {
                             imgWater.src = "startpic/water.png";
-                            // 如果你希望綠人被潑完水後也變回原狀，可以把下面這行的註解打開：
-                            // imgGreen.src = "startpic/green.png"; 
                         }, 300);
-
                     }, 200);
                 }, 1000); 
             }, 4500);
@@ -1243,20 +1544,31 @@
             txtHole.classList.toggle('bubble-visible');
         });
 
-        // 3. 聚光燈偵測 (Greenwed2)
         const greenSpin = document.getElementById('wed-green-spin');
         
-        // 修改：只偵測是否碰到，不自動跳轉
         greenSpin.addEventListener('mouseenter', function() {
             if(wednesdayStep >= 5) {
                 isHoveringGreen = true;
                 console.log("Mouse over Green! Scroll to expand spotlight.");
             }
         });
+        greenSpin.addEventListener('mouseleave', function() { });
+
+        // --- 互動邏輯：Friday ---
+        const flowers = document.querySelectorAll('.fri-flower');
+        const flText = document.getElementById('fri-fltext');
         
-        // 離開時取消 (可選，看你要不要強制滑鼠一定要在上面才能滾)
-        greenSpin.addEventListener('mouseleave', function() {
-            // isHoveringGreen = false; // 如果你想讓使用者隨便放都能滾，就註解掉這行
+        flowers.forEach(f => {
+            f.addEventListener('click', function() {
+                flText.style.opacity = (flText.style.opacity == 1) ? 0 : 1;
+            });
+        });
+
+        document.getElementById('fri-nocar').addEventListener('click', function(){
+            this.classList.remove('anim-shake-random');
+        });
+        document.getElementById('fri-stair').addEventListener('click', function(){
+            this.classList.remove('anim-shake-random');
         });
 
     </script>
