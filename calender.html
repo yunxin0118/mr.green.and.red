@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Story - Mr. Green & Red</title>
+    <style>
+        /* --- 1. 字體設定 --- */
+        @font-face {
+            font-family: 'Cubic';
+            src: url('Cubic_11.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff; 
+            font-family: 'Cubic', sans-serif;
+            color: #333;
+            padding-top: 80px; 
+            overflow-x: hidden; 
+        }
+
+        /* --- Header (保持不變) --- */
+        .ui-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;       
+            background-color: #ffffff; 
+            border-bottom: 2px solid #333; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center; 
+            padding: 0 40px;     
+            z-index: 1000;
+        }
+        .home-btn { display: block; width: 50px; height: 50px; transition: transform 0.2s; }
+        .home-btn img { width: 100%; height: 100%; object-fit: contain; }
+        .home-btn:hover { transform: scale(1.1); }
+        .menu-container { position: relative; }
+        .hamburger-icon { width: 35px; height: 30px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
+        .lines-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: opacity 0.2s; }
+        .lines-wrapper span { display: block; width: 100%; height: 4px; background-color: #333; border-radius: 4px; }
+        .hover-img { width: 150%; height: 150%; object-fit: contain; display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .hamburger-icon:hover .lines-wrapper, .menu-container.active .hamburger-icon .lines-wrapper { display: none; }
+        .hamburger-icon:hover .hover-img, .menu-container.active .hamburger-icon .hover-img { display: block; }
+        .menu-list { position: absolute; top: 60px; right: 0; background-color: #ffffff; border: 2px solid #333; border-radius: 8px; width: 140px; display: none; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 1001; }
+        .menu-list.show { display: flex; }
+        .menu-list a { text-decoration: none; color: #333; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 18px; transition: background 0.2s; }
+        .menu-list a:last-child { border-bottom: none; }
+        .menu-list a:hover { background-color: #f0f0f0; color: #000; }
+
+        /* --- Hero Banner --- */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            min-height: calc(100vh - 80px);
+            background-color: #ffffff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 50px;
+        }
+        .content-container { width: 100%; max-width: 1200px; display: flex; align-items: center; justify-content: center; gap: 80px; }
+        .hero-logo { flex: 1; display: flex; justify-content: flex-start; padding-left: 120px; }
+        .hero-logo img { width: 100%; max-width: 300px; height: auto; object-fit: contain; }
+        .hero-text { flex: 1; text-align: left; color: #000; transform: translateX(-80px); }
+        .hero-text h1 { font-size: 20px; margin-bottom: 40px; font-weight: bold; letter-spacing: 2px; }
+        .hero-text p { font-size: 14px; line-height: 2; margin-bottom: 25px; text-align: justify; }
+        .hero-tags { margin-top: 30px; font-size: 14px; font-weight: bold; color: #009966; }
+
+        /* 固定角色 (Mr. Green) */
+        #fixed-green {
+            position: absolute; 
+            bottom: -150px; 
+            right: 80px; 
+            width: 250px;
+            z-index: 10; /* 不需要太高，只要在背景之上 */
+        }
+
+        /* --- 共用 Story Section 樣式 --- */
+        .story-section {
+            position: relative;
+            width: 100%;
+            padding: 100px 50px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        /* 左邊 Story 3 */
+        #story3-img {
+            /* 1. 調整大小 */
+            width: 40%;       /* 原本是 100%，改小讓它變精緻 (可自行改 70%, 90%) */
+            display: block;   /* 確保縮小後可以置中 */
+            margin: 0 auto;   /* 讓縮小的圖片在框框內置中 */
+
+            /* 2. 調整位置 */
+            margin-top: 0px;  /* 往下移 (負數 e.g. -30px 為往上移) */
+            
+            /* 3. 初始動畫位置 (保持不變) */
+            transform: translateX(-100px); 
+        }
+
+        /* 右邊 Story 4 */
+        #story4-img {
+            width: 80%;       /* 調整大小 */
+            display: block;   
+            margin: 0 auto;   
+
+            margin-top: 50px; /* 範例：讓右邊這張圖比左邊低一點，製造錯落感 */
+            margin-left: -30px;
+            
+            transform: translateX(100px); /* 保持動畫初始位置 */
+        }
+
+
+        /* === 這一區是 Story 5 & 6 (結尾區) === */
+
+        /* 左邊 Story 5 */
+        #story5-img {
+            width: 80%;       /* 這張我想大一點 */
+            display: block;
+            margin: 0 auto;
+
+            margin-top: -20px; /* 稍微往上提一點 */
+            margin-right: -20px;
+            
+            transform: translateX(-100px);
+        }
+
+        /* 右邊 Story 6 */
+        #story6-img {
+            width: 30%;
+            display: block;
+            margin: 0 auto;
+
+            margin-top: 20px;  /* 稍微往下 */
+            margin-left: 0px;
+            
+            transform: translateX(100px);
+        }
+
+        /* 第一段：灰色背景 (只有第一段需要大的 padding-top 來避開上面的綠人) */
+        .bg-gray-intro {
+            background-image: url('secpic/gray.png');
+            background-size: cover;
+            background-position: top center;
+            background-repeat: no-repeat;
+            padding-top: 350px; 
+        }
+
+        /* 白色背景 */
+        .bg-white {
+            background-color: #ffffff;
+        }
+
+        .story-row {
+            display: flex;           
+            justify-content: center; 
+            align-items: flex-start; 
+            gap: 80px;               
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative; 
+            z-index: 2; 
+        }
+
+        .story-img-box {
+            flex: 1; 
+            max-width: 500px; 
+        }
+
+        .story-img {
+            width: 100%;
+            height: auto;
+            opacity: 0; 
+            transition: all 1s ease-out;
+        }
+
+        /* --- 角色過場區塊 (green1) --- */
+        .interlude-section {
+            width: 100%;
+            padding: 80px 0;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .green-character {
+            width: 1050px; /* 大小可調 */
+            height: auto;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+        .green-character.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- 頁尾連結區塊 (Footer) --- */
+        .footer-section {
+            position: relative;
+            width: 100%;
+            
+            /* 【修改重點】加大上方的 padding (第一個數字) */
+            /* 原本是 100px，改大到 400px (或更大)，讓整個區塊往下移，騰出空間給大圖 */
+            padding: 400px 20px 250px 20px; 
+            
+            background-color: #ffffff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            /* 確保背景色延伸，蓋住可能超出的部分 (雖然現在背景都是白色沒差，但這是好習慣) */
+            z-index: 5; 
+        }
+
+        #green2-img {
+            /* 改為絕對定位，強制黏在底部 */
+            position: absolute; 
+            bottom: 0; /* 貼齊底部 */
+            left: 50%;
+            transform: translateX(-50%) scale(0.8); /* 水平置中 + 初始縮小 */
+            
+            width: 1280px;
+            /* margin-bottom 刪除，因為用 absolute 了 */
+            opacity: 0;
+            transition: all 0.8s ease;
+            z-index: 0; /* 放在底層，以免擋住連結 */
+        }
+        
+        /* 啟動狀態：維持水平置中，比例回覆 */
+        #green2-img.active { 
+            opacity: 1; 
+            transform: translateX(-50%) scale(1); 
+        }
+
+        .social-links {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+
+            /* --- 這裡控制位置 --- */
+            /* 範例：整體往下移 30px */
+            
+            transform: translateX(200px);
+            transform: translateY(230px);
+            
+            /* 【方法 B：位移法 (推薦)】 */
+            /* 第二個數字控制垂直：負數往上，正數往下 */
+            /* 例如：往下移 20px */
+            /* transform: translateY(20px); */
+        }
+
+        .social-icon {
+            width: 30px;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- 動畫效果 --- */
+        /* 左滑入 */
+        .slide-left { transform: translateX(-100px); }
+        .slide-left.active { opacity: 1; transform: translateX(0); }
+
+        /* 右滑入 */
+        .slide-right { transform: translateX(100px); }
+        .slide-right.active { opacity: 1; transform: translateX(0); }
+
+        /* 手機版 RWD */
+        @media (max-width: 900px) {
+            .content-container { flex-direction: column; text-align: center; gap: 40px; }
+            .hero-logo { justify-content: center; padding-left: 0; }
+            .hero-text { text-align: center; padding: 0 20px; transform: none; }
+            .hero-text p { text-align: left; }
+            
+            .story-row { flex-direction: column; gap: 40px;}
+            
+            #fixed-green { width: 100px; right: 10px; } 
+            
+            .bg-gray-intro { padding-top: 150px; } 
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ui-header">
+        <a href="index.html?skip=true" class="home-btn"><img src="firstpic/home.png" alt="Home"></a>
+        <div class="menu-container" id="menuContainer">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+                <div class="lines-wrapper"><span></span><span></span><span></span></div>
+                <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
+            </div>
+            <div class="menu-list" id="menuList">
+                <a href="bookri.html">關於</a><a href="#">周邊</a><a href="#">活動</a><a href="calender.html">品牌</a><a href="computer.html">地圖</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-section">
+        <div class="content-container">
+            <div class="hero-logo"><img src="secpic/logo.png" alt="Logo"></div>
+            <div class="hero-text">
+                <h1>品牌緣起</h1>
+                <p>《格林先生》誕生於台灣街頭的紅綠燈之間。靜止的小紅人與行進的小綠人陪伴我們度過無數個街口時刻，也映照出城市的節奏與人們的生活步調。</p>
+                <p>我們將這兩個熟悉轉化為角色 - 格林先生與瑞德先生，展開關於他們的都市故事。<br>這不只是紅綠燈的故事，更是屬於台灣街頭的溫柔節奏。</p>
+                <div class="hero-tags">#交通號誌 #地方文化 #品牌塑造</div>
+            </div>
+        </div>
+        <img src="secpic/green.png" id="fixed-green" alt="Mr. Green">
+    </div>
+
+    <div class="story-section bg-gray-intro">  
+        <div class="story-row">
+            <div class="story-img-box">
+                <img src="secpic/story1.png" class="story-img slide-left" id="story1-img" alt="Story 1">
+            </div>
+            <div class="story-img-box">
+                <img src="secpic/story2.png" class="story-img slide-right" id="story2-img" alt="Story 2">
+            </div>
+        </div>
+    </div>
+
+    <div class="story-section bg-white">
+        <div class="story-row" style="gap: 0px;">
+            <div class="story-img-box">
+                <img src="secpic/story3.png" class="story-img slide-left" id="story3-img" alt="Story 3">
+            </div>
+            
+            <div class="story-img-box">
+                <img src="secpic/story4.png" class="story-img slide-right" id="story4-img" alt="Story 4">
+            </div>
+        </div>
+    </div>
+
+    <div class="interlude-section">
+        <img src="secpic/green1.png" class="green-character" id="green1-img" alt="Mr. Green Walking">
+    </div>
+
+    <div class="story-section bg-white">
+        <div class="story-row" style="gap: 100px;">
+            <div class="story-img-box">
+                <img src="secpic/story5.png" class="story-img slide-left" id="story5-img" alt="Story 5">
+            </div>
+            <div class="story-img-box">
+                <img src="secpic/story6.png" class="story-img slide-right" id="story6-img" alt="Story 6">
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-section">
+        <img src="secpic/green2.png" id="green2-img" alt="Mr. Green Ending">
+        
+        <div class="social-links">
+            <a href="https://instagram.com" target="_blank">
+                <img src="secpic/insta.png" class="social-icon" alt="Instagram">
+            </a>
+            <a href="https://threads.net" target="_blank">
+                <img src="secpic/threa.png" class="social-icon" alt="Threads">
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('menuList').classList.toggle('show');
+            document.getElementById('menuContainer').classList.toggle('active');
+        }
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('menuContainer').contains(e.target)) {
+                document.getElementById('menuList').classList.remove('show');
+                document.getElementById('menuContainer').classList.remove('active');
+            }
+        });
+
+        // --- 捲動觸發動畫邏輯 ---
+        window.addEventListener('scroll', revealOnScroll);
+
+        function revealOnScroll() {
+            const windowHeight = window.innerHeight;
+            // 設定觸發點：元素頂部進入視窗下方 150px 時觸發
+            const revealPoint = 150;
+
+            // 取得所有需要動畫的元素 ID
+            const animElementIds = [
+                'story1-img', 'story2-img',
+                'story3-img', 'story4-img',
+                'green1-img',
+                'story5-img', 'story6-img',
+                'green2-img'
+            ];
+
+            animElementIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { // 確保元素存在才執行
+                    const elementTop = el.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - revealPoint) {
+                        el.classList.add('active');
+                    }
+                }
+            });
+        }
+        
+        // 頁面載入時先執行一次，確保重新整理時在視野內的元素會顯示
+        revealOnScroll();
+    </script>
+
+</body>
+</html>
