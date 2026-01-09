@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookri - Mr. Green & Red</title>
+    <style>
+        /* --- 1. 全域與字體設定 --- */
+        @font-face {
+            font-family: 'Cubic';
+            src: url('Cubic_11.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff; 
+            font-family: 'Cubic', sans-serif;
+            color: #333;
+            padding-top: 80px; 
+            overflow-x: hidden; 
+        }
+
+        /* --- 2. Header (保持不變) --- */
+        .ui-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;       
+            background-color: #ffffff; 
+            border-bottom: 2px solid #333; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center; 
+            padding: 0 40px;     
+            z-index: 1000;
+        }
+        .home-btn { display: block; width: 50px; height: 50px; transition: transform 0.2s; }
+        .home-btn img { width: 100%; height: 100%; object-fit: contain; }
+        .home-btn:hover { transform: scale(1.1); }
+        .menu-container { position: relative; }
+        .hamburger-icon { width: 35px; height: 30px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
+        .lines-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: opacity 0.2s; }
+        .lines-wrapper span { display: block; width: 100%; height: 4px; background-color: #333; border-radius: 4px; }
+        .hover-img { width: 150%; height: 150%; object-fit: contain; display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .hamburger-icon:hover .lines-wrapper, .menu-container.active .hamburger-icon .lines-wrapper { display: none; }
+        .hamburger-icon:hover .hover-img, .menu-container.active .hamburger-icon .hover-img { display: block; }
+        .menu-list { position: absolute; top: 60px; right: 0; background-color: #ffffff; border: 2px solid #333; border-radius: 8px; width: 140px; display: none; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 1001; }
+        .menu-list.show { display: flex; }
+        .menu-list a { text-decoration: none; color: #333; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 18px; transition: background 0.2s; }
+        .menu-list a:last-child { border-bottom: none; }
+        .menu-list a:hover { background-color: #f0f0f0; color: #000; }
+
+        /* --- 3. 通用區塊樣式 --- */
+        .content-section {
+            width: 100%;
+            padding: 100px 50px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            gap: 80px; 
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .img-col {
+            flex: 1; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .reveal-img {
+            width: 100%;
+            max-width: 500px; 
+            height: auto;
+            opacity: 0; 
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+            display: block; 
+        }
+
+        /* --- 4. 背景設定 --- */
+        .bg-white { background-color: #ffffff; width: 100%; }
+        .bg-gray { width: 100%; background-image: url('secpic/gray.png'); background-size: cover; background-position: top center; background-repeat: no-repeat; }
+
+        /* --- 5. 晃動特效 --- */
+        @keyframes gentle-shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
+            100% { transform: rotate(0deg); }
+        }
+        .shake-hover { cursor: pointer; }
+        .shake-hover:hover { animation: gentle-shake 0.4s ease-in-out infinite; }
+
+        /* ========================================= */
+        /* === 獨立控制每一張圖片的位置 (Right 1 ~ 13) === */
+        /* ========================================= */
+
+        /* --- 區塊 1 (白色) --- */
+        #r1 {
+            width: 50%;
+            margin-top: 60px;
+            margin-right: -20px; /* 往中間靠 */
+        }
+        #r2 {
+            width: 70%;
+            margin-top: 20px; /* 右邊低一點 */
+            margin-left: -50px; /* 往中間靠 */
+        }
+
+        /* --- 區塊 2 (灰色) --- */
+        #r3 {
+            width: 60%;
+            margin-top: 20px;
+        }
+        #r4 {
+            width: 85%;
+            margin-top: 150px; /* 稍微往上 */
+            margin-left: 30px;
+        }
+
+        /* --- 區塊 3 (白色 - 左欄) --- */
+        #r5 {
+            width: 40%;
+            margin-top: 0px; 
+        }
+        #r6 {
+            width: 25%;       
+            margin-top: 30px; 
+            margin-left: 30px; 
+        }
+        #r7 {
+            width: 25%;
+            margin-top: 40px;  
+            margin-left: 30px;
+        }
+        #r8 {
+            width: 20%;
+            margin-top: -290px;
+            margin-left: 400px;
+        }
+        #r9 {
+            width: 15%;
+            margin-top: 120px;
+            margin-left: 370px;
+        }
+
+        /* --- 區塊 3 (白色 - 右欄) --- */
+        #r10 {
+            width: 25%;       
+            margin-top: 100px; 
+            margin-right: 300px;  
+        }
+        #r11 {
+            width: 25%;       
+            margin-top: 40px; 
+            margin-right: 300px;  
+        }
+        #r12 {
+            width: 18%;       
+            margin-top: -260px; 
+            margin-right: -30px;
+        }
+        #r13 {
+            width: 22%;       
+            margin-top: 130px; 
+            margin-right: -45px;
+        }
+
+
+        /* --- 6. 結尾區塊 (White + Grass + Links) --- */
+        .footer-grass {
+            position: relative;
+            width: 100%;
+            height: 500px; 
+            
+            /* 【修改 1】背景改純白 */
+            background-color: #ffffff; 
+            
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            flex-direction: column;
+        }
+
+        /* 【新增】草地圖片樣式：絕對定位貼底 */
+        #grass-img {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%; /* 滿版寬度 */
+            height: auto; /* 高度自動，或依需求設定 */
+            object-fit: cover;
+            z-index: 1; /* 在底層 */
+        }
+
+        /* 社群連結設定 */
+        .social-links { 
+            position: relative;
+            z-index: 10; /* 【修改 2】確保浮在草地圖片上面，才點得到 */
+            display: flex; 
+            gap: 40px; 
+            margin-bottom: -380px; /* 控制連結離底部的距離 */
+            margin-right: -1000px;
+        }
+
+        .social-icon { width: 60px; transition: transform 0.2s; cursor: pointer; }
+        .social-icon:hover { transform: scale(1.1); }
+
+        .reveal-active { opacity: 1 !important; transform: translateY(0) !important; }
+
+        /* --- RWD 手機版重置 (很重要，不然手機會亂飛) --- */
+        @media (max-width: 900px) {
+            .content-section { flex-direction: column; padding: 60px 20px; gap: 40px; }
+            .img-col { width: 100%; }
+            .footer-grass { height: 300px; }
+            
+            /* 強制讓所有圖片在手機上回歸正常排列 */
+            #r1, #r2, #r3, #r4, #r5, #r6, #r7, #r8, #r9, #r10, #r11, #r12, #r13 {
+                margin: 20px auto !important; 
+                width: 100% !important;
+                transform: none !important; 
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ui-header">
+        <a href="index.html?skip=true" class="home-btn"><img src="firstpic/home.png" alt="Home"></a>
+        <div class="menu-container" id="menuContainer">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+                <div class="lines-wrapper"><span></span><span></span><span></span></div>
+                <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
+            </div>
+            <div class="menu-list" id="menuList">
+                <a href="bookri.html">關於</a><a href="#">周邊</a><a href="#">活動</a><a href="calender.html">品牌</a><a href="computer.html">地圖</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white">
+        <div class="content-section">
+            <div class="img-col">
+                <img src="secpic/right1.png" class="reveal-img" id="r1" alt="Right 1">
+            </div>
+            <div class="img-col">
+                <img src="secpic/right2.png" class="reveal-img" id="r2" alt="Right 2">
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-gray">
+        <div class="content-section">
+            <div class="img-col">
+                <img src="secpic/right3.png" class="reveal-img" id="r3" alt="Right 3">
+            </div>
+            <div class="img-col">
+                <img src="secpic/right4.png" class="reveal-img" id="r4" alt="Right 4">
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white">
+        <div class="content-section">
+            
+            <div class="img-col">
+                <img src="secpic/right5.png" class="reveal-img" id="r5" alt="Right 5">
+                <img src="secpic/right6.png" class="reveal-img shake-hover" id="r6" alt="Right 6">
+                <img src="secpic/right7.png" class="reveal-img shake-hover" id="r7" alt="Right 7">
+                <img src="secpic/right8.png" class="reveal-img" id="r8" alt="Right 8">
+                <img src="secpic/right9.png" class="reveal-img" id="r9" alt="Right 9">
+            </div>
+
+            <div class="img-col">
+                <img src="secpic/right10.png" class="reveal-img shake-hover" id="r10" alt="Right 10">
+                <img src="secpic/right11.png" class="reveal-img shake-hover" id="r11" alt="Right 11">
+                <img src="secpic/right12.png" class="reveal-img" id="r12" alt="Right 12">
+                <img src="secpic/right13.png" class="reveal-img" id="r13" alt="Right 13">
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer-grass">
+        
+        <div class="social-links">
+            <a href="https://instagram.com" target="_blank">
+                <img src="secpic/instagram.png" class="social-icon" alt="Instagram">
+            </a>
+            <a href="https://threads.net" target="_blank">
+                <img src="secpic/threads.png" class="social-icon" alt="Threads">
+            </a>
+        </div>
+
+        <img src="secpic/grass.png" id="grass-img" alt="Grass">
+        
+    </div>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('menuList').classList.toggle('show');
+            document.getElementById('menuContainer').classList.toggle('active');
+        }
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('menuContainer').contains(e.target)) {
+                document.getElementById('menuList').classList.remove('show');
+                document.getElementById('menuContainer').classList.remove('active');
+            }
+        });
+
+        window.addEventListener('scroll', revealOnScroll);
+
+        function revealOnScroll() {
+            const windowHeight = window.innerHeight;
+            const revealPoint = 100; 
+
+            const images = document.querySelectorAll('.reveal-img');
+
+            images.forEach(img => {
+                const elementTop = img.getBoundingClientRect().top;
+                if (elementTop < windowHeight - revealPoint) {
+                    img.classList.add('reveal-active');
+                }
+            });
+        }
+        
+        revealOnScroll();
+    </script>
+
+</body>
+</html>
