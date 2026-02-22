@@ -81,9 +81,16 @@
         #moving-car {
             position: absolute;
             z-index: 2;
-            left: -300px; 
-            top: 90%;   
-            width: 200px; 
+            
+            /* 改用百分比：從場景左側外面一點點出發 */
+            left: -15%; 
+            
+            /* 【請注意這裡】上下位置先大約抓 95% */
+            top: 85%;   
+            
+            /* 車子大小也改用百分比，讓它跟背景比例一致 */
+            width: 20%; 
+            
             height: auto;
             opacity: 0; 
             transition: opacity 1.2s ease; 
@@ -95,9 +102,10 @@
             animation: driveRight 8s linear infinite; 
         }
 
+        /* 讓車子往右開出畫面 */
         @keyframes driveRight {
             0% { transform: translateX(0); }
-            100% { transform: translateX(120vw); }
+            100% { transform: translateX(130vw); }
         }
 
         /* --- 5. 互動物件共用設定 (Class) --- */
@@ -207,6 +215,20 @@
         .hidden { opacity: 0; pointer-events: none; }
         .visible { opacity: 1 !important; }
 
+        #count-gif {
+            position: absolute;
+            z-index: 4; /* 讓它在背景之上 */
+            top: 15%;   /* 先暫時放在中間，等你微調 */
+            left: 85%;
+            width: 6%; /* 先暫時設定 10% 大小 */
+            opacity: 0; /* 一開始先隱藏，跟著大家一起淡入 */
+            transition: opacity 1.2s ease;
+        }
+
+        #count-gif.count-visible {
+            opacity: 1 !important;
+        }
+
     </style>
 </head>
 <body>
@@ -252,10 +274,10 @@
                 <img src="firstpic/milk.png" class="img-bw" alt="milk BW">
                 <img src="firstpic/milk - color.png" class="img-color" alt="milk Color">
             </a>
+            <img id="count-gif" src="firstpic/count.gif" alt="Count Animation">
+            <img id="moving-car" src="firstpic/car.gif" alt="Moving Car">
 
         </div>
-
-        <img id="moving-car" src="firstpic/car.gif" alt="Moving Car">
 
     </main>
 
@@ -267,6 +289,7 @@
         const body = document.body;
 
         const movingCar = document.getElementById('moving-car');
+        const countGif = document.getElementById('count-gif');
 
         const objComputer = document.getElementById('obj-computer');
         const objActivity = document.getElementById('obj-activity');
@@ -305,6 +328,7 @@
             
             mainBg.classList.add('bg-visible');
             movingCar.classList.add('car-visible');
+            countGif.classList.add('count-visible');
 
             objComputer.classList.add('obj-visible');
             objActivity.classList.add('obj-visible');
