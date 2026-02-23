@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity - My Dynamic Website</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* --- 基礎設定 --- */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            overflow: hidden; /* 防止滾動 */
+            
+            /* 確保你新設定的游標在這裡也生效 */
+            cursor: url('firstpic/pointgreen.png') 0 0, auto; 
+        }
+
+        /* =========================================
+           1. 滿版背景設定 (固定不隨縮放改變)
+           ========================================= */
+        #activity-bg {
+            position: fixed;
+            top: 5%;
+            left: 10;
+            width: 100%;
+            height: 130%; /* 確保有設定高度 */
+            
+            /* 【修改這裡】改成 contain，確保圖片永遠完整不出界 */
+            object-fit: contain; 
+            
+            z-index: 1; 
+            pointer-events: none; 
+        }
+
+        /* =========================================
+           2. 車輛動畫設定 (固定在畫面下方)
+           ========================================= */
+        #moving-car-activity {
+            position: fixed;
+            z-index: 20; /* 確保車子在背景和圖層的前面 */
+            bottom: 1%;  /* 固定在距離底部 5% 的位置 */
+            left: -15%;  /* 從左側螢幕外開始 */
+            width: 15%;  /* 車子大小，可依需求微調 */
+            height: auto;
+            animation: driveRight 8s linear infinite; 
+            pointer-events: none; 
+        }
+
+        @keyframes driveRight {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(130vw); }
+        }
+
+        /* =========================================
+           3. 六張堆疊圖層設定 (1.png ~ 6.png)
+           ========================================= */
+        #layers-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            /* 因為每張圖片要自訂位置，這裡移除了 flex 置中設定 */
+        }
+
+        /* 共用設定：保留絕對定位、過場動畫和自訂游標 */
+        .activity-layer {
+            position: absolute;
+            transition: opacity 0.5s ease, transform 0.3s ease;
+            cursor: url('firstpic/pointgreen.png') 0 0, pointer !important; 
+        }
+
+        /* 點擊後消失的特效 */
+        .activity-layer.hide-layer {
+            opacity: 0;
+            transform: scale(0.95); /* 消失時稍微往內縮一點點 */
+            pointer-events: none; /* 消失後就不再阻擋點擊 */
+        }
+
+        /* --- 分別設定每張圖片的大小與位置 (請依你的需求微調 %) --- */
+        
+        /* 第 1 張 (最上層，最先被點擊) */
+        #layer1 { 
+            z-index: 16; 
+            top: 16%;   /* 距離上方的位置 */
+            left: 40%;  /* 距離左側的位置 */
+            width: 27%; /* 圖片大小 */
+        }
+
+        /* 第 2 張 */
+        #layer2 { 
+            z-index: 15; 
+            top: 40%; 
+            left: 27%; 
+            width: 35%; 
+        }
+
+        /* 第 3 張 */
+        #layer3 { 
+            z-index: 14; 
+            top: 23%; 
+            left: 60%; 
+            width: 23%; 
+        }
+
+        /* 第 4 張 */
+        #layer4 { 
+            z-index: 13; 
+            top: 65%; 
+            left: 10%; 
+            width: 25%; 
+        }
+
+        /* 第 5 張 */
+        #layer5 { 
+            z-index: 12; 
+            top: 50%; 
+            left: 60%; 
+            width: 20%; 
+        }
+        
+        /* 第 6 張 (最底層，不會因點擊消失) */
+        #layer6 { 
+            z-index: 11; 
+            top: 30%; 
+            left: 18%; 
+            width: 20%; 
+            /* 這是最後一張，游標恢復預設狀態 */
+            cursor: url('firstpic/pointgreen.png') 0 0, auto !important; 
+        }
+
+        
+
+    </style>
+</head>
+<body>
+
+    <div class="ui-header">
+        <a href="index.html?skip=true" class="home-btn">
+            <img src="firstpic/home.png" alt="Home">
+        </a>
+        <div class="menu-container" id="menuContainer">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+                <div class="lines-wrapper">
+                    <span></span><span></span><span></span>
+                </div>
+                <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
+            </div>
+            <div class="menu-list" id="menuList">
+                <a href="bookri.html">關於</a>
+                <a href="#">周邊</a>
+                <a href="#">活動</a>
+                <a href="calender.html">品牌</a>
+                <a href="computer.html">地圖</a>
+            </div>
+        </div>
+    </div>
+
+    <img id="activity-bg" src="thirdpic/back.png" alt="Activity Background">
+
+    <div id="layers-container">
+        <img class="activity-layer" id="layer6" src="thirdpic/6.png" alt="Layer 6">
+        <img class="activity-layer clickable-layer" id="layer5" src="thirdpic/5.png" alt="Layer 5">
+        <img class="activity-layer clickable-layer" id="layer4" src="thirdpic/4.png" alt="Layer 4">
+        <img class="activity-layer clickable-layer" id="layer3" src="thirdpic/3.png" alt="Layer 3">
+        <img class="activity-layer clickable-layer" id="layer2" src="thirdpic/2.png" alt="Layer 2">
+        <img class="activity-layer clickable-layer" id="layer1" src="thirdpic/1.png" alt="Layer 1">
+    </div>
+
+    <img id="moving-car-activity" src="firstpic/car.gif" alt="Moving Car">
+
+    <script>
+        // --- 1. Header 選單開關邏輯 (如果你已經寫在 script.js，這段可以刪除) ---
+        function toggleMenu() {
+            const menuList = document.getElementById('menuList');
+            const menuContainer = document.getElementById('menuContainer');
+            if(menuList && menuContainer) {
+                menuList.classList.toggle('show');
+                menuContainer.classList.toggle('active');
+            }
+        }
+
+        document.addEventListener('click', (e) => {
+            const mc = document.getElementById('menuContainer');
+            if (mc && !mc.contains(e.target) && !e.target.closest('.hamburger-icon')) {
+                document.getElementById('menuList').classList.remove('show');
+                mc.classList.remove('active');
+            }
+        });
+
+        // --- 2. 圖片點擊消失邏輯 ---
+        // 抓出所有帶有 clickable-layer 類別的圖片 (1.png ~ 5.png)
+        const layers = document.querySelectorAll('.clickable-layer');
+        
+        layers.forEach(layer => {
+            layer.addEventListener('click', function() {
+                // 點擊後，加上 hide-layer 類別，觸發 CSS 的透明度漸變效果
+                this.classList.add('hide-layer');
+            });
+        });
+    </script>
+</body>
+</html>

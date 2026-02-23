@@ -1,5 +1,4 @@
-
-        function toggleMenu() {
+function toggleMenu() {
             const menuList = document.getElementById('menuList');
             const menuContainer = document.getElementById('menuContainer');
             menuList.classList.toggle('show');
@@ -12,6 +11,16 @@
                 mc.classList.remove('active');
             }
         });
+
+
+        // ==========================================
+        // 取得所有過場圖片的元素
+        // ==========================================
+        const bannerMon = document.getElementById('banner-mon');
+        const bannerTue = document.getElementById('banner-tue');
+        const bannerWed = document.getElementById('banner-wed');
+        const bannerThu = document.getElementById('banner-thu');
+        const bannerFri = document.getElementById('banner-fri');
 
 
         // --- 互動邏輯：Monday ---
@@ -33,34 +42,39 @@
         // --- 轉場與動畫邏輯 ---
         let currentScene = 1; 
         let isTransitioning = false; 
-
-        // 1. 【新增】Monday 的步驟變數
-        let mondayStep = 0; 
         
+        // 【新增】用來記錄目前畫面上「正在顯示的過場圖片」
+        let activeBanner = null; 
+
+        let mondayStep = 0; 
         let tuesdayStep = 0; 
         let wednesdayStep = 0;
         let thursdayStep = 0;
         let fridayStep = 0;
 
         let isHoveringGreen = false; 
-        let wedSpotlightScale = 0;   
+        let wedSpotlightScale = 0;   
         let spotlightImg = document.getElementById('wed-expand-spotlight');
 
         window.addEventListener('wheel', (e) => {
             if (isTransitioning) return;
 
             if (e.deltaY > 0) {
+                // 【關鍵修改】：如果畫面上有過場圖片擋著，這次滾動只負責把它收起來
+                if (activeBanner !== null) {
+                    dismissBanner();
+                    return; // 收起圖片後就結束這次滾動，不觸發後面的動畫
+                }
+
                 if (currentScene === 1) { 
                     goToSceneMonday(); 
                 }
-                // 2. 【修改】Monday 的滾動邏輯
                 else if (currentScene === 2) { 
                     playNextMondayStep();
                 }
                 else if (currentScene === 3) { 
                     playNextTuesdayStep();
                 }
-                else if (currentScene === 3) { playNextTuesdayStep(); }
                 else if (currentScene === 4) {
                     if (wednesdayStep < 5) { playNextWednesdayStep(); } 
                     else if (isHoveringGreen) { handleSpotlightExpand(); }
@@ -77,6 +91,27 @@
                 }
             }
         });
+
+        // ==========================================
+        // 【新增】收起過場圖片的共用函式
+        // ==========================================
+        function dismissBanner() {
+            isTransitioning = true; // 鎖定滾輪
+            activeBanner.classList.remove('show-banner'); // 讓圖片往上收起
+            
+            // 紀錄一下收起來的是不是星期五，因為星期五收起後要自動播放葉子動畫
+            let isFriday = (activeBanner === bannerFri); 
+            
+            activeBanner = null; // 清空紀錄，代表畫面上沒有圖片了
+
+            // 等待圖片收起的動畫結束 (約 800ms)
+            setTimeout(() => { 
+                isTransitioning = false; // 解鎖滾輪
+                if (isFriday) {
+                    playNextFridayStep(); // 星期五的特殊處理
+                }
+            }, 800); 
+        }
 
         // -----------------------
         // Spotlight Expansion
@@ -95,74 +130,82 @@
             }
         }
 
-        // -----------------------
-        // Scene Transitions
-        // -----------------------
+        // ==========================================
+        // 【修改】切換場景函式：圖片掉下後會「停留」並等待下次滾動
+        // ==========================================
         function goToSceneMonday() {
             isTransitioning = true;
-            currentScene = 2;
-            const sceneStart = document.getElementById('scene-start');
-            const sceneMonday = document.getElementById('scene-monday');
-            
-            sceneStart.classList.add('slide-up');
-            sceneMonday.classList.add('visible');
-            
-            // 【修改】初始化 Monday 步驟，但不自動播放
-            mondayStep = 0; 
-            
-            // 選擇性：如果您希望切換過去時自動顯示第一步(標題)，可以取消下面這行的註解
-            // playNextMondayStep(); 
+            bannerMon.classList.add('show-banner'); // 圖片掉落
 
-            setTimeout(() => { isTransitioning = false; }, 1000);
+            // 等待圖片完全遮住畫面 (800ms) 後，偷偷切換背景
+            setTimeout(() => {
+                currentScene = 2;
+                document.getElementById('scene-start').classList.add('slide-up');
+                document.getElementById('scene-monday').classList.add('visible');
+                mondayStep = 0; 
+
+                // 紀錄目前擋住畫面的是星期一圖片，並解鎖滾輪等待使用者滑動
+                activeBanner = bannerMon;
+                isTransitioning = false; 
+            }, 800);
         }
 
         function goToSceneTuesday() {
             isTransitioning = true;
-            currentScene = 3;
-            const sceneTuesday = document.getElementById('scene-tuesday');
-            sceneTuesday.classList.add('active'); 
-            setTimeout(() => { isTransitioning = false; }, 1000);
+            bannerTue.classList.add('show-banner');
+
+            setTimeout(() => {
+                currentScene = 3;
+                document.getElementById('scene-tuesday').classList.add('active');
+                
+                activeBanner = bannerTue;
+                isTransitioning = false;
+            }, 800);
         }
 
         function goToSceneWednesday() {
             isTransitioning = true;
-            currentScene = 4;
-            const sceneWednesday = document.getElementById('scene-wednesday');
-            sceneWednesday.classList.add('active'); 
-            setTimeout(() => { isTransitioning = false; }, 1000);
+            bannerWed.classList.add('show-banner');
+
+            setTimeout(() => {
+                currentScene = 4;
+                document.getElementById('scene-wednesday').classList.add('active'); 
+                
+                activeBanner = bannerWed;
+                isTransitioning = false;
+            }, 800);
         }
 
         function goToSceneThursday() {
             isTransitioning = true;
-            currentScene = 5;
-            const sceneThursday = document.getElementById('scene-thursday');
-            sceneThursday.classList.add('active');
-            setTimeout(() => { isTransitioning = false; }, 1000);
+            bannerThu.classList.add('show-banner');
+
+            setTimeout(() => {
+                currentScene = 5;
+                document.getElementById('scene-thursday').classList.add('active');
+                
+                activeBanner = bannerThu;
+                isTransitioning = false;
+            }, 800);
         }
 
         function goToSceneFriday() {
             isTransitioning = true;
-            currentScene = 6;
-            console.log("切換至星期五...");
+            bannerFri.classList.add('show-banner');
 
-            const sceneFriday = document.getElementById('scene-friday');
-            sceneFriday.classList.add('active'); 
-            
-            // 自動觸發第一步 (葉子飛入)
             setTimeout(() => {
-                playNextFridayStep();
-            }, 800); // 稍微等待場景滑入
-
-            setTimeout(() => { isTransitioning = false; }, 1000);
+                currentScene = 6;
+                document.getElementById('scene-friday').classList.add('active'); 
+                
+                activeBanner = bannerFri;
+                isTransitioning = false;
+            }, 800);
         }
 
         // -----------------------
         // Step Logic
         // -----------------------
-
-        // 3. 【新增】Monday 的分步動畫函式
         function playNextMondayStep() {
-            // 如果已經跑完 4 步，再滾動就切換到星期二
             if (mondayStep >= 4) {
                 goToSceneTuesday();
                 return;
@@ -170,53 +213,39 @@
 
             mondayStep++;
             isTransitioning = true;
-            // 設定一個短暫冷卻時間，避免滾太快
             setTimeout(() => { isTransitioning = false; }, 800);
 
             switch(mondayStep) {
-                case 1: // 步驟 1：文字浮現
+                case 1: 
                     document.getElementById('text1').classList.add('text-in');
                     setTimeout(() => { document.getElementById('text2').classList.add('text-in'); }, 300);
                     break;
-
-                case 2: // 步驟 2：左右建築 & 水窪滑入
+                case 2: 
                     document.getElementById('grp-left').classList.add('slide-in-active');
                     document.getElementById('grp-right').classList.add('slide-in-active');
                     document.getElementById('grp-water').classList.add('slide-up-active');
-                    // 讓物件開始晃動
                     document.getElementById('btn-tower').classList.add('anim-shake');
                     document.getElementById('btn-cold').classList.add('anim-shake');
                     break;
-
-                case 3: // 步驟 3：下雨 & 綠人出現
+                case 3: 
                     document.getElementById('img-rain').classList.add('rain-active');
                     setTimeout(() => { 
                         document.getElementById('grp-green').classList.add('green-in'); 
                     }, 500);
                     break;
-
-                case 4: // 步驟 4：車子開過 + 濺起水花
+                case 4: 
                     document.getElementById('grp-car').classList.add('car-run'); 
-                    
-                    // 車子開到一半(約1秒後)觸發水花動畫
                     setTimeout(() => {
                         const imgWater = document.getElementById('img-water');
                         const imgGreen = document.getElementById('img-green');
-
-                        // 1. 碰到水 (water1)
                         imgWater.src = "startpic/water1.png";
                         imgGreen.src = "startpic/green1.png";
                         
-                        // 2. 濺起 (water2)
                         setTimeout(() => {
                             imgWater.src = "startpic/water2.png";
                             imgGreen.src = "startpic/green2.png";
-                            
-                            // 3. 恢復平靜 (water)
                             setTimeout(() => {
                                 imgWater.src = "startpic/water.png";
-                                // 如果希望綠人也恢復，把下面註解打開
-                                // imgGreen.src = "startpic/green.png";
                             }, 300);
                         }, 200);
                     }, 1000); 
@@ -329,112 +358,52 @@
 
             switch(fridayStep) {
                 case 1: 
-                    // 自動觸發：葉子從角落飛入聚攏
                     const leaves = document.querySelectorAll('.leaf-mask');
                     leaves.forEach(l => l.classList.add('leaf-center'));
                     break;
-
                 case 2: 
-                    // 背景切換 leaf.png，葉子消失(reset)
                     document.getElementById('fri-bg-leaf').classList.add('bg-show');
-                    
                     const leavesToHide = document.querySelectorAll('.leaf-mask');
                     leavesToHide.forEach(l => {
-                        l.classList.add('leaf-hide'); // 淡出
-                        // 移除聚攏樣式，讓它偷偷回到角落
+                        l.classList.add('leaf-hide'); 
                         l.classList.remove('leaf-center'); 
                     });
-
                     const flowers = document.querySelectorAll('.fri-flower');
                     flowers.forEach(f => f.classList.add('fl-show'));
                     break;
-
                 case 3: 
-                    // Word1 淡入
                     document.getElementById('fri-word').classList.add('word-in');
                     break;
-
                 case 4: 
-                    // 葉子再次出現並聚攏 (遮住畫面)
                     const leavesReappear = document.querySelectorAll('.leaf-mask');
                     leavesReappear.forEach(l => {
-                        l.classList.remove('leaf-hide'); // 移除隱藏
-                        l.classList.add('leaf-center');  // 再次聚攏
+                        l.classList.remove('leaf-hide'); 
+                        l.classList.add('leaf-center');  
                     });
                     break;
-
                 case 5: 
-                    // 葉子飛出散開，背景切換 Friday
                     const leavesAway = document.querySelectorAll('.leaf-mask');
                     leavesAway.forEach(l => {
-                        l.classList.remove('leaf-center'); // 移除聚攏
-                        l.classList.add('leaf-fly-out');   // 飛到更遠的地方
+                        l.classList.remove('leaf-center'); 
+                        l.classList.add('leaf-fly-out');   
                     });
-                    
                     document.getElementById('fri-bg-final').classList.add('bg-show');
                     document.getElementById('fri-nocar').classList.add('obj-fade-in');
                     document.getElementById('fri-stair').classList.add('obj-fade-in');
                     break;
-
                 case 6: 
                     setTimeout(() => { document.getElementById('motor1').classList.add('obj-fade-in'); }, 100);
                     setTimeout(() => { document.getElementById('motor2').classList.add('obj-fade-in'); }, 400);
                     setTimeout(() => { document.getElementById('motor3').classList.add('obj-fade-in'); }, 700);
                     setTimeout(() => { document.getElementById('motor4').classList.add('obj-fade-in'); }, 1000);
                     break;
-
                 case 7: 
                     document.getElementById('fri-gray-curtain').classList.add('curtain-down');
                     break;
-
                 case 8: 
                     document.getElementById('fri-allgray').classList.add('bg-show');
                     break;
             }
-        }
-
-        // -----------------------
-        // Animations
-        // -----------------------
-        function playMondayAnimation() {
-            const t1 = document.getElementById('text1');
-            const t2 = document.getElementById('text2');
-            const left = document.getElementById('grp-left');
-            const right = document.getElementById('grp-right');
-            const waterGrp = document.getElementById('grp-water');
-            const rain = document.getElementById('img-rain');
-            const green = document.getElementById('grp-green');
-            const car = document.getElementById('grp-car');
-            const imgWater = document.getElementById('img-water');
-            const imgGreen = document.getElementById('img-green');
-            const tower = document.getElementById('btn-tower');
-            const cold = document.getElementById('btn-cold');
-
-            setTimeout(() => { t1.classList.add('text-in'); }, 100);
-            setTimeout(() => { t2.classList.add('text-in'); }, 800);
-            setTimeout(() => {
-                left.classList.add('slide-in-active');
-                right.classList.add('slide-in-active');
-                waterGrp.classList.add('slide-up-active');
-                tower.classList.add('anim-shake');
-                cold.classList.add('anim-shake');
-            }, 1500);
-            setTimeout(() => { rain.classList.add('rain-active'); }, 2500);
-            setTimeout(() => { green.classList.add('green-in'); }, 3500);
-            setTimeout(() => {
-                car.classList.add('car-run'); 
-                setTimeout(() => {
-                    imgWater.src = "startpic/water1.png";
-                    imgGreen.src = "startpic/green1.png";
-                    setTimeout(() => {
-                        imgWater.src = "startpic/water2.png";
-                        imgGreen.src = "startpic/green2.png";
-                        setTimeout(() => {
-                            imgWater.src = "startpic/water.png";
-                        }, 300);
-                    }, 200);
-                }, 1000); 
-            }, 4500);
         }
 
         // --- 互動邏輯：Tuesday ---
@@ -480,10 +449,10 @@
         greenSpin.addEventListener('mouseleave', function() { });
 
         // --- 互動邏輯：Friday ---
-        const flowers = document.querySelectorAll('.fri-flower');
+        const flowersObj = document.querySelectorAll('.fri-flower');
         const flText = document.getElementById('fri-fltext');
         
-        flowers.forEach(f => {
+        flowersObj.forEach(f => {
             f.addEventListener('click', function() {
                 flText.style.opacity = (flText.style.opacity == 1) ? 0 : 1;
             });

@@ -19,6 +19,47 @@
             overflow: hidden; 
         }
 
+        /* =========================================
+           自訂滑鼠游標設定
+           ========================================= */
+        /* 1. 把全站預設的箭頭改成你的圖片 */
+        body, html {
+            /* 假設你的圖片放在 firstpic 資料夾，請確認路徑是否正確 */
+            /* 後面的 , auto 是保險機制：如果圖片壞掉，就顯示預設游標 */
+            cursor: url('firstpic/pointgreen.png'), auto; 
+        }
+
+        /* 2. 當滑鼠移到「可點擊的按鈕或物件」上時，也要保持是你的游標 */
+        a, button, .obj-container, .hamburger-icon {
+            /* 後面的 , pointer 是一樣的保險機制 */
+            cursor: url('firstpic/pointgreen.png'), pointer !important;
+        }
+
+        /* =========================================
+        星期過場圖片掉落動畫設定
+        ========================================= */
+        .day-banner {
+            position: fixed;
+            top: -100%; 
+            left: 50%;
+            
+            /* 【修改這裡】：在原本的 translateX 後面加上 rotate() */
+            /* -5deg 代表「逆時針稍微傾斜 5 度」，如果是 5deg 就是順時針 */
+            transform: translateX(-50%) rotate(-5deg); 
+            
+            width: 55%; 
+            z-index: 9999; 
+            opacity: 0;
+            
+            transition: top 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+            pointer-events: none; 
+        }
+
+        .day-banner.show-banner {
+            top: 15%; 
+            opacity: 1;
+        }
+
         /* --- 2. 獨立頂部導覽列 (Header) --- */
         .ui-header {
             position: relative; 
