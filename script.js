@@ -1,113 +1,187 @@
-function toggleMenu() {
-            const menuList = document.getElementById('menuList');
-            const menuContainer = document.getElementById('menuContainer');
-            menuList.classList.toggle('show');
-            menuContainer.classList.toggle('active');
+// ==========================================
+        // 1. UI 選單與活動彈窗邏輯
+        // ==========================================
+        function toggleMenu() {
+            document.getElementById('menuList').classList.toggle('show');
+            document.getElementById('menuContainer').classList.toggle('active');
         }
         document.addEventListener('click', (e) => {
             const mc = document.getElementById('menuContainer');
-            if (!mc.contains(e.target)) {
+            if (!mc.contains(e.target) && !e.target.closest('.hamburger-icon')) {
                 document.getElementById('menuList').classList.remove('show');
                 mc.classList.remove('active');
             }
         });
 
+        const btnActivity = document.getElementById('obj-activity');
+        const activityPopup = document.getElementById('activity-popup');
+        const popLayers = [
+            document.getElementById('pop-layer6'), document.getElementById('pop-layer5'),
+            document.getElementById('pop-layer4'), document.getElementById('pop-layer3'),
+            document.getElementById('pop-layer2'), document.getElementById('pop-layer1')
+        ];
+        if (btnActivity && activityPopup) {
+            btnActivity.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                activityPopup.classList.add('show-popup'); 
+                popLayers.forEach((layer, index) => {
+                    setTimeout(() => { layer.classList.add('layer-visible'); }, 300 + (index * 150)); 
+                });
+            });
+            popLayers.forEach((layer, index) => {
+                layer.addEventListener('click', function() {
+                    this.classList.remove('layer-visible');
+                    if (index === 0) { setTimeout(() => { activityPopup.classList.remove('show-popup'); }, 400); }
+                });
+            });
+        }
+
         // ==========================================
-        // 取得所有過場圖片的元素
+        // 2. 轉場與動畫控制變數
         // ==========================================
         const bannerMon = document.getElementById('banner-mon');
         const bannerTue = document.getElementById('banner-tue');
         const bannerWed = document.getElementById('banner-wed');
         const bannerThu = document.getElementById('banner-thu');
-        const bannerFri = document.getElementById('banner-fri');
 
-        // --- 互動邏輯：Monday ---
-        const btnTower = document.getElementById('btn-tower');
-        const btnCold = document.getElementById('btn-cold');
-        const txtTower = document.getElementById('txt-tower');
-        const txtCold = document.getElementById('txt-cold');
-
-        btnTower.addEventListener('click', function() {
-            this.classList.remove('anim-shake');
-            txtTower.classList.add('bubble-visible');
-        });
-        btnCold.addEventListener('click', function() {
-            this.classList.remove('anim-shake');
-            txtCold.classList.add('bubble-visible');
-        });
-
-        // --- 轉場與動畫邏輯 ---
         let currentScene = 1; 
-        let isTransitioning = false; 
-        
-        let activeBanner = null; // 記錄目前畫面上「正在顯示的過場圖片」
+        let activeBanner = null; 
 
         let mondayStep = 0; 
         let tuesdayStep = 0; 
         let wednesdayStep = 0;
-        let thursdayStep = 0;
-        let fridayStep = 0;
+        let thursdayStep = 0; 
 
         let isHoveringGreen = false; 
         let wedSpotlightScale = 0;   
         let spotlightImg = document.getElementById('wed-expand-spotlight');
 
-        window.addEventListener('wheel', (e) => {
-            if (isTransitioning) return;
+        // 防抖機制
+        let isReadyForNext = true;
+        let lastWheelTime = 0;
 
-            if (e.deltaY > 0) {
-                // 如果畫面上有過場圖片擋著，這次滾動只負責把它收起來
+        // ==========================================
+        // 3. 主滾輪監聽器
+        // ==========================================
+        window.addEventListener('wheel', (e) => {
+            const currentTime = new Date().getTime();
+            
+            if (!isReadyForNext || currentTime - lastWheelTime < 800) {
+                return;
+            }
+
+            if (e.deltaY > 0) { 
+                lastWheelTime = currentTime;
+
                 if (activeBanner !== null) {
                     dismissBanner();
                     return; 
                 }
 
-                if (currentScene === 1) { 
-                    goToSceneMonday(); // 開場直接進星期一
-                }
-                else if (currentScene === 2) { 
-                    playNextMondayStep();
-                }
-                else if (currentScene === 3) { 
-                    playNextTuesdayStep();
-                }
+                if (currentScene === 1) { goToSceneMonday(); }
+                else if (currentScene === 2) { playNextMondayStep(); }
+                else if (currentScene === 3) { playNextTuesdayStep(); }
                 else if (currentScene === 4) {
                     if (wednesdayStep < 5) { playNextWednesdayStep(); } 
                     else if (isHoveringGreen) { handleSpotlightExpand(); }
                 }
-                else if (currentScene === 5) {
-                    playNextThursdayStep();
-                }
-                else if (currentScene === 6) {
-                    playNextFridayStep();
-                }
+                else if (currentScene === 5) { playNextThursdayStep(); }
             }
         });
 
-        // ==========================================
-        // 收起過場圖片的共用函式
-        // ==========================================
-        function dismissBanner() {
-            isTransitioning = true; 
-            let dismissedBanner = activeBanner; // 記下要收起的是哪張圖片
-            dismissedBanner.classList.remove('show-banner'); 
-            
-            activeBanner = null; 
-
-            setTimeout(() => { 
-                isTransitioning = false; 
-                
-                // 【關鍵】如果收起來的是 thu.png，代表我們正式進入星期五了，自動觸發葉子動畫
-                if (dismissedBanner === bannerThu) {
-                    playNextFridayStep(); 
-                }
-            }, 800); 
+        function lockScroll(lockDuration) {
+            isReadyForNext = false;
+            setTimeout(() => { isReadyForNext = true; }, lockDuration);
         }
 
-        // -----------------------
-        // Spotlight Expansion
-        // -----------------------
+        // ==========================================
+        // 4. 收起過場圖片邏輯 (完美接軌 new.html)
+        // ==========================================
+        function dismissBanner() {
+            lockScroll(1000);
+            let dismissedBanner = activeBanner; 
+            dismissedBanner.classList.remove('show-banner'); 
+            activeBanner = null; 
+
+            if (dismissedBanner === bannerThu) {
+                // 【優化】當星期四印章收起一半時，整個畫面先順滑淡出，再跳轉
+                setTimeout(() => { 
+                    document.body.style.transition = "opacity 0.4s ease";
+                    document.body.style.opacity = "0";
+                    
+                    setTimeout(() => {
+                        window.location.href = "new.html"; 
+                    }, 400); 
+                }, 400); 
+            }
+        }
+
+        // ==========================================
+        // 6. 各場景步驟與動畫切換 (改成一鍵絲滑放大)
+        // ==========================================
+        let isSpotlightExpanding = false; // 防止重複觸發的開關
+
         function handleSpotlightExpand() {
+            if (isSpotlightExpanding) return;
+            isSpotlightExpanding = true;
+            lockScroll(2500); // 動畫期間鎖住滾輪
+
+            // 直接觸發剛剛寫好的 CSS 絲滑放大動畫
+            spotlightImg.classList.add('spotlight-expand');
+
+            // 等待放大(1.5秒)播完，再掉下星期三印章
+            setTimeout(() => { 
+                activeBanner = bannerWed;
+                bannerWed.classList.add('show-banner');
+                
+                setTimeout(() => {
+                    currentScene = 5;
+                    document.getElementById('scene-thursday').classList.add('active');
+                    isSpotlightExpanding = false;
+                }, 800);
+            }, 1500);
+        }
+
+        // ==========================================
+        // 5. 互動事件綁定
+        // ==========================================
+
+        // --- Monday 互動 ---
+        document.getElementById('btn-tower').addEventListener('click', function() {
+            this.classList.remove('anim-shake');
+            document.getElementById('txt-tower').classList.add('bubble-visible');
+        });
+        document.getElementById('btn-cold').addEventListener('click', function() {
+            this.classList.remove('anim-shake');
+            document.getElementById('txt-cold').classList.add('bubble-visible');
+        });
+
+        // --- Tuesday 互動 ---
+        document.getElementById('btn-greenma').addEventListener('click', function() {
+            document.getElementById('txt-greenma').classList.toggle('bubble-show');
+        });
+        document.getElementById('btn-bag').addEventListener('click', function() {
+            document.getElementById('txt-bag').classList.toggle('bubble-show');
+        });
+
+        // --- Wednesday 互動 ---
+        document.getElementById('btn-triangle').addEventListener('click', function() {
+            document.getElementById('grp-triangle').classList.remove('anim-shake-random'); 
+            document.getElementById('txt-triangle').classList.toggle('bubble-visible');
+        });
+        document.getElementById('btn-hole').addEventListener('click', function() {
+            document.getElementById('grp-hole').classList.remove('anim-shake-random'); 
+            document.getElementById('txt-hole').classList.toggle('bubble-visible');
+        });
+        document.getElementById('wed-green-spin').addEventListener('mouseenter', function() {
+            if(wednesdayStep >= 5) { isHoveringGreen = true; }
+        });
+
+        // ==========================================
+        // 6. 各場景步驟與動畫切換
+        // ==========================================
+        function handleSpotlightExpand() {
+            lockScroll(800);
             if (getComputedStyle(spotlightImg).opacity == 0) {
                 spotlightImg.style.opacity = 1;
                 spotlightImg.style.transform = `translate(-50%, -50%) scale(1)`;
@@ -116,218 +190,64 @@ function toggleMenu() {
                 wedSpotlightScale += 5; 
                 spotlightImg.style.transform = `translate(-50%, -50%) scale(${wedSpotlightScale})`;
                 if (wedSpotlightScale > 40) { 
-                    transitionToThursday(); // 星期三結束，掉下 wed.png
+                    activeBanner = bannerWed;
+                    bannerWed.classList.add('show-banner');
+                    setTimeout(() => {
+                        currentScene = 5;
+                        document.getElementById('scene-thursday').classList.add('active');
+                    }, 800);
                 }
             }
         }
 
-        // ==========================================
-        // 【修改】切換場景函式：每天結束後，掉下該天的圖片
-        // ==========================================
-        function goToSceneMonday() {
-            // 開場進星期一，沒有過場圖片
-            isTransitioning = true;
-            currentScene = 2;
-            document.getElementById('scene-start').classList.add('slide-up');
-            document.getElementById('scene-monday').classList.add('visible');
-            mondayStep = 0; 
-            setTimeout(() => { isTransitioning = false; }, 1000);
-        }
-
-        function transitionToTuesday() {
-            isTransitioning = true;
-            bannerMon.classList.add('show-banner'); // 星期一結束，掉下 mon.png
-
-            setTimeout(() => {
-                currentScene = 3;
-                document.getElementById('scene-tuesday').classList.add('active'); // 背景偷偷換星期二
-                activeBanner = bannerMon; // 記錄 mon.png 擋在畫面上
-                isTransitioning = false;
-            }, 800);
-        }
-
-        function transitionToWednesday() {
-            isTransitioning = true;
-            bannerTue.classList.add('show-banner'); // 星期二結束，掉下 tue.png
-
-            setTimeout(() => {
-                currentScene = 4;
-                document.getElementById('scene-wednesday').classList.add('active'); 
-                activeBanner = bannerTue;
-                isTransitioning = false;
-            }, 800);
-        }
-
-        function transitionToThursday() {
-            isTransitioning = true;
-            bannerWed.classList.add('show-banner'); // 星期三結束，掉下 wed.png
-
-            setTimeout(() => {
-                currentScene = 5;
-                document.getElementById('scene-thursday').classList.add('active');
-                activeBanner = bannerWed;
-                isTransitioning = false;
-            }, 800);
-        }
-
-        function transitionToFriday() {
-            isTransitioning = true;
-            console.log("切換至星期五...");
-            bannerThu.classList.add('show-banner'); // 星期四結束，掉下 thu.png
-
-            setTimeout(() => {
-                currentScene = 6;
-                document.getElementById('scene-friday').classList.add('active'); 
-                activeBanner = bannerThu;
-                isTransitioning = false;
-            }, 800);
-        }
-
-        function transitionToEnd() {
-            isTransitioning = true;
-            console.log("星期五結束");
-            bannerFri.classList.add('show-banner'); // 星期五結束，掉下 fri.png
-
-            setTimeout(() => {
-                activeBanner = bannerFri;
-                isTransitioning = false;
-            }, 800);
-        }
-
-        // -----------------------
-        // Step Logic
-        // -----------------------
+        function goToSceneMonday() { lockScroll(1000); currentScene = 2; document.getElementById('scene-start').classList.add('slide-up'); document.getElementById('scene-monday').classList.add('visible'); mondayStep = 0; }
         function playNextMondayStep() {
-            if (mondayStep >= 4) {
-                transitionToTuesday(); // 星期一播完，進入掉圖片邏輯
-                return;
-            }
-
-            mondayStep++;
-            isTransitioning = true;
-            setTimeout(() => { isTransitioning = false; }, 800);
-
+            if (mondayStep >= 4) { lockScroll(800); activeBanner = bannerMon; bannerMon.classList.add('show-banner'); setTimeout(() => { currentScene = 3; document.getElementById('scene-tuesday').classList.add('active'); }, 800); return; }
+            mondayStep++; lockScroll(800);
             switch(mondayStep) {
-                case 1: 
-                    document.getElementById('text1').classList.add('text-in');
-                    setTimeout(() => { document.getElementById('text2').classList.add('text-in'); }, 300);
-                    break;
-                case 2: 
-                    document.getElementById('grp-left').classList.add('slide-in-active');
-                    document.getElementById('grp-right').classList.add('slide-in-active');
-                    document.getElementById('grp-water').classList.add('slide-up-active');
-                    document.getElementById('btn-tower').classList.add('anim-shake');
-                    document.getElementById('btn-cold').classList.add('anim-shake');
-                    break;
-                case 3: 
-                    document.getElementById('img-rain').classList.add('rain-active');
-                    setTimeout(() => { 
-                        document.getElementById('grp-green').classList.add('green-in'); 
-                    }, 500);
-                    break;
-                case 4: 
-                    document.getElementById('grp-car').classList.add('car-run'); 
-                    setTimeout(() => {
-                        const imgWater = document.getElementById('img-water');
-                        const imgGreen = document.getElementById('img-green');
-                        imgWater.src = "startpic/water1.png";
-                        imgGreen.src = "startpic/green1.png";
-                        
-                        setTimeout(() => {
-                            imgWater.src = "startpic/water2.png";
-                            imgGreen.src = "startpic/green2.png";
-                            setTimeout(() => {
-                                imgWater.src = "startpic/water.png";
-                            }, 300);
-                        }, 200);
-                    }, 1000); 
-                    break;
+                case 1: document.getElementById('text1').classList.add('text-in'); setTimeout(() => { document.getElementById('text2').classList.add('text-in'); }, 300); break;
+                case 2: document.getElementById('grp-left').classList.add('slide-in-active'); document.getElementById('grp-right').classList.add('slide-in-active'); document.getElementById('grp-water').classList.add('slide-up-active'); document.getElementById('btn-tower').classList.add('anim-shake'); document.getElementById('btn-cold').classList.add('anim-shake'); break;
+                case 3: document.getElementById('img-rain').classList.add('rain-active'); setTimeout(() => { document.getElementById('grp-green').classList.add('green-in'); }, 500); break;
+                case 4: document.getElementById('grp-car').classList.add('car-run'); setTimeout(() => { const imgWater = document.getElementById('img-water'); const imgGreen = document.getElementById('img-green'); imgWater.src = "startpic/water1.png"; imgGreen.src = "startpic/green1.png"; setTimeout(() => { imgWater.src = "startpic/water2.png"; imgGreen.src = "startpic/green2.png"; setTimeout(() => { imgWater.src = "startpic/water.png"; }, 300); }, 200); }, 1000); break;
             }
         }
 
         function playNextTuesdayStep() {
-            if(tuesdayStep >= 5) {
-                transitionToWednesday();
-                return;
-            }
-            
-            tuesdayStep++;
-            isTransitioning = true;
-            setTimeout(() => { isTransitioning = false; }, 800);
-            
+            if(tuesdayStep >= 5) { lockScroll(800); activeBanner = bannerTue; bannerTue.classList.add('show-banner'); setTimeout(() => { currentScene = 4; document.getElementById('scene-wednesday').classList.add('active'); }, 800); return; }
+            tuesdayStep++; lockScroll(800);
             switch(tuesdayStep) {
-                case 1: 
-                    document.getElementById('tues-title').classList.add('text-in');
-                    setTimeout(() => { document.getElementById('tues-sub').classList.add('text-in'); }, 300);
-                    break;
-                case 2: 
-                    document.getElementById('tues-intersac').classList.add('bg-visible');
-                    document.getElementById('tues-mrt').classList.add('bg-visible');
-                    break;
-                case 3: 
-                    document.getElementById('grp-grandma').classList.add('grandma-walking');
-                    const flos = document.querySelectorAll('.obj-flo');
-                    setTimeout(() => { flos[0].classList.add('flo-anim'); }, 2500); 
-                    setTimeout(() => { flos[1].classList.add('flo-anim'); }, 3000); 
-                    setTimeout(() => { flos[2].classList.add('flo-anim'); }, 3500); 
-                    setTimeout(() => { flos[3].classList.add('flo-anim'); }, 4000); 
-                    break;
-                case 4: 
-                    document.getElementById('grp-red').classList.add('red-enter');
-                    break;
-                case 5: 
-                    document.getElementById('grp-dialogue').classList.add('dialogue-show');
-                    break;
+                case 1: document.getElementById('tues-title').classList.add('text-in'); setTimeout(() => { document.getElementById('tues-sub').classList.add('text-in'); }, 300); break;
+                case 2: document.getElementById('tues-intersac').classList.add('bg-visible'); document.getElementById('tues-mrt').classList.add('bg-visible'); break;
+                case 3: document.getElementById('grp-grandma').classList.add('grandma-walking'); const flos = document.querySelectorAll('.obj-flo'); setTimeout(() => { flos[0].classList.add('flo-anim'); }, 2500); setTimeout(() => { flos[1].classList.add('flo-anim'); }, 3000); setTimeout(() => { flos[2].classList.add('flo-anim'); }, 3500); setTimeout(() => { flos[3].classList.add('flo-anim'); }, 4000); break;
+                case 4: document.getElementById('grp-red').classList.add('red-enter'); break;
+                case 5: document.getElementById('grp-dialogue').classList.add('dialogue-show'); break;
             }
         }
 
         function playNextWednesdayStep() {
-            wednesdayStep++;
-            isTransitioning = true;
-            setTimeout(() => { isTransitioning = false; }, 1000); 
-
+            wednesdayStep++; lockScroll(1000);
             switch(wednesdayStep) {
-                case 1: 
-                    document.getElementById('wed-title').classList.add('text-in');
-                    setTimeout(() => { document.getElementById('wed-sub').classList.add('text-in'); }, 300);
-                    break;
-                case 2: 
-                    const tri = document.getElementById('grp-triangle');
-                    const holeGrp = document.getElementById('grp-hole');
-                    tri.classList.add('wed-enter-left');
-                    holeGrp.classList.add('wed-enter-right');
-                    setTimeout(() => {
-                        tri.classList.add('anim-shake-random');
-                        holeGrp.classList.add('anim-shake-random');
-                    }, 1000);
-                    break;
-                case 3: 
-                    document.getElementById('wed-green-fall').classList.add('green-fall');
-                    break;
-                case 4: 
-                    document.getElementById('wed-text-group').classList.add('fade-out-scene');
-                    document.querySelector('.wed-obj-container').classList.add('fade-out-scene');
-                    const blackTrans = document.getElementById('wed-black-trans');
-                    blackTrans.classList.add('black-rise'); 
-                    setTimeout(() => {
-                        document.getElementById('wed-black-bg').classList.add('bg-dark-active');
-                    }, 800); 
-                    break;
-                case 5: 
-                    document.getElementById('wed-final-scene').classList.add('final-active');
-                    break;
+                case 1: document.getElementById('wed-title').classList.add('text-in'); setTimeout(() => { document.getElementById('wed-sub').classList.add('text-in'); }, 300); break;
+                case 2: const tri = document.getElementById('grp-triangle'); const holeGrp = document.getElementById('grp-hole'); tri.classList.add('wed-enter-left'); holeGrp.classList.add('wed-enter-right'); setTimeout(() => { tri.classList.add('anim-shake-random'); holeGrp.classList.add('anim-shake-random'); }, 1000); break;
+                case 3: document.getElementById('wed-green-fall').classList.add('green-fall'); break;
+                case 4: document.getElementById('wed-text-group').classList.add('fade-out-scene'); document.querySelector('.wed-obj-container').classList.add('fade-out-scene'); const blackTrans = document.getElementById('wed-black-trans'); blackTrans.classList.add('black-rise'); setTimeout(() => { document.getElementById('wed-black-bg').classList.add('bg-dark-active'); }, 800); break;
+                case 5: document.getElementById('wed-final-scene').classList.add('final-active'); break;
             }
         }
 
+        // ==========================================
+        // Thursday 簡化版邏輯 (只負責車子動畫)
+        // ==========================================
         function playNextThursdayStep() {
-            if (thursdayStep >= 4) {
-                transitionToFriday();
-                return;
+            if (thursdayStep >= 4) { 
+                // 第 4 步結束後，再次滾動就會掉下 thu.png
+                lockScroll(800);
+                activeBanner = bannerThu;
+                bannerThu.classList.add('show-banner');
+                return; 
             }
-            
             thursdayStep++;
-            isTransitioning = true;
-            setTimeout(() => { isTransitioning = false; }, 800);
+            lockScroll(800);
 
             switch(thursdayStep) {
                 case 1: 
@@ -348,167 +268,3 @@ function toggleMenu() {
                     break;
             }
         }
-
-        function playNextFridayStep() {
-            if (fridayStep >= 8) {
-                transitionToEnd();
-                return;
-            }
-
-            fridayStep++;
-            isTransitioning = true;
-            setTimeout(() => { isTransitioning = false; }, 1000);
-
-            switch(fridayStep) {
-                case 1: 
-                    const leaves = document.querySelectorAll('.leaf-mask');
-                    leaves.forEach(l => l.classList.add('leaf-center'));
-                    break;
-                case 2: 
-                    document.getElementById('fri-bg-leaf').classList.add('bg-show');
-                    const leavesToHide = document.querySelectorAll('.leaf-mask');
-                    leavesToHide.forEach(l => {
-                        l.classList.add('leaf-hide'); 
-                        l.classList.remove('leaf-center'); 
-                    });
-                    const flowers = document.querySelectorAll('.fri-flower');
-                    flowers.forEach(f => f.classList.add('fl-show'));
-                    break;
-                case 3: 
-                    document.getElementById('fri-word').classList.add('word-in');
-                    break;
-                case 4: 
-                    const leavesReappear = document.querySelectorAll('.leaf-mask');
-                    leavesReappear.forEach(l => {
-                        l.classList.remove('leaf-hide'); 
-                        l.classList.add('leaf-center');  
-                    });
-                    break;
-                case 5: 
-                    const leavesAway = document.querySelectorAll('.leaf-mask');
-                    leavesAway.forEach(l => {
-                        l.classList.remove('leaf-center'); 
-                        l.classList.add('leaf-fly-out');   
-                    });
-                    document.getElementById('fri-bg-final').classList.add('bg-show');
-                    document.getElementById('fri-nocar').classList.add('obj-fade-in');
-                    document.getElementById('fri-stair').classList.add('obj-fade-in');
-                    break;
-                case 6: 
-                    setTimeout(() => { document.getElementById('motor1').classList.add('obj-fade-in'); }, 100);
-                    setTimeout(() => { document.getElementById('motor2').classList.add('obj-fade-in'); }, 400);
-                    setTimeout(() => { document.getElementById('motor3').classList.add('obj-fade-in'); }, 700);
-                    setTimeout(() => { document.getElementById('motor4').classList.add('obj-fade-in'); }, 1000);
-                    break;
-                case 7: 
-                    document.getElementById('fri-gray-curtain').classList.add('curtain-down');
-                    break;
-                case 8: 
-                    document.getElementById('fri-allgray').classList.add('bg-show');
-                    break;
-            }
-        }
-
-        // --- 互動邏輯：Tuesday ---
-        const btnGreenma = document.getElementById('btn-greenma');
-        const txtGreenma = document.getElementById('txt-greenma');
-        const btnBag = document.getElementById('btn-bag');
-        const txtBag = document.getElementById('txt-bag');
-
-        btnGreenma.addEventListener('click', function() {
-            txtGreenma.classList.toggle('bubble-show');
-        });
-        btnBag.addEventListener('click', function() {
-            txtBag.classList.toggle('bubble-show');
-        });
-
-        // --- 互動邏輯：Wednesday ---
-        const btnTri = document.getElementById('btn-triangle');
-        const grpTri = document.getElementById('grp-triangle');
-        const txtTri = document.getElementById('txt-triangle');
-        
-        btnTri.addEventListener('click', function() {
-            grpTri.classList.remove('anim-shake-random'); 
-            txtTri.classList.toggle('bubble-visible');
-        });
-
-        const btnHole = document.getElementById('btn-hole');
-        const grpHole = document.getElementById('grp-hole');
-        const txtHole = document.getElementById('txt-hole');
-        
-        btnHole.addEventListener('click', function() {
-            grpHole.classList.remove('anim-shake-random'); 
-            txtHole.classList.toggle('bubble-visible');
-        });
-
-        const greenSpin = document.getElementById('wed-green-spin');
-        
-        greenSpin.addEventListener('mouseenter', function() {
-            if(wednesdayStep >= 5) {
-                isHoveringGreen = true;
-                console.log("Mouse over Green! Scroll to expand spotlight.");
-            }
-        });
-        greenSpin.addEventListener('mouseleave', function() { });
-
-        // --- 互動邏輯：Friday ---
-        const flowersObj = document.querySelectorAll('.fri-flower');
-        const flText = document.getElementById('fri-fltext');
-        
-        flowersObj.forEach(f => {
-            f.addEventListener('click', function() {
-                flText.style.opacity = (flText.style.opacity == 1) ? 0 : 1;
-            });
-        });
-
-        document.getElementById('fri-nocar').addEventListener('click', function(){
-            this.classList.remove('anim-shake-random');
-        });
-        document.getElementById('fri-stair').addEventListener('click', function(){
-            this.classList.remove('anim-shake-random');
-        });
-
-        // =========================================
-        // Activity 彈窗互動邏輯
-        // =========================================
-        const btnActivity = document.getElementById('obj-activity');
-        const activityPopup = document.getElementById('activity-popup');
-        
-        // 按照 6 到 1 的順序排好，方便等一下「依序發牌」
-        const popLayers = [
-            document.getElementById('pop-layer6'),
-            document.getElementById('pop-layer5'),
-            document.getElementById('pop-layer4'),
-            document.getElementById('pop-layer3'),
-            document.getElementById('pop-layer2'),
-            document.getElementById('pop-layer1')
-        ];
-
-        // 1. 點擊 activity 按鈕：打開彈窗並依序顯示圖片
-        btnActivity.addEventListener('click', function(e) {
-            e.preventDefault(); // 防止網址跳轉
-            activityPopup.classList.add('show-popup'); // 背景淡入
-            
-            // 延遲發牌動畫 (每隔 0.15 秒出現一張，6 -> 5 -> 4 -> 3 -> 2 -> 1)
-            popLayers.forEach((layer, index) => {
-                setTimeout(() => {
-                    layer.classList.add('layer-visible');
-                }, 300 + (index * 150)); 
-            });
-        });
-
-        // 2. 點擊圖片：讓它消失。如果是最後一張 (6.png)，就關閉整個彈窗
-        popLayers.forEach((layer, index) => {
-            layer.addEventListener('click', function() {
-                // 點擊後把自己隱藏
-                this.classList.remove('layer-visible');
-                
-                // 檢查是不是點到 6.png (在陣列裡 index 是 0)
-                if (index === 0) {
-                    // 等 6.png 縮小的動畫跑完 (約 0.4秒) 後，關閉整個彈窗背景
-                    setTimeout(() => {
-                        activityPopup.classList.remove('show-popup');
-                    }, 400); 
-                }
-            });
-        });

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookle - Mr. Green & Red</title>
+    <style>
+        /* --- 1. 全域與字體設定 --- */
+        @font-face {
+            font-family: 'Cubic';
+            src: url('Cubic_11.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff; 
+            font-family: 'Cubic', sans-serif;
+            color: #333;
+            /* 保留上方 80px 的空間給固定住的 Header */
+            padding-top: 80px; 
+            overflow-x: hidden; 
+        }
+
+        /* --- 2. Header (完全照抄保持不變) --- */
+        .ui-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;       
+            background-color: #ffffff; 
+            border-bottom: 2px solid #333; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center; 
+            padding: 0 40px;     
+            z-index: 1000;
+        }
+        .home-btn { display: block; width: 50px; height: 50px; transition: transform 0.2s; }
+        .home-btn img { width: 100%; height: 100%; object-fit: contain; }
+        .home-btn:hover { transform: scale(1.1); }
+        .menu-container { position: relative; }
+        .hamburger-icon { width: 35px; height: 30px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; }
+        .lines-wrapper { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; transition: opacity 0.2s; }
+        .lines-wrapper span { display: block; width: 100%; height: 4px; background-color: #333; border-radius: 4px; }
+        .hover-img { width: 150%; height: 150%; object-fit: contain; display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .hamburger-icon:hover .lines-wrapper, .menu-container.active .hamburger-icon .lines-wrapper { display: none; }
+        .hamburger-icon:hover .hover-img, .menu-container.active .hamburger-icon .hover-img { display: block; }
+        .menu-list { position: absolute; top: 60px; right: 0; background-color: #ffffff; border: 2px solid #333; border-radius: 8px; width: 140px; display: none; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 1001; }
+        .menu-list.show { display: flex; }
+        .menu-list a { text-decoration: none; color: #333; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 18px; transition: background 0.2s; }
+        .menu-list a:last-child { border-bottom: none; }
+        .menu-list a:hover { background-color: #f0f0f0; color: #000; }
+
+        /* =========================================
+           3. Activity 彈窗與六張圖層設定 (照抄)
+           ========================================= */
+        #activity-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.85); 
+            z-index: 20000; 
+            opacity: 0;
+            pointer-events: none; 
+            transition: opacity 0.5s ease;
+        }
+
+        #activity-popup.show-popup {
+            opacity: 1;
+            pointer-events: auto; 
+        }
+
+        .popup-layer {
+            position: absolute;
+            opacity: 0;
+            transform: scale(0.8); 
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            cursor: pointer;
+            pointer-events: none; 
+        }
+
+        .popup-layer.layer-visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto; 
+        }
+
+        #pop-layer1 { z-index: 16; top: 16%; left: 40%; width: 27%; }
+        #pop-layer2 { z-index: 15; top: 40%; left: 27%; width: 35%; }
+        #pop-layer3 { z-index: 14; top: 23%; left: 60%; width: 23%; }
+        #pop-layer4 { z-index: 13; top: 65%; left: 10%; width: 25%; }
+        #pop-layer5 { z-index: 12; top: 50%; left: 60%; width: 20%; }
+        #pop-layer6 { z-index: 11; top: 30%; left: 18%; width: 20%; }
+
+        /* =========================================
+           4. 本頁專屬：滿版商品圖設定
+           ========================================= */
+        #full-product-img {
+            width: 100%;       /* 寬度 100% 填滿螢幕 */
+            height: auto;      /* 高度依比例自然延伸不變形 */
+            display: block;    /* 消除圖片下方預設的微小縫隙 */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ui-header">
+        <a href="index.html?skip=true" class="home-btn"><img src="firstpic/home.png" alt="Home"></a>
+        <div class="menu-container" id="menuContainer">
+            <div class="hamburger-icon" onclick="toggleMenu()">
+                <div class="lines-wrapper"><span></span><span></span><span></span></div>
+                <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
+            </div>
+            <div class="menu-list" id="menuList">
+                <a href="bookri.html">關於</a><a href="#">周邊</a>
+                
+                <a href="#" id="obj-activity" class="obj-container">活動</a>
+                
+                <a href="calender.html">品牌</a><a href="computer.html">地圖</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="activity-popup">
+        <img class="popup-layer" id="pop-layer6" src="thirdpic/6.png">
+        <img class="popup-layer" id="pop-layer5" src="thirdpic/5.png">
+        <img class="popup-layer" id="pop-layer4" src="thirdpic/4.png">
+        <img class="popup-layer" id="pop-layer3" src="thirdpic/3.png">
+        <img class="popup-layer" id="pop-layer2" src="thirdpic/2.png">
+        <img class="popup-layer" id="pop-layer1" src="thirdpic/1.png">
+    </div>
+
+    <img id="full-product-img" src="thirdpic/product.jpg" alt="Product Showcase">
+
+    <script>
+        // --- Header 選單開啟關閉邏輯 ---
+        function toggleMenu() {
+            document.getElementById('menuList').classList.toggle('show');
+            document.getElementById('menuContainer').classList.toggle('active');
+        }
+        document.addEventListener('click', (e) => {
+            if (!document.getElementById('menuContainer').contains(e.target)) {
+                document.getElementById('menuList').classList.remove('show');
+                document.getElementById('menuContainer').classList.remove('active');
+            }
+        });
+
+        // =========================================
+        // Activity 彈窗互動邏輯 (照抄)
+        // =========================================
+        const btnActivity = document.getElementById('obj-activity');
+        const activityPopup = document.getElementById('activity-popup');
+        
+        const popLayers = [
+            document.getElementById('pop-layer6'),
+            document.getElementById('pop-layer5'),
+            document.getElementById('pop-layer4'),
+            document.getElementById('pop-layer3'),
+            document.getElementById('pop-layer2'),
+            document.getElementById('pop-layer1')
+        ];
+
+        btnActivity.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            activityPopup.classList.add('show-popup'); 
+            
+            popLayers.forEach((layer, index) => {
+                setTimeout(() => {
+                    layer.classList.add('layer-visible');
+                }, 300 + (index * 150)); 
+            });
+        });
+
+        popLayers.forEach((layer, index) => {
+            layer.addEventListener('click', function() {
+                this.classList.remove('layer-visible');
+                if (index === 0) {
+                    setTimeout(() => {
+                        activityPopup.classList.remove('show-popup');
+                    }, 400); 
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

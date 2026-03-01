@@ -1,4 +1,4 @@
-        /* --- 1. 字體設定 --- */
+/* --- 1. 字體設定 --- */
         @font-face {
             font-family: 'Cubic';
             src: url('Cubic_11.ttf') format('truetype');
@@ -28,83 +28,39 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(255, 255, 255, 0.85); /* 半透明白底覆蓋 */
-            z-index: 20000; /* 超高層級，保證蓋住所有場景 */
+            background-color: rgba(255, 255, 255, 0.85); 
+            z-index: 20000; 
             opacity: 0;
-            pointer-events: none; /* 隱藏時不能點擊 */
+            pointer-events: none; 
             transition: opacity 0.5s ease;
         }
 
         #activity-popup.show-popup {
             opacity: 1;
-            pointer-events: auto; /* 顯示時恢復點擊 */
+            pointer-events: auto; 
         }
 
         .popup-layer {
             position: absolute;
             opacity: 0;
-            transform: scale(0.8); /* 一開始縮小一點，出現時會有放大的動態感 */
+            transform: scale(0.8); 
             transition: opacity 0.4s ease, transform 0.4s ease;
             cursor: pointer;
             pointer-events: none; 
         }
 
-        /* 圖片出現時的動畫狀態 */
         .popup-layer.layer-visible {
             opacity: 1;
             transform: scale(1);
-            pointer-events: auto; /* 出現後才能被點擊 */
+            pointer-events: auto; 
         }
 
-        /* --- 套用你設定好的六張圖片專屬位置與大小 --- */
-        
-        /* 第 1 張 (最上層，最先被點擊) */
-        #pop-layer1 { 
-            z-index: 16; 
-            top: 16%;   
-            left: 40%;  
-            width: 27%; 
-        }
-
-        /* 第 2 張 */
-        #pop-layer2 { 
-            z-index: 15; 
-            top: 40%; 
-            left: 27%; 
-            width: 35%; 
-        }
-
-        /* 第 3 張 */
-        #pop-layer3 { 
-            z-index: 14; 
-            top: 23%; 
-            left: 60%; 
-            width: 23%; 
-        }
-
-        /* 第 4 張 */
-        #pop-layer4 { 
-            z-index: 13; 
-            top: 65%; 
-            left: 10%; 
-            width: 25%; 
-        }
-
-        /* 第 5 張 */
-        #pop-layer5 { 
-            z-index: 12; 
-            top: 50%; 
-            left: 60%; 
-            width: 20%; 
-        }
-        
-        /* 第 6 張 (最底層) */
-        #pop-layer6 { 
-            z-index: 11; 
-            top: 30%; 
-            left: 18%; 
-            width: 20%; 
-        }
+        #pop-layer1 { z-index: 16; top: 16%; left: 40%; width: 27%; }
+        #pop-layer2 { z-index: 15; top: 40%; left: 27%; width: 35%; }
+        #pop-layer3 { z-index: 14; top: 23%; left: 60%; width: 23%; }
+        #pop-layer4 { z-index: 13; top: 65%; left: 10%; width: 25%; }
+        #pop-layer5 { z-index: 12; top: 50%; left: 60%; width: 20%; }
+        #pop-layer6 { z-index: 11; top: 30%; left: 18%; width: 20%; }
 
         /* =========================================
         星期過場圖片掉落動畫設定
@@ -113,21 +69,16 @@
             position: fixed;
             top: -100%; 
             left: 50%;
-            
-            /* 【修改這裡】：在原本的 translateX 後面加上 rotate() */
-            /* -5deg 代表「逆時針稍微傾斜 5 度」，如果是 5deg 就是順時針 */
             transform: translateX(-50%) rotate(-5deg); 
-            
-            width: 55%; 
+            width: 70%; 
             z-index: 9999; 
             opacity: 0;
-            
             transition: top 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
             pointer-events: none; 
         }
 
         .day-banner.show-banner {
-            top: 15%; 
+            top: 8%; 
             opacity: 1;
         }
 
@@ -142,7 +93,7 @@
             justify-content: space-between;
             align-items: center; 
             padding: 0 40px;     
-            z-index: 1000;
+            z-index: 10000; /* 提高層級避免被蓋住 */
         }
 
         .home-btn {
@@ -228,28 +179,10 @@
             z-index: 1001;
         }
 
-        .menu-list.show {
-            display: flex;
-        }
-
-        .menu-list a {
-            text-decoration: none;
-            color: #333;
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-            font-size: 18px;
-            transition: background 0.2s;
-        }
-
-        .menu-list a:last-child {
-            border-bottom: none;
-        }
-
-        .menu-list a:hover {
-            background-color: #f0f0f0;
-            color: #000;
-        }
+        .menu-list.show { display: flex; }
+        .menu-list a { text-decoration: none; color: #333; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 18px; transition: background 0.2s; }
+        .menu-list a:last-child { border-bottom: none; }
+        .menu-list a:hover { background-color: #f0f0f0; color: #000; }
 
         /* --- 3. 主要內容區域 --- */
         #main-display {
@@ -263,830 +196,211 @@
         /* === 場景 1：Start (開場) === */
         #scene-start {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('startpic/start.png');
             background-size: 100%; 
             background-position: center -130px; 
-
             background-repeat: no-repeat;
             transition: transform 0.8s ease, opacity 0.8s ease;
             z-index: 10;
         }
-
-        #scene-start.slide-up {
-            transform: translateY(-100%);
-            opacity: 0;
-        }
-
+        #scene-start.slide-up { transform: translateY(-100%); opacity: 0; }
         #moving-car {
             position: absolute;
-            left: -300px; 
-            top: 87%; 
-            width: 200px;
-            height: auto;
+            left: -300px; top: 87%; width: 200px; height: auto;
             z-index: 10;
             animation: driveRight 4s linear infinite; 
         }
+        @keyframes driveRight { 0% { transform: translateX(0); } 100% { transform: translateX(calc(100vw + 400px)); } }
 
-        @keyframes driveRight {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(calc(100vw + 400px)); }
-        }
-
-        /* === 場景 2：Monday (星期一) === */
+        /* === 場景 2：Monday === */
         #scene-monday {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            display: none; 
-            overflow: hidden;
-            font-family: 'Cubic', sans-serif;
-            color: #333;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff; display: none; overflow: hidden;
+            font-family: 'Cubic', sans-serif; color: #333;
         }
-        
-        #scene-monday.visible {
-            display: block;
-        }
-
-        /* --- Monday 場景物件樣式 --- */
-        .text-group {
-            position: absolute;
-            top: 10%;
-            left: 25%; 
-            transform: none; 
-            text-align: left; 
-            z-index: 20;
-        }
-
-        .title-text {
-            font-size: 30px;
-            font-weight: bold;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease;
-            margin-bottom: 10px;
-        }
-        
-        .sub-text {
-            font-size: 18px;
-            color: #666;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.8s ease;
-        }
-
+        #scene-monday.visible { display: block; }
+        .text-group { position: absolute; top: 10%; left: 25%; text-align: left; z-index: 20; }
+        .title-text { font-size: 30px; font-weight: bold; opacity: 0; transform: translateY(20px); transition: all 0.8s ease; margin-bottom: 10px; }
+        .sub-text { font-size: 18px; color: #666; opacity: 0; transform: translateY(20px); transition: all 0.8s ease; }
         .text-in { opacity: 1; transform: translateY(0); }
-
-        .left-group {
-            position: absolute;
-            bottom: 50px;
-            left: 5%;
-            width: 400px; 
-            height: auto;
-            opacity: 0;
-            transform: translateX(-100px); 
-            transition: all 1.2s ease;
-            z-index: 5;
-        }
+        .left-group { position: absolute; bottom: 50px; left: 5%; width: 400px; opacity: 0; transform: translateX(-100px); transition: all 1.2s ease; z-index: 5; }
         .obj-house { width: 100%; position: relative; z-index: 1;}
-        
-        .obj-cold { 
-            position: absolute; top: 122px; right: 205px; width: 70px; z-index: 2;
-            cursor: pointer;
-            transform-origin: bottom center; 
-        } 
-        .obj-tower { 
-            position: absolute; top: 38px; left: 250px; width: 30px; z-index: 2;
-            cursor: pointer;
-            transform-origin: bottom center;
-        }
-
-        /* 文字氣泡 */
-        .obj-bubble {
-            position: absolute;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: 20;
-            pointer-events: none;
-            width: auto;
-            height: auto;
-            max-width: 210px;
-        }
+        .obj-cold { position: absolute; top: 122px; right: 205px; width: 70px; z-index: 2; cursor: pointer; transform-origin: bottom center; } 
+        .obj-tower { position: absolute; top: 38px; left: 250px; width: 30px; z-index: 2; cursor: pointer; transform-origin: bottom center; }
+        .obj-bubble { position: absolute; opacity: 0; transition: opacity 0.5s ease; z-index: 20; pointer-events: none; width: auto; height: auto; max-width: 210px; }
         #txt-tower { top: 100px; left: 260px; }
         #txt-cold { top: -120px; right: 200px; }
         .bubble-visible { opacity: 1; }
-
-        /* 晃動動畫 */
-        @keyframes shake-idle {
-            0% { transform: rotate(0deg); }
-            5% { transform: rotate(8deg); }
-            10% { transform: rotate(-8deg); }
-            15% { transform: rotate(8deg); }
-            20% { transform: rotate(0deg); }
-            100% { transform: rotate(0deg); }
-        }
-        .anim-shake {
-            animation: shake-idle 3s infinite; 
-        }
-
-        .right-group {
-            position: absolute;
-            top: 0%; 
-            right: 5%;
-            width: 165px;
-            opacity: 0;
-            transform: translateX(100px); 
-            transition: all 1.2s ease;
-            z-index: 15;
-        }
+        @keyframes shake-idle { 0% { transform: rotate(0deg); } 5% { transform: rotate(8deg); } 10% { transform: rotate(-8deg); } 15% { transform: rotate(8deg); } 20% { transform: rotate(0deg); } 100% { transform: rotate(0deg); } }
+        .anim-shake { animation: shake-idle 3s infinite; }
+        .right-group { position: absolute; top: 0%; right: 5%; width: 165px; opacity: 0; transform: translateX(100px); transition: all 1.2s ease; z-index: 15; }
         .obj-intersac { width: 100%; }
         .slide-in-active { opacity: 1; transform: translateX(0); }
-
-        .bottom-group {
-            position: absolute;
-            bottom: 20px;
-            left: 55%; 
-            transform: translateX(-50%) translateY(50px);
-            opacity: 0;
-            transition: all 1s ease;
-            z-index: 4;
-        }
+        .bottom-group { position: absolute; bottom: 20px; left: 55%; transform: translateX(-50%) translateY(50px); opacity: 0; transition: all 1s ease; z-index: 4; }
         .obj-water { width: 180px; }
         .slide-up-active { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        .obj-rain {
-            position: absolute;
-            top: 15%;
-            left: 40%;
-            width: 30%;
-            opacity: 0;
-            transition: all 1s ease;
-            z-index: 8;
-            pointer-events: none;
-        }
+        .obj-rain { position: absolute; top: 15%; left: 40%; width: 30%; opacity: 0; transition: all 1s ease; z-index: 8; pointer-events: none; }
         .rain-active { opacity: 0.6; }
-
-        .green-man-container {
-            position: absolute;
-            bottom: 30px;
-            right: 25%; 
-            width: 230px;
-            opacity: 0;
-            transform: translateX(50px); 
-            transition: all 1s ease;
-            z-index: 7;
-        }
+        .green-man-container { position: absolute; bottom: 30px; right: 25%; width: 230px; opacity: 0; transform: translateX(50px); transition: all 1s ease; z-index: 7; }
         .obj-green { width: 100%; }
         .green-in { opacity: 1; transform: translateX(0); }
-
-        .car-container-monday {
-            position: absolute;
-            bottom: 40px;
-            left: 100vw; 
-            width: 250px;
-            z-index: 6;
-        }
+        .car-container-monday { position: absolute; bottom: 40px; left: 100vw; width: 250px; z-index: 6; }
         .obj-car-monday { width: 100%; }
-
-        @keyframes carDriveBy {
-            0% { left: 110vw; }
-            40% { left: 55%; } 
-            100% { left: -400px; } 
-        }
+        @keyframes carDriveBy { 0% { left: 110vw; } 40% { left: 55%; } 100% { left: -400px; } }
         .car-run { animation: carDriveBy 2.5s linear forwards; }
 
-        /* === 場景 3：Tuesday 樣式 === */
-        #scene-tuesday {
-            position: absolute;
-            top: 0;
-            left: 100%;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            overflow: hidden;
-            transition: transform 1s ease;
-            z-index: 30;
-            font-family: 'Cubic', sans-serif;
-        }
+        /* === 場景 3：Tuesday === */
+        #scene-tuesday { position: absolute; top: 0; left: 100%; width: 100%; height: 100%; background-color: #ffffff; overflow: hidden; transition: transform 1s ease; z-index: 30; font-family: 'Cubic', sans-serif; }
         #scene-tuesday.active { transform: translateX(-100%); }
-
-        #tues-text-group {
-            position: absolute;
-            top: 10%;
-            left: 25%; 
-            transform: none; 
-            text-align: left; 
-            z-index: 20;
-        }
-        .obj-intersac2 {
-            position: absolute;
-            top: 5%;
-            left: 10%;
-            width: 150px;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
-        .obj-mrt {
-            position: absolute;
-            top: 13%;
-            right: 14%;
-            width: 550px;
-            opacity: 0;
-            transition: opacity 1s ease;
-        }
+        #tues-text-group { position: absolute; top: 10%; left: 25%; z-index: 20; }
+        .obj-intersac2 { position: absolute; top: 5%; left: 10%; width: 150px; opacity: 0; transition: opacity 1s ease; }
+        .obj-mrt { position: absolute; top: 13%; right: 14%; width: 550px; opacity: 0; transition: opacity 1s ease; }
         .bg-visible { opacity: 1; }
-
-        .grandma-container {
-            position: absolute;
-            bottom: 10%; 
-            right: -300px; 
-            width: 200px; 
-            height: auto;
-            z-index: 10;
-            pointer-events: none;
-        }
+        .grandma-container { position: absolute; bottom: 10%; right: -300px; width: 200px; z-index: 10; pointer-events: none; }
         .obj-greenma { width: 100%; }
-        @keyframes grandmaWalk {
-            0% { right: -300px; }
-            100% { right: 57%; } 
-        }
+        @keyframes grandmaWalk { 0% { right: -300px; } 100% { right: 57%; } }
         .grandma-walking { animation: grandmaWalk 4s linear forwards; }
-
-        .flowers-on-road {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 5; 
-        }
-        .obj-flo {
-            width: 30px;
-            position: absolute;
-            bottom: 10%; 
-            opacity: 0; 
-        }
-        .flo1 { right: 35%; }
-        .flo2 { right: 40%; }
-        .flo3 { right: 45%; }
-        .flo4 { right: 50%; }
-
-        @keyframes flowerDrop {
-            0% { opacity: 0; transform: scale(0.5); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+        .flowers-on-road { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; z-index: 5; }
+        .obj-flo { width: 30px; position: absolute; bottom: 10%; opacity: 0; }
+        .flo1 { right: 35%; } .flo2 { right: 40%; } .flo3 { right: 45%; } .flo4 { right: 50%; }
+        @keyframes flowerDrop { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
         .flo-anim { animation: flowerDrop 1s ease-out forwards; }
-
-        .red-container {
-            position: absolute;
-            bottom: 10%;
-            right: -200px;
-            width: 20px;
-            opacity: 0;
-            transition: all 1.5s ease;
-            z-index: 6;
-        }
+        .red-container { position: absolute; bottom: 10%; right: -200px; width: 20px; opacity: 0; transition: all 1.5s ease; z-index: 6; }
         .obj-red { width: 120px; }
-        .obj-bag { 
-            width: 60px; 
-            position: absolute; 
-            bottom: 3px; 
-            right: -110px; 
-        }
+        .obj-bag { width: 60px; position: absolute; bottom: 3px; right: -110px; }
         .red-enter { opacity: 1; right: 31%; }
-
-        .dialogue-container {
-            position: absolute;
-            bottom: 40%;
-            right: 10%; 
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-        }
+        .dialogue-container { position: absolute; bottom: 40%; right: 10%; opacity: 0; transform: scale(0.5); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .obj-line { width: 30px; position: absolute; bottom: -50px; right: 150px;}
         .obj-word { width: 100px; position: absolute; bottom: -100px; right: 300px;}
         .dialogue-show { opacity: 1; transform: scale(1); }
-
-        .obj-bubble-tues {
-            position: absolute;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: 20;
-            pointer-events: none; 
-            width: 230px; 
-            height: auto;
-        }
+        .obj-bubble-tues { position: absolute; opacity: 0; transition: opacity 0.5s ease; z-index: 20; pointer-events: none; width: 230px; height: auto; }
         #btn-greenma { cursor: pointer; pointer-events: auto; }
         #txt-greenma { top: -100px; left: -250px; }
         #btn-bag { cursor: pointer; pointer-events: auto; z-index: 15; }
         #txt-bag { top: -120px; right: 0px; }
         .bubble-show { opacity: 1; }
 
-        /* === 場景 4：Wednesday 樣式 === */
-        #scene-wednesday {
-            position: absolute;
-            top: 0;
-            left: 100%;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            overflow: hidden;
-            transition: transform 1s ease;
-            z-index: 40;
-        }
-        
-        #scene-wednesday.active {
-            transform: translateX(-100%);
-        }
-
-        #wed-text-group {
-            position: absolute;
-            top: 10%;
-            left: 25%;
-            z-index: 20;
-            font-family: 'Cubic', sans-serif;
-            text-align: left;
-            transition: opacity 1s ease; 
-        }
-
-        .wed-obj-container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none; 
-            transition: opacity 1s ease; 
-        }
-
-        /* 1. 三角錐 Triangle */
-        .obj-triangle-wrapper {
-            position: absolute;
-            bottom: 35%;
-            left: 30%;
-            width: 100px;
-            opacity: 0;
-            transform: translateX(-50px);
-            transition: all 1s ease;
-            transform-origin: bottom center;
-            z-index: 5;
-            pointer-events: none;
-        }
-        
-        /* 2. 坑洞 Hole */
-        .obj-hole-wrapper {
-            position: absolute;
-            bottom: 25%;
-            right: 35%;
-            width: 250px;
-            opacity: 0;
-            transform: translateX(50px);
-            transition: all 1s ease;
-            z-index: 5;
-            pointer-events: none;
-        }
-        
-        #btn-triangle, #btn-hole {
-            width: 100%;
-            cursor: pointer;
-            pointer-events: auto;
-        }
-        
-        .obj-greenwed {
-            position: absolute;
-            bottom: 90px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 220px;
-            z-index: 6;
-            transition: transform 1.5s ease-in;
-        }
-
-        .obj-bubble-wed {
-            position: absolute;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 25;
-            pointer-events: none;
-            width: 150px;
-        }
-        
+        /* === 場景 4：Wednesday === */
+        #scene-wednesday { position: absolute; top: 0; left: 100%; width: 100%; height: 100%; background-color: #ffffff; overflow: hidden; transition: transform 1s ease; z-index: 40; }
+        #scene-wednesday.active { transform: translateX(-100%); }
+        #wed-text-group { position: absolute; top: 10%; left: 25%; z-index: 20; font-family: 'Cubic', sans-serif; text-align: left; transition: opacity 1s ease; }
+        .wed-obj-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; transition: opacity 1s ease; }
+        .obj-triangle-wrapper { position: absolute; bottom: 35%; left: 30%; width: 100px; opacity: 0; transform: translateX(-50px); transition: all 1s ease; transform-origin: bottom center; z-index: 5; pointer-events: none; }
+        .obj-hole-wrapper { position: absolute; bottom: 25%; right: 35%; width: 250px; opacity: 0; transform: translateX(50px); transition: all 1s ease; z-index: 5; pointer-events: none; }
+        #btn-triangle, #btn-hole { width: 100%; cursor: pointer; pointer-events: auto; }
+        .obj-greenwed { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); width: 220px; z-index: 6; transition: transform 1.5s ease-in; }
+        .obj-bubble-wed { position: absolute; opacity: 0; transition: opacity 0.3s ease; z-index: 25; pointer-events: none; width: 150px; }
         #txt-triangle { top: -100px; left: 0px; }
         #txt-hole { top: -120px; right: 0px; }
-
         .wed-enter-left { opacity: 1; transform: translateX(0); }
         .wed-enter-right { opacity: 1; transform: translateX(0); }
-
         .fade-out-scene { opacity: 0 !important; pointer-events: none; }
-
-        @keyframes shake-irregular {
-            0% { transform: rotate(0deg); }
-            10% { transform: rotate(5deg); }
-            20% { transform: rotate(-5deg); }
-            30% { transform: rotate(3deg); }
-            40% { transform: rotate(0deg); }
-            100% { transform: rotate(0deg); }
-        }
+        @keyframes shake-irregular { 0%, 40%, 100% { transform: rotate(0deg); } 10% { transform: rotate(5deg); } 20% { transform: rotate(-5deg); } 30% { transform: rotate(3deg); } }
         .anim-shake-random { animation: shake-irregular 4s infinite; }
-
-        .green-fall {
-            transform: translateX(-50%) translateY(500px) !important;
-        }
-
-        .black-transition {
-            position: absolute;
-            bottom: -100%;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 30;
-            transition: bottom 2s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex;
-            align-items: flex-end;
-            pointer-events: none;
-        }
+        .green-fall { transform: translateX(-50%) translateY(500px) !important; }
+        .black-transition { position: absolute; bottom: -100%; left: 0; width: 100%; height: 100%; z-index: 30; transition: bottom 2s cubic-bezier(0.25, 1, 0.5, 1); display: flex; align-items: flex-end; pointer-events: none; }
         .obj-black { width: 100%; height: auto; display: block; }
-        
         .black-rise { bottom: 0; }
-
-        .black-bg-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            opacity: 0;
-            z-index: 29; 
-            transition: opacity 1.5s ease;
-            pointer-events: none;
-        }
-        
-        .bg-dark-active { 
-            opacity: 1; 
-            z-index: 35; 
-            pointer-events: auto;
-        }
-        
-        .final-dark-scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('startpic/allblack.png');
-            background-size: cover;
-            opacity: 0;
-            z-index: 50;
-            pointer-events: none;
-            transition: opacity 2s ease;
-        }
-        
-        .final-active { 
-            opacity: 1; 
-            pointer-events: auto; 
-            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='15' fill='white'/%3E%3C/svg%3E") 16 16, pointer;
-        }
-
-        .obj-greenwed2 {
-            position: absolute;
-            top: 50%;
-            left: 30%;
-            width: 230px;
-            margin-top: -50px;
-            margin-left: -50px;
-            animation: spin 5s linear infinite;
-            z-index: 52; 
-        }
+        .black-bg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #000; opacity: 0; z-index: 29; transition: opacity 1.5s ease; pointer-events: none; }
+        .bg-dark-active { opacity: 1; z-index: 35; pointer-events: auto; }
+        .final-dark-scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('startpic/allblack.png'); background-size: cover; opacity: 0; z-index: 50; pointer-events: none; transition: opacity 2s ease; }
+        .final-active { opacity: 1; pointer-events: auto; cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='15' fill='white'/%3E%3C/svg%3E") 16 16, pointer; }
+        .obj-greenwed2 { position: absolute; top: 50%; left: 30%; width: 230px; margin-top: -50px; margin-left: -50px; animation: spin 5s linear infinite; z-index: 52; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        #wed-expand-spotlight {
-            position: absolute;
-            top: 50%;
-            left: 30%;
-            width: 230px;
-            transform: translate(-50%, -50%) scale(0);
-            opacity: 0;
-            z-index: 55;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
+        #wed-expand-spotlight { position: absolute; top: 50%; left: 30%; width: 230px; transform: translate(-50%, -50%) scale(0); opacity: 0; z-index: 55; pointer-events: none; transition: opacity 0.5s ease; }
+        /* 星期三專屬：平滑放大動畫 */
+        .spotlight-expand {
+            transform: translate(-50%, -50%) scale(50) !important;
+            opacity: 1 !important;
+            /* 1.5 秒內順滑放大，加上 cubic-bezier 讓節奏更自然 */
+            transition: transform 1.5s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.5s ease !important; 
         }
-
-        .float-num {
-            position: absolute;
-            width: 30px;
-            opacity: 0.7;
-        }
-        @keyframes float {
-            0% { transform: translateY(0px) translateX(0px); }
-            50% { transform: translateY(-20px) translateX(10px); }
-            100% { transform: translateY(0px) translateX(0px); }
-        }
+        .float-num { position: absolute; width: 30px; opacity: 0.7; }
+        @keyframes float { 0%, 100% { transform: translateY(0px) translateX(0px); } 50% { transform: translateY(-20px) translateX(10px); } }
         .float-anim { animation: float 6s ease-in-out infinite; }
 
-        /* === 場景 5：Thursday 樣式 === */
-        #scene-thursday {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            z-index: 70; 
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1.5s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center; 
-            overflow: hidden;
-            font-family: 'Cubic', sans-serif;
-        }
+        /* === 場景 5：Thursday (包含重構後的影片與樹葉) === */
+        #scene-thursday { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 70; opacity: 0; pointer-events: none; transition: opacity 1.5s ease; overflow: hidden; font-family: 'Cubic', sans-serif; }
+        #scene-thursday.active { opacity: 1; pointer-events: auto; }
 
-        #scene-thursday.active {
-            opacity: 1;
-            pointer-events: auto;
-            cursor: default; 
-        }
-
-        #thurs-text-group {
-            position: absolute;
-            top: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            z-index: 80;
-        }
-        
-        .video-container {
-            width: 90%;
-            max-width: 1400px;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 1.5s ease;
-            z-index: 75;
-        }
+        /* 第一階段：車子部分 */
+        #thurs-car-part { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease; }
+        .hide-part { opacity: 0 !important; pointer-events: none !important; }
+        #thurs-text-group { position: absolute; top: 15%; left: 50%; transform: translateX(-50%); text-align: center; z-index: 80; }
+        .video-container { width: 90%; max-width: 1400px; opacity: 0; transform: scale(0.9); transition: all 1.5s ease; z-index: 75; }
         .video-container video { width: 100%; height: auto; }
         .video-in { opacity: 1; transform: scale(1); }
-
-        #thurs-license {
-            position: absolute;
-            top: -100%; 
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
-            transition: top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 85;
-        }
+        #thurs-license { position: absolute; top: -100%; left: 50%; transform: translateX(-50%); width: 400px; transition: top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 85; }
         .license-drop { top: 30% !important; }
-
-        #thurs-no {
-            position: absolute;
-            top: 95%;
-            left: 65%;
-            width: 100px;
-            margin-left: -200px;
-            margin-top: -200px;
-            transform: scale(5); 
-            opacity: 0;
-            transition: all 1s ease-in;
-            z-index: 90;
-        }
+        #thurs-no { position: absolute; top: 95%; left: 65%; width: 100px; margin-left: -200px; margin-top: -200px; transform: scale(5); opacity: 0; transition: all 1s ease-in; z-index: 90; }
         .no-shrink { transform: scale(1) !important; opacity: 1 !important; }
 
-        /* === 場景 6：Friday 樣式 (新增) === */
-        #scene-friday {
-            position: absolute;
-            top: 0;
-            left: 100%; 
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            z-index: 80; /* 比 Thursday 高 */
-            transition: transform 1s ease;
-            overflow: hidden;
-            font-family: 'Cubic', sans-serif;
-        }
+        /* 第二階段：牛奶影片與樹葉花朵 */
+        #thurs-milk-part { position: absolute; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 1s ease; z-index: 100; }
+        .show-part { opacity: 1 !important; pointer-events: auto !important; }
         
-        #scene-friday.active {
-            transform: translateX(-100%); /* 滑入 */
-        }
-        
+        #vid-milk { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 101; }
+
         /* 樹葉遮罩 */
-        .leaf-mask {
-            position: absolute;
-            width: 60%; 
-            height: auto;
-            z-index: 10;
-            opacity: 1;
-            /* 使用 transform 讓移動更絲滑 */
-            transition: transform 2s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.5s ease;
-        }
-        /* 初始位置：四個角落 (預設狀態) */
+        .leaf-mask { position: absolute; width: 60%; height: auto; z-index: 110; opacity: 1; transition: transform 2s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.5s ease; }
+        /* 初始位置：四個角落 (準備淡入) */
         #leaf1 { top: -60%; left: -60%; transform: rotate(0deg); }
         #leaf2 { top: -60%; right: -60%; transform: rotate(90deg); }
         #leaf3 { bottom: -60%; left: -60%; transform: rotate(-90deg); }
         #leaf4 { bottom: -60%; right: -60%; transform: rotate(180deg); }
 
-        /* 聚攏遮住畫面 (跑到中間) */
-        .leaf-center {
-            top: 50% !important;
-            left: 50% !important;
-            right: auto !important;
-            bottom: auto !important;
-            transform: translate(-50%, -50%) scale(1.6) rotate(360deg) !important;
-        }
-
-        /* 散開跑出去 (比初始更遠) */
-        .leaf-fly-out {
-            transition: transform 1.5s ease-in;
-        }
+        /* 聚攏遮住畫面 */
+        .leaf-center { top: 50% !important; left: 50% !important; right: auto !important; bottom: auto !important; transform: translate(-50%, -50%) scale(1.6) rotate(360deg) !important; }
+        
+        /* 散開跑出去 */
+        .leaf-fly-out { transition: transform 1.5s ease-in; }
         #leaf1.leaf-fly-out { transform: translate(-100vw, -100vh) rotate(-45deg) !important; }
         #leaf2.leaf-fly-out { transform: translate(100vw, -100vh) rotate(135deg) !important; }
         #leaf3.leaf-fly-out { transform: translate(-100vw, 100vh) rotate(-135deg) !important; }
         #leaf4.leaf-fly-out { transform: translate(100vw, 100vh) rotate(225deg) !important; }
 
-        /* 隱藏 (淡出) */
-        .leaf-hide {
-            opacity: 0 !important; 
-            pointer-events: none;
-        }
+        .leaf-hide { opacity: 0 !important; pointer-events: none; }
 
-        /* Leaf 背景圖層 */
-        #fri-bg-leaf {
-            position: absolute;
-            /* --- 1. 水平置中設定 --- */
-            left: 50%;
-            transform: translateX(-50%);
-
-            /* --- 2. 位置上去一點 --- */
-            /* 數值越小越靠上，甚至可以是負數 (例如 -50px) */
-            top: -10%; 
-            width: 100%;  /* 原本 80%，改小 */
-            height: 120%; /* 原本 100%，改小，避免太長 */
-            
-            background-image: url('startpic/leaf.png');
-            background-size: cover;
-            opacity: 0;
-            z-index: 8; 
-            transition: opacity 0.8s ease;
-        }
+        /* Leaf 背景圖層 (位於樹葉之下) */
+        #thurs-bg-leaf { position: absolute; left: 50%; transform: translateX(-50%); top: -10%; width: 100%; height: 120%; background-image: url('startpic/leaf.png'); background-size: cover; opacity: 0; z-index: 108; transition: opacity 0.8s ease; }
         .bg-show { opacity: 1 !important; }
 
         /* 互動花朵 */
-        .fri-flower {
-            position: absolute;
-            width: 50px;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 15;
-            transition: opacity 1s ease;
-        }
+        .thurs-flower { position: absolute; width: 50px; opacity: 0; cursor: pointer; z-index: 115; transition: opacity 1s ease; pointer-events: none; }
         #fl1 { top: 30%; left: 20%; }
         #fl2 { top: 17%; right: 15%; }
         #fl3 { top: 75%; left: 20%; }
         #fl4 { bottom: 16%; right: 20%; }
+        .fl-show { opacity: 1; pointer-events: auto; }
+
+        #thurs-fltext { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; opacity: 0; z-index: 120; pointer-events: none; transition: opacity 0.3s ease; }
+
+
+        /* === 場景 6：Friday 樣式 (重構) === */
+        #scene-friday { position: absolute; top: 0; left: 100%; width: 100%; height: 100%; background-color: #ffffff; z-index: 80; transition: transform 1s ease; overflow: hidden; font-family: 'Cubic', sans-serif; }
+        #scene-friday.active { transform: translateX(-100%); }
         
-        .fl-show { opacity: 1; }
+        #fri-word { position: absolute; top: 20%; transform: translateY(-50%); right: -300px; width: 200px; opacity: 0; transition: all 1s ease; z-index: 18; }
+        .word-in { opacity: 1 !important; right: 30% !important; }
 
-        #fri-fltext {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            opacity: 0;
-            z-index: 20;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
+        /* Friday 背景與彈窗 */
+        #fri-bg-final { position: absolute; left: 50%; transform: translateX(-50%); top: -22%; width: 100%; height: 140%; background-image: url('startpic/friday.png'); background-size: contain; background-repeat: no-repeat; background-position: center top; opacity: 0; z-index: 25; transition: opacity 1s ease; cursor: pointer; }
+        #txt-friday { position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%); width: 300px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 30;}
 
-        /* 右側文字 Word1 */
-        #fri-word {
-            position: absolute;
-            
-            /* --- 1. 垂直置中 (Vertical Center) --- */
-            top: 20%;
-            /* translateY(-50%) 會讓它以自身高度的一半往回拉，達成精準垂直置中 */
-            transform: translateY(-50%);
-
-            /* --- 2. 初始位置 (動畫開始前) --- */
-            /* 把它放在右邊螢幕外面，這樣等下會有滑入的效果 */
-            /* 修正：原本是用 left，現在統一用 right 避免衝突 */
-            right: -300px; 
-
-            width: 200px;
-            opacity: 0;
-            transition: all 1s ease;
-            z-index: 18;
-        }
-
-        .word-in { 
-            opacity: 1 !important; 
-            
-            /* --- 3. 進場後的位置 (靠右一點) --- */
-            /* 20% 代表距離右邊邊緣 20% 的距離 */
-            /* 如果覺得太右邊，把 20% 改大 (例如 30%) */
-            /* 如果覺得不夠右邊，把 20% 改小 (例如 10%) */
-            right: 30% !important; 
-        }
-
-        /* Friday 背景 */
-        #fri-bg-final {
-            position: absolute;
-            
-            /* --- 1. 水平置中設定 --- */
-            left: 50%;
-            transform: translateX(-50%);
-
-            /* --- 2. 位置上去一點 --- */
-            /* 數值越小越靠上，甚至可以是負數 (例如 -50px) */
-            top: -22%; 
-
-            /* --- 3. 圖片小一點 --- */
-            width: 100%;  /* 原本 80%，改小 */
-            height: 140%; /* 原本 100%，改小，避免太長 */
-
-            /* --- 4. 圖片顯示方式 --- */
-            background-image: url('startpic/friday.png');
-            /* 建議用 contain：確保整張圖完整顯示不變形 */
-            /* 如果你想要填滿框框但切掉邊緣，請改回 'cover' */
-            background-size: contain; 
-            background-repeat: no-repeat; /* 不重複 */
-            background-position: center top; /* 圖片在容器內靠上置中 */
-
-            /* --- 5. 動畫設定 --- */
-            opacity: 0;
-            z-index: 25;
-            transition: opacity 1s ease;
-        }
-
-        /* 禁止車與樓梯 */
-        #fri-nocar {
-            position: absolute;
-            bottom: 8%;
-            left: 40%;
-            width: 80px;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 30;
-        }
-        #fri-stair {
-            position: absolute;
-            bottom: -10%;
-            right: 18%;
-            width: 800px;
-            opacity: 0;
-            cursor: pointer;
-            z-index: 30;
-        }
+        /* Nocar  wrapper */
+        .nocar-wrapper { position: absolute; bottom: 8%; left: 40%; width: 80px; z-index: 30; }
+        #fri-nocar { width: 100%; opacity: 0; cursor: pointer; }
+        #txt-nocar { position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 150px; opacity: 0; transition: opacity 0.3s ease; pointer-events: none;}
         .obj-fade-in { opacity: 1 !important; }
 
-        /* 機車 Motor 1-4 */
-        .fri-motor {
-            position: absolute;
-            bottom: 8%;
-            width: 75px;
-            opacity: 0;
-            z-index: 28;
-            transition: opacity 0.5s ease;
-        }
-        #motor4 { left: 47%; }
-        #motor3 { left: 52%; }
-        #motor2 { left: 57%; }
-        #motor1 { left: 62%; }
+        /* 顯示彈窗的通用 Class */
+        .popup-visible { opacity: 1 !important; }
 
-        /* 灰色簾幕 Gray -> Allgray */
-        #fri-gray-curtain {
-            position: absolute;
-            top: -150%;
-            left: 0;
-            width: 100%;
-            height: 140%;
-            background-image: url('startpic/gray.png');
-            background-size: cover;
-            z-index: 40;
-            transition: top 2s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+        .fri-motor { position: absolute; bottom: 8%; width: 75px; opacity: 0; z-index: 28; transition: opacity 0.5s ease; }
+        #motor4 { left: 47%; } #motor3 { left: 52%; } #motor2 { left: 57%; } #motor1 { left: 62%; }
+
+        #fri-gray-curtain { position: absolute; top: -150%; left: 0; width: 100%; height: 140%; background-image: url('startpic/gray.png'); background-size: cover; z-index: 40; transition: top 2s cubic-bezier(0.25, 1, 0.5, 1); }
         .curtain-down { top: 0 !important; }
         
-        #fri-allgray {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('startpic/allgray.png');
-            background-size: cover;
-            opacity: 0;
-            z-index: 41;
-            transition: opacity 1.5s ease;
-            pointer-events: none;
-        }
+        #fri-allgray { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('startpic/allgray.png'); background-size: cover; opacity: 0; z-index: 41; transition: opacity 1.5s ease; pointer-events: none; }

@@ -81,7 +81,7 @@
             bottom: -150px; 
             right: 80px; 
             width: 250px;
-            z-index: 10; /* 不需要太高，只要在背景之上 */
+            z-index: 10; 
         }
 
         /* --- 共用 Story Section 樣式 --- */
@@ -93,44 +93,71 @@
             z-index: 1;
         }
 
-        /* 左邊 Story 3 */
-        #story3-img {
-            /* 1. 調整大小 */
-            width: 40%;       /* 原本是 100%，改小讓它變精緻 (可自行改 70%, 90%) */
-            display: block;   /* 確保縮小後可以置中 */
-            margin: 0 auto;   /* 讓縮小的圖片在框框內置中 */
+        /* =========================================
+           共用的可滾動箱子與客製化滾輪樣式
+           ========================================= */
+        .story-scroll-box {
+            height: 400px; /* 固定高度，超過這個高度就會出現滾輪 */
+            overflow-y: auto; /* 垂直方向超出時出現滾輪 */
+            overflow-x: hidden;
+            border: 4px solid #333; /* 加上黑框更有彈窗的感覺 */
+            background-color: #fff;
+            opacity: 0; /* 配合滑入動畫 */
+            transition: all 1s ease-out;
+        }
 
-            /* 2. 調整位置 */
-            margin-top: 0px;  /* 往下移 (負數 e.g. -30px 為往上移) */
-            
-            /* 3. 初始動畫位置 (保持不變) */
+        /* 確保裡面的長圖寬度自動填滿箱子 */
+        .inner-story-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* --- 客製化「復古黑白」滾輪樣式 --- */
+        .story-scroll-box::-webkit-scrollbar { width: 18px; }
+        .story-scroll-box::-webkit-scrollbar-track { background: #fff; border-left: 3px solid #333; }
+        .story-scroll-box::-webkit-scrollbar-thumb { background: #333; border: 3px solid #fff; }
+
+        /* ========================================= */
+        
+        /* 【新增】左邊 Story 1 (改成滾動箱子) */
+        #story1-box {
+            width: 80%;       
+            display: block;   
+            margin: 0 auto;   
+            margin-top: 0px;  
             transform: translateX(-100px); 
         }
 
-        /* 右邊 Story 4 */
-        #story4-img {
-            width: 80%;       /* 調整大小 */
+        /* 左邊 Story 3 */
+        #story3-img {
+            width: 40%;       
             display: block;   
             margin: 0 auto;   
+            margin-top: 0px;  
+            transform: translateX(-100px); 
+        }
 
-            margin-top: 50px; /* 範例：讓右邊這張圖比左邊低一點，製造錯落感 */
+        /* 右邊 Story 4 (改成滾動箱子) */
+        #story4-box {
+            width: 80%;       
+            display: block;   
+            margin: 0 auto;   
+            margin-top: 50px; 
             margin-left: -30px;
-            
             transform: translateX(100px); /* 保持動畫初始位置 */
         }
 
 
         /* === 這一區是 Story 5 & 6 (結尾區) === */
 
-        /* 左邊 Story 5 */
-        #story5-img {
-            width: 80%;       /* 這張我想大一點 */
+        /* 左邊 Story 5 (改成滾動箱子) */
+        #story5-box {
+            width: 80%;       
             display: block;
             margin: 0 auto;
-
-            margin-top: -20px; /* 稍微往上提一點 */
+            margin-top: -20px; 
             margin-right: -20px;
-            
             transform: translateX(-100px);
         }
 
@@ -139,14 +166,12 @@
             width: 30%;
             display: block;
             margin: 0 auto;
-
-            margin-top: 20px;  /* 稍微往下 */
+            margin-top: 20px;  
             margin-left: 0px;
-            
             transform: translateX(100px);
         }
 
-        /* 第一段：灰色背景 (只有第一段需要大的 padding-top 來避開上面的綠人) */
+        /* 第一段：灰色背景 */
         .bg-gray-intro {
             background-image: url('secpic/gray.png');
             background-size: cover;
@@ -193,7 +218,7 @@
             align-items: center;
         }
         .green-character {
-            width: 1050px; /* 大小可調 */
+            width: 1050px; 
             height: auto;
             opacity: 0;
             transform: translateY(50px);
@@ -208,36 +233,27 @@
         .footer-section {
             position: relative;
             width: 100%;
-            
-            /* 【修改重點】加大上方的 padding (第一個數字) */
-            /* 原本是 100px，改大到 400px (或更大)，讓整個區塊往下移，騰出空間給大圖 */
             padding: 400px 20px 250px 20px; 
-            
             background-color: #ffffff;
             text-align: center;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 40px;
-            /* 確保背景色延伸，蓋住可能超出的部分 (雖然現在背景都是白色沒差，但這是好習慣) */
             z-index: 5; 
         }
 
         #green2-img {
-            /* 改為絕對定位，強制黏在底部 */
             position: absolute; 
-            bottom: 0; /* 貼齊底部 */
+            bottom: 0; 
             left: 50%;
-            transform: translateX(-50%) scale(0.8); /* 水平置中 + 初始縮小 */
-            
+            transform: translateX(-50%) scale(0.8); 
             width: 1280px;
-            /* margin-bottom 刪除，因為用 absolute 了 */
             opacity: 0;
             transition: all 0.8s ease;
-            z-index: 0; /* 放在底層，以免擋住連結 */
+            z-index: 0; 
         }
         
-        /* 啟動狀態：維持水平置中，比例回覆 */
         #green2-img.active { 
             opacity: 1; 
             transform: translateX(-50%) scale(1); 
@@ -249,17 +265,8 @@
             display: flex;
             justify-content: center;
             gap: 30px;
-
-            /* --- 這裡控制位置 --- */
-            /* 範例：整體往下移 30px */
-            
             transform: translateX(200px);
             transform: translateY(230px);
-            
-            /* 【方法 B：位移法 (推薦)】 */
-            /* 第二個數字控制垂直：負數往上，正數往下 */
-            /* 例如：往下移 20px */
-            /* transform: translateY(20px); */
         }
 
         .social-icon {
@@ -272,11 +279,9 @@
         }
 
         /* --- 動畫效果 --- */
-        /* 左滑入 */
         .slide-left { transform: translateX(-100px); }
         .slide-left.active { opacity: 1; transform: translateX(0); }
 
-        /* 右滑入 */
         .slide-right { transform: translateX(100px); }
         .slide-right.active { opacity: 1; transform: translateX(0); }
 
@@ -286,11 +291,8 @@
             .hero-logo { justify-content: center; padding-left: 0; }
             .hero-text { text-align: center; padding: 0 20px; transform: none; }
             .hero-text p { text-align: left; }
-            
             .story-row { flex-direction: column; gap: 40px;}
-            
             #fixed-green { width: 100px; right: 10px; } 
-            
             .bg-gray-intro { padding-top: 150px; } 
         }
 
@@ -303,83 +305,39 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: rgba(255, 255, 255, 0.85); /* 半透明白底覆蓋 */
-            z-index: 20000; /* 超高層級，保證蓋住所有場景 */
+            background-color: rgba(255, 255, 255, 0.85); 
+            z-index: 20000; 
             opacity: 0;
-            pointer-events: none; /* 隱藏時不能點擊 */
+            pointer-events: none; 
             transition: opacity 0.5s ease;
         }
 
         #activity-popup.show-popup {
             opacity: 1;
-            pointer-events: auto; /* 顯示時恢復點擊 */
+            pointer-events: auto; 
         }
 
         .popup-layer {
             position: absolute;
             opacity: 0;
-            transform: scale(0.8); /* 一開始縮小一點，出現時會有放大的動態感 */
+            transform: scale(0.8); 
             transition: opacity 0.4s ease, transform 0.4s ease;
             cursor: pointer;
             pointer-events: none; 
         }
 
-        /* 圖片出現時的動畫狀態 */
         .popup-layer.layer-visible {
             opacity: 1;
             transform: scale(1);
-            pointer-events: auto; /* 出現後才能被點擊 */
+            pointer-events: auto; 
         }
 
-        /* --- 套用你設定好的六張圖片專屬位置與大小 --- */
-        
-        /* 第 1 張 (最上層，最先被點擊) */
-        #pop-layer1 { 
-            z-index: 16; 
-            top: 16%;   
-            left: 40%;  
-            width: 27%; 
-        }
-
-        /* 第 2 張 */
-        #pop-layer2 { 
-            z-index: 15; 
-            top: 40%; 
-            left: 27%; 
-            width: 35%; 
-        }
-
-        /* 第 3 張 */
-        #pop-layer3 { 
-            z-index: 14; 
-            top: 23%; 
-            left: 60%; 
-            width: 23%; 
-        }
-
-        /* 第 4 張 */
-        #pop-layer4 { 
-            z-index: 13; 
-            top: 65%; 
-            left: 10%; 
-            width: 25%; 
-        }
-
-        /* 第 5 張 */
-        #pop-layer5 { 
-            z-index: 12; 
-            top: 50%; 
-            left: 60%; 
-            width: 20%; 
-        }
-        
-        /* 第 6 張 (最底層) */
-        #pop-layer6 { 
-            z-index: 11; 
-            top: 30%; 
-            left: 18%; 
-            width: 20%; 
-        }
+        #pop-layer1 { z-index: 16; top: 16%; left: 40%; width: 27%; }
+        #pop-layer2 { z-index: 15; top: 40%; left: 27%; width: 35%; }
+        #pop-layer3 { z-index: 14; top: 23%; left: 60%; width: 23%; }
+        #pop-layer4 { z-index: 13; top: 65%; left: 10%; width: 25%; }
+        #pop-layer5 { z-index: 12; top: 50%; left: 60%; width: 20%; }
+        #pop-layer6 { z-index: 11; top: 30%; left: 18%; width: 20%; }
 
     </style>
 </head>
@@ -393,24 +351,22 @@
                 <img src="firstpic/hover.png" alt="Menu Hover" class="hover-img">
             </div>
             <div class="menu-list" id="menuList">
-                <a href="bookri.html">關於</a><a href="#">周邊</a>
+                <a href="bookri.html">關於</a><a href="bookle.html">周邊</a>
                 
                 <a href="#" id="obj-activity" class="obj-container">活動</a>
-                <div id="activity-popup">
-                    <img class="popup-layer" id="pop-layer6" src="thirdpic/6.png">
-                    <img class="popup-layer" id="pop-layer5" src="thirdpic/5.png">
-                    <img class="popup-layer" id="pop-layer4" src="thirdpic/4.png">
-                    <img class="popup-layer" id="pop-layer3" src="thirdpic/3.png">
-                    <img class="popup-layer" id="pop-layer2" src="thirdpic/2.png">
-                    <img class="popup-layer" id="pop-layer1" src="thirdpic/1.png">
-                </div>
-
-
-                
                 
                 <a href="calender.html">品牌</a><a href="computer.html">地圖</a>
             </div>
         </div>
+    </div>
+
+    <div id="activity-popup">
+        <img class="popup-layer" id="pop-layer6" src="thirdpic/6.png">
+        <img class="popup-layer" id="pop-layer5" src="thirdpic/5.png">
+        <img class="popup-layer" id="pop-layer4" src="thirdpic/4.png">
+        <img class="popup-layer" id="pop-layer3" src="thirdpic/3.png">
+        <img class="popup-layer" id="pop-layer2" src="thirdpic/2.png">
+        <img class="popup-layer" id="pop-layer1" src="thirdpic/1.png">
     </div>
 
     <div class="hero-section">
@@ -426,10 +382,12 @@
         <img src="secpic/green.png" id="fixed-green" alt="Mr. Green">
     </div>
 
-    <div class="story-section bg-gray-intro">  
+    <div class="story-section bg-gray-intro">  
         <div class="story-row">
             <div class="story-img-box">
-                <img src="secpic/story1.png" class="story-img slide-left" id="story1-img" alt="Story 1">
+                <div class="story-scroll-box slide-left" id="story1-box">
+                    <img src="secpic/story1.png" class="inner-story-img" alt="Story 1">
+                </div>
             </div>
             <div class="story-img-box">
                 <img src="secpic/story2.png" class="story-img slide-right" id="story2-img" alt="Story 2">
@@ -444,7 +402,9 @@
             </div>
             
             <div class="story-img-box">
-                <img src="secpic/story4.png" class="story-img slide-right" id="story4-img" alt="Story 4">
+                <div class="story-scroll-box slide-right" id="story4-box">
+                    <img src="secpic/story4.png" class="inner-story-img" alt="Story 4">
+                </div>
             </div>
         </div>
     </div>
@@ -456,7 +416,9 @@
     <div class="story-section bg-white">
         <div class="story-row" style="gap: 100px;">
             <div class="story-img-box">
-                <img src="secpic/story5.png" class="story-img slide-left" id="story5-img" alt="Story 5">
+                <div class="story-scroll-box slide-left" id="story5-box">
+                    <img src="secpic/story5.png" class="inner-story-img" alt="Story 5">
+                </div>
             </div>
             <div class="story-img-box">
                 <img src="secpic/story6.png" class="story-img slide-right" id="story6-img" alt="Story 6">
@@ -497,12 +459,12 @@
             // 設定觸發點：元素頂部進入視窗下方 150px 時觸發
             const revealPoint = 150;
 
-            // 取得所有需要動畫的元素 ID
+            // 【修改點 2】更新這裡的 ID，讓滾動動畫抓得到新建立的 box
             const animElementIds = [
-                'story1-img', 'story2-img',
-                'story3-img', 'story4-img',
+                'story1-box', 'story2-img', // <- 這裡改為 box
+                'story3-img', 'story4-box', 
                 'green1-img',
-                'story5-img', 'story6-img',
+                'story5-box', 'story6-img', 
                 'green2-img'
             ];
 
