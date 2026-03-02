@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New - Milk & Friday</title>
+    <title>New - Leaf & Friday</title>
     
     <style>
-
         /* 讓整個畫面在載入時淡入，完美銜接上一個網頁的淡出 */
         body {
             animation: pageFadeIn 0.8s ease forwards;
@@ -65,10 +64,9 @@
         .popup-visible { opacity: 1 !important; pointer-events: auto !important; }
 
         /* =========================================
-           3. 場景：牛奶影片與樹葉 
+           3. 場景：樹葉 (移除影片後) 
            ========================================= */
         #scene-milk { opacity: 1; pointer-events: auto; z-index: 20; }
-        #vid-milk { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 21; transition: opacity 1s ease; pointer-events: none; }
 
         /* 樹葉遮罩 */
         .leaf-mask { 
@@ -76,7 +74,7 @@
             top: 50%; left: 50%; 
             width: 60%; height: auto; 
             z-index: 110; 
-            transition: transform 1.5s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.5s ease; 
+            transition: transform 1.2s cubic-bezier(0.33, 1, 0.68, 1), opacity 0.5s ease; 
         }
         /* 初始狀態：藏在四個角落外 */
         #leaf1 { transform: translate(-150%, -150%) rotate(0deg); }
@@ -131,10 +129,10 @@
         #motor4 { left: 47%; } #motor3 { left: 52%; } #motor2 { left: 57%; } #motor1 { left: 62%; }
 
         /* 灰幕 */
-        #fri-gray-curtain { position: absolute; top: -150%; left: 0; width: 100%; height: 140%; background-image: url('startpic/gray.png'); background-size: cover; z-index: 40; transition: top 2s cubic-bezier(0.25, 1, 0.5, 1); }
+        #fri-gray-curtain { position: absolute; top: -150%; left: 0; width: 100%; height: 140%; background-image: url('startpic/gray.png'); background-size: cover; z-index: 40; transition: top 1.5s cubic-bezier(0.25, 1, 0.5, 1); }
         .curtain-down { top: 0 !important; }
         
-        #fri-allgray { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('startpic/allgray.png'); background-size: cover; opacity: 0; z-index: 41; transition: opacity 1.5s ease; pointer-events: none; }
+        #fri-allgray { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('startpic/allgray.png'); background-size: cover; opacity: 0; z-index: 41; transition: opacity 1s ease; pointer-events: none; }
 
         /* 過場印章 */
         .day-banner { position: fixed; top: -100%; left: 50%; transform: translateX(-50%) rotate(-5deg); width: 70%; z-index: 30000; opacity: 0; transition: top 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; pointer-events: none; }
@@ -173,8 +171,6 @@
     <div id="main-display">
 
         <div class="scene-container" id="scene-milk">
-            <video id="vid-milk" src="startpic/milk.mp4" muted autoplay loop playsinline></video>
-            
             <img src="startpic/leaf1.png" class="leaf-mask" id="leaf1">
             <img src="startpic/leaf2.png" class="leaf-mask" id="leaf2">
             <img src="startpic/leaf3.png" class="leaf-mask" id="leaf3">
@@ -244,14 +240,15 @@
                 document.getElementById('txt-friday').classList.toggle('popup-visible');
             });
 
-            // --- 滾輪動畫步驟控制 ---
+            // --- 滾輪動畫步驟控制 (極速版) ---
             let currentStep = 0; 
             let isReadyForNext = true; 
             let lastWheelTime = 0;
 
             window.addEventListener('wheel', (e) => {
                 const currentTime = new Date().getTime();
-                if (!isReadyForNext || currentTime - lastWheelTime < 800) return;
+                // 【加速】防抖時間降為 400 毫秒，滾動反應更靈敏
+                if (!isReadyForNext || currentTime - lastWheelTime < 400) return;
                 
                 if (e.deltaY > 0) { 
                     lastWheelTime = currentTime;
@@ -267,86 +264,87 @@
 
             function executeStep(step) {
                 switch(step) {
-                    // 第一階段：滾動第一下，四片小樹葉飛進畫面
                     case 1:
-                        lockScroll(1500);
+                        // 樹葉飛進畫面
+                        lockScroll(800); // 大幅縮短等待時間
                         document.getElementById('leaf1').classList.add('leaf-open-1');
                         document.getElementById('leaf2').classList.add('leaf-open-2');
                         document.getElementById('leaf3').classList.add('leaf-open-3');
                         document.getElementById('leaf4').classList.add('leaf-open-4');
                         break;
 
-                    // 第二階段：滾動第二下，大樹葉、花朵、以及 word1.png 浮現
                     case 2:
-                        lockScroll(1200);
+                        // 大樹葉、花朵、文字浮現
+                        lockScroll(800);
                         document.getElementById('thurs-bg-leaf').classList.add('bg-show');
                         document.querySelectorAll('.thurs-flower').forEach(f => f.classList.add('fl-show'));
                         document.getElementById('fri-word').classList.add('word-in');
                         break;
 
-                    // 第三階段：滾動第三下，樹葉飛散，中間內容與 word1.png 同時消失
                     case 3:
-                        lockScroll(1500);
-                        
-                        // 四片小樹葉飛出場外
+                        // 樹葉飛散，中間內容消失
+                        lockScroll(1000);
                         document.getElementById('leaf1').classList.replace('leaf-open-1', 'leaf-fly-out-1');
                         document.getElementById('leaf2').classList.replace('leaf-open-2', 'leaf-fly-out-2');
                         document.getElementById('leaf3').classList.replace('leaf-open-3', 'leaf-fly-out-3');
                         document.getElementById('leaf4').classList.replace('leaf-open-4', 'leaf-fly-out-4');
                         
-                        // 隱藏 leaf.png、花朵、以及 word1.png
                         document.getElementById('thurs-bg-leaf').classList.remove('bg-show');
                         document.querySelectorAll('.thurs-flower').forEach(f => f.classList.remove('fl-show'));
                         document.getElementById('thurs-fltext').style.opacity = 0;
                         document.getElementById('fri-word').classList.remove('word-in'); 
                         
-                        // 隱藏牛奶影片，顯示星期五底層
-                        document.getElementById('vid-milk').style.opacity = 0;
+                        // 直接顯示星期五底層
                         document.getElementById('scene-friday').classList.add('scene-active');
                         break;
 
-                    // 第四階段：Friday 背景與禁止車出現
                     case 4:
-                        lockScroll(1000);
+                        // Friday 背景與禁止車
+                        lockScroll(800);
                         document.getElementById('fri-bg-final').classList.add('bg-show');
                         document.getElementById('fri-bg-final').style.pointerEvents = "auto"; 
-                        
                         document.getElementById('fri-nocar').classList.add('obj-fade-in');
                         document.querySelector('.nocar-wrapper').style.pointerEvents = "auto";
                         break;
 
-                    // 第五階段：機車出現
                     case 5:
-                        lockScroll(1200);
+                        // 機車出現
+                        lockScroll(1000);
                         setTimeout(() => { document.getElementById('motor1').classList.add('obj-fade-in'); }, 100);
-                        setTimeout(() => { document.getElementById('motor2').classList.add('obj-fade-in'); }, 400);
-                        setTimeout(() => { document.getElementById('motor3').classList.add('obj-fade-in'); }, 700);
-                        setTimeout(() => { document.getElementById('motor4').classList.add('obj-fade-in'); }, 1000);
+                        setTimeout(() => { document.getElementById('motor2').classList.add('obj-fade-in'); }, 300);
+                        setTimeout(() => { document.getElementById('motor3').classList.add('obj-fade-in'); }, 500);
+                        setTimeout(() => { document.getElementById('motor4').classList.add('obj-fade-in'); }, 700);
                         break;
 
-                    // 第六階段：灰幕降下
                     case 6:
-                        lockScroll(2000);
+                        // 灰幕降下
+                        lockScroll(1200);
                         document.getElementById('fri-gray-curtain').classList.add('curtain-down');
                         break;
 
-                    // 第七階段：Allgray 覆蓋
                     case 7:
-                        lockScroll(1000);
+                        // Allgray 覆蓋
+                        lockScroll(800);
                         document.getElementById('fri-allgray').classList.add('bg-show');
                         break;
 
-                    // 第八階段：星期五印章掉落
                     case 8:
-                        lockScroll(1500);
+                        // 星期五印章掉落
+                        lockScroll(1000);
                         document.getElementById('banner-fri').classList.add('show-banner');
                         break;
 
-                    // 第九階段：跳轉週末
                     case 9:
-                        lockScroll(1000);
+                        // 跳轉週末
+                        lockScroll(800);
                         document.getElementById('banner-fri').classList.remove('show-banner');
-                        setTimeout(() => { window.location.href = "weekend.html"; }, 800);
+                        
+                        // 淡出再跳轉
+                        setTimeout(() => { 
+                            document.body.style.transition = "opacity 0.4s ease";
+                            document.body.style.opacity = "0";
+                            setTimeout(() => { window.location.href = "weekend.html"; }, 400); 
+                        }, 400);
                         break;
                 }
             }
