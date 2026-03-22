@@ -41,7 +41,6 @@
             padding: 0 40px;     
             z-index: 10000;
         }
-
         .home-btn { display: block; width: 50px; height: 50px; transition: transform 0.2s; }
         .home-btn img { width: 100%; height: 100%; object-fit: contain; }
         .home-btn:hover { transform: scale(1.1); }
@@ -56,8 +55,7 @@
 
         .menu-list { position: absolute; top: 60px; right: 0; background-color: #ffffff; border: 2px solid #333; border-radius: 8px; width: 140px; display: none; flex-direction: column; box-shadow: 0 4px 10px rgba(0,0,0,0.15); z-index: 1001; }
         .menu-list.show { display: flex; }
-        .menu-list a { text-decoration: none; color: #333; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 18px; transition: background 0.2s; }
-        .menu-list a:last-child { border-bottom: none; }
+        .menu-list a { text-decoration: none; color: #333; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 16px; transition: background 0.2s; }
         .menu-list a:hover { background-color: #f0f0f0; color: #000; }
 
         /* =========================================
@@ -78,11 +76,9 @@
            4. 共用動畫與場景設定
            ========================================= */
         #main-display { position: relative; flex: 1; width: 100%; overflow: hidden; background-color: #fff; }
-        
         .scene-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 1s ease; }
         .scene-active { opacity: 1; pointer-events: auto; }
 
-        /* 晃動與漂浮動畫 */
         @keyframes shake-anim { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(3deg); } 75% { transform: rotate(-3deg); } }
         .anim-shake { cursor: pointer; }
         .anim-shake:hover { animation: shake-anim 0.5s infinite; }
@@ -90,195 +86,61 @@
         @keyframes float-anim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
         .anim-float { animation: float-anim 4s ease-in-out infinite; }
 
-        /* 過場印章 (星期六、日) - 修正 z-index 確保在最上層 */
         .day-banner { position: fixed; top: -100%; left: 50%; transform: translateX(-50%) rotate(-5deg); width: 70%; z-index: 30000; opacity: 0; transition: top 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; pointer-events: none; }
-        .day-banner.show-banner { top: 8%; opacity: 1; }
+        .day-banner.show-banner { top: 6%; opacity: 1; }
 
-        /* =========================================
-           5. 場景：承接 All Gray
-           ========================================= */
         #scene-allgray { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; transition: top 1.5s ease-in-out; }
         #allgray-img { width: 100%; height: 100%; object-fit: cover; }
         .slide-up-out { top: -100% !important; }
 
-        /* =========================================
-           6. 場景：過度頁 (Transition)
-           ========================================= */
+        /* --- Transition --- */
         #scene-transition { z-index: 40; }
         #trans-bg { position: absolute; width: 100%; height: 100%; object-fit: cover; object-position: center 80%; }
-        
-        /* 椅子與豆腐 */
         .interact-box { position: absolute; opacity: 0; transition: opacity 1s ease; }
         #box-chair { bottom: 10%; left: 15%; width: 8%; }
         #box-tofu { bottom: 48%; right: 39%; width: 4%; }
         .base-img { width: 100%; display: block; }
-        .popup-img { position: absolute; top: -10%; transform: translateX(-50%) scale(0); opacity: 0; width: 120%; transition: all 0.3s ease; pointer-events: none; }
+        .popup-img { position: absolute; top: -10%; left: 50%; transform: translateX(-50%) scale(0); opacity: 0; width: 120%; transition: all 0.3s ease; pointer-events: none; }
         .popup-img.pop-active { transform: translateX(-50%) scale(1); opacity: 1; }
-        /* --- 針對椅子跳出來的圖 (chair1.png) 獨立微調 --- */
-        #box-chair .popup-img {
-            width: 220%;    /* 【大小】預設是 120%。數字越大，圖片越大 */
-            top: -300%;      /* 【上下位置】預設是 -50%。數字越負，圖片越往上 */
-            
-            /* left: 50%; */ /* 預設在正中間，如果你想偏左或偏右，可以取消這行註解並修改數字，例如 40% 或 60% */
-        }
+        #trans-ppp { position: absolute; bottom: 2%; left: -30%; width: 5%; opacity: 0; transition: all 6s cubic-bezier(0.25, 0.1, 0.25, 1); }
+        .roll-right { left: 120% !important; transform: rotate(1080deg) !important; opacity: 1 !important; }
 
-        /* --- 針對豆腐跳出來的圖 (tofu1.png) 獨立微調 --- */
-        #box-tofu .popup-img {
-            width: 350%;    /* 【大小】控制豆腐彈出圖的尺寸 */
-            top: -120%;      /* 【上下位置】控制豆腐彈出圖的高度 */
-        }
-        
-        /* 滾動的 ppp */
-        #trans-ppp { 
-            position: absolute; 
-            bottom: 2%;      /* 【位置調整】：從 5% 改為 0%，讓它更貼近螢幕底部 (數值越小越靠下，甚至可以設為負數如 -5%) */
-            left: -30%;      /* 初始藏在畫面左邊 */
-            width: 5%;       /* 【大小調整】：從 10% 改為 8%，讓它變小一點 */
-            opacity: 0; 
-            
-            /* 【速度調整】：將 2.5s 改為 4s，讓滾動過程變慢。後面的 cubic-bezier 控制節奏(先慢後快) */
-            transition: all 6s cubic-bezier(0.25, 0.1, 0.25, 1); 
-        }
-
-        .roll-right { 
-            left: 120% !important; 
-            /* 旋轉圈數：目前是 1080deg (轉3圈)，如果因為變慢覺得轉太快，可以改回 720deg (轉2圈) */
-            transform: rotate(1080deg) !important; 
-            opacity: 1 !important; 
-        }
-
-        /* =========================================
-           7. 場景：星期六 (Saturday)
-           ========================================= */
+        /* --- Saturday --- */
         #scene-saturday { z-index: 30; }
         #sat-bg { position: absolute; top: -5%; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s ease; }
-        #sat-word6 { 
-            position: absolute; 
-            top: 15%;         /* 【上下位置】：數字越小越靠近頂部，原本是 15% */
-            left: 15%;        /* 【左右位置】：設定距離左側邊緣 8% 的距離 */
-            width: 8%;      /* 【大小調整】：從原本的 15% 縮小到 10% */
-            opacity: 0; 
-            transition: opacity 1s ease; 
-            z-index: 2; 
-            /* 已經把原本用來置中的 transform: translateX(-50%) 刪除了 */
-        }
-        #sat-cloud { position: absolute; top: 30%; right: 35%; width: 45%; opacity: 0; transition: opacity 1s ease; }
-        
-        /* 建築物群的隱形大外框 */
-        #sat-build-group { 
-            position: absolute; 
-            top: 0; left: 0; 
-            width: 100%; height: 100%; 
-            opacity: 0; 
-            transition: opacity 1s ease; 
-            pointer-events: none; /* 讓空白處的點擊可以穿透到後方 */
-        }
-        
-        /* 讓每個建築物各自獨立定位 */
-        .build-wrapper { 
-            position: absolute; 
-            pointer-events: auto; /* 恢復建築物本身的點擊功能 */
-        }
-
-        /* --- 分別控制三棟建築物 --- */
-        
-        /* 建築物 1 */
-        #build1-box {
-            width: 3%;      /* 【大小】 */
-            bottom: 35%;     /* 【離底部多高】 */
-            left: 47%;       /* 【離左邊多遠】 */
-        }
-
-        /* 建築物 2 */
-        #build2-box {
-            width: 5%;      /* 【大小】這棟比較大 */
-            bottom: 35%;     /* 【離底部多高】這棟稍微高一點 */
-            left: 27%;       /* 【離左邊多遠】排在中間 */
-        }
-
-        /* 建築物 3 */
-        #build3-box {
-            width: 6%;      /* 【大小】 */
-            bottom: 36%;     /* 【離底部多高】 */
-            right: 28%;      /* 【離右邊多遠】排在右邊，所以用 right */
-        }
-
-        /* =========================================
-           針對建築物跳出圖 (build10, 20, 30) 獨立微調
-           ========================================= */
-
-        /* --- 建築物 1 的跳出圖 (build10.png) --- */
-        #build1-box .popup-img {
-            width: 700%;    /* 【大小】數字越大，跳出來的圖越大 */
-            top: -80%;      /* 【上下位置】數字越負，跳出來的圖越高 */
-            
-            left: 40%;  /* 預設在正中間，如果想偏左或偏右，取消註解改數字 (如 30% 或 70%) */
-        }
-
-        /* --- 建築物 2 的跳出圖 (build20.png) --- */
-        #build2-box .popup-img {
-            width: 300%;    
-            top: -40%;
-            left: 45%;      
-        }
-
-        /* --- 建築物 3 的跳出圖 (build30.png) --- */
-        #build3-box .popup-img {
-            width: 250%;    
-            top: -60%;
-            left: 35%;      
-        }
-        
-        /* 交叉路口與紅人 */
+        #sat-word6 { position: absolute; top: 15%; left: 15%; width: 8%; opacity: 0; transition: opacity 1s ease; z-index: 2; }
+        #sat-cloud { position: absolute; top: 30%; right: 35%; width: 45%; opacity: 0; transition: opacity 1s ease; z-index: 5; }
+        #sat-build-group { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease; pointer-events: none; z-index: 10; }
+        .build-wrapper { position: absolute; pointer-events: auto; }
+        #build1-box { width: 3%; bottom: 35%; left: 47%; }
+        #build2-box { width: 5%; bottom: 35%; left: 27%; }
+        #build3-box { width: 6%; bottom: 36%; right: 28%; }
         #sat-inter { position: absolute; bottom: 0; right: -50%; width: 30%; opacity: 0; transition: all 1s ease; }
         #sat-inter.slide-in { right: 0; opacity: 1; }
         #sat-red { position: absolute; bottom: 8%; left: 27%; width: 5%; opacity: 0; transition: opacity 1s ease; }
-        
-        /* 貓咪跳轉與文字 */
         #sat-cat-link { position: absolute; top: -100%; left: 65%; width: 15%; opacity: 0; transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 5; }
-        #sat-cat-link.drop-in { top: 17%; opacity: 1; }
         #sat-cat { width: 30%; cursor: pointer; transition: transform 0.2s; }
-        #sat-cat:hover { transform: scale(1.1); }
         #sat-word61 { position: absolute; bottom: 75%; left: 70%; width: 6%; opacity: 0; transition: opacity 1s ease; }
 
-        /* =========================================
-           8. 場景：星期日 (Sunday)
-           ========================================= */
+        /* --- Sunday --- */
         #scene-sunday { z-index: 20; background-color: #fff; }
         #sun-word7 { position: absolute; top: 18%; left: 18%; transform: translateX(-50%); width: 11%; opacity: 0; transition: opacity 1s ease; }
-        
         #wrap-post { position: absolute; bottom: 10%; right: -30%; width: 10%; opacity: 0; transition: all 1s ease; }
         #wrap-post.slide-in { right: 15%; opacity: 1; }
-        
         #wrap-bird { position: absolute; top: 70%; left: -30%; width: 18%; opacity: 0; transition: all 1s ease; }
         #wrap-bird.slide-in { left: 14%; opacity: 1; }
-
         #sun-green { position: absolute; bottom: 10%; right: -30%; width: 25%; opacity: 0; transition: all 1.5s ease; }
         #sun-green.slide-in { right: 45%; opacity: 1; }
-
         #sun-bird1 { position: absolute; top: 40%; left: 12%; width: 18%; opacity: 0; transition: all 1.5s ease; pointer-events: none; }
         #sun-bird1.fly-left { left: -50%; opacity: 0; }
 
-        /* --- 郵筒的跳出圖 (post0.png) --- */
-        #wrap-post .popup-img {
-            width: 200%;    /* 【大小】數字越大，跳出來的圖越大 */
-            top: 0%;      /* 【上下位置】數字越負 (例如 -80%)，跳出來的圖越高 */
-            left: 0%;      /* 【左右位置】50% 是正中間。向左微調請減小(如 40%)，向右請加大(如 60%) */
-        }
+        /* --- 新增：故事圖片頁 --- */
+        #scene-story-img { z-index: 15; background-color: #ffffff; display: flex; justify-content: center; align-items: center; }
+        #story-type-img { width: 28%; max-width: 800px; height: auto; opacity: 0; transition: opacity 1s ease; }
 
-        /* --- 小鳥的跳出圖 (bird0.png) --- */
-        #wrap-bird .popup-img {
-            width: 80%;    /* 【大小】 */
-            top: -50%;      /* 【上下位置】 */
-            left: 20%;      /* 【左右位置】 */
-        }
-
-        /* =========================================
-           9. 場景：結尾頁 (End)
-           ========================================= */
+        /* --- End --- */
         #scene-end { z-index: 10; background-color: #fff; display: flex; justify-content: center; align-items: center; }
         #end-logo { width: 400px; cursor: pointer; transition: transform 0.3s; z-index: 1; position: relative; }
-        #end-logo:hover { transform: scale(1.05); }
         #end-eye { position: absolute; width: 100px; top: 57%; left: 50%; transform: translate(-50%, -50%); z-index: 2; transition: transform 0.1s ease-out; }
 
     </style>
@@ -294,7 +156,7 @@
             </div>
             <div class="menu-list" id="menuList">
                 <a href="bookri.html">關於</a><a href="bookle.html">周邊</a>
-                <a href="#" id="obj-activity" class="obj-container">活動</a>
+                <a href="#" id="obj-activity">活動</a>
                 <a href="calender.html">品牌</a><a href="computer.html">地圖</a>
             </div>
         </div>
@@ -315,7 +177,7 @@
     <div id="main-display">
 
         <div id="scene-allgray">
-            <img src="startpic/allgray.png" id="allgray-img" alt="All Gray Background">
+            <img src="startpic/allgray.png" id="allgray-img">
         </div>
 
         <div class="scene-container" id="scene-transition">
@@ -334,62 +196,40 @@
         <div class="scene-container" id="scene-saturday">
             <img src="thirdpic/satback.png" id="sat-bg">
             <img src="thirdpic/word6.png" id="sat-word6">
-            
             <div id="sat-build-group">
-                <div class="build-wrapper" id="build1-box">
-                    <img src="thirdpic/build1.png" class="base-img anim-shake">
-                    <img src="thirdpic/build10.png" class="popup-img">
-                </div>
-                <div class="build-wrapper" id="build2-box">
-                    <img src="thirdpic/build2.png" class="base-img anim-shake">
-                    <img src="thirdpic/build20.png" class="popup-img">
-                </div>
-                <div class="build-wrapper" id="build3-box">
-                    <img src="thirdpic/build3.png" class="base-img anim-shake">
-                    <img src="thirdpic/build30.png" class="popup-img">
-                </div>
+                <div class="build-wrapper" id="build1-box"><img src="thirdpic/build1.png" class="base-img anim-shake"><img src="thirdpic/build10.png" class="popup-img"></div>
+                <div class="build-wrapper" id="build2-box"><img src="thirdpic/build2.png" class="base-img anim-shake"><img src="thirdpic/build20.png" class="popup-img"></div>
+                <div class="build-wrapper" id="build3-box"><img src="thirdpic/build3.png" class="base-img anim-shake"><img src="thirdpic/build30.png" class="popup-img"></div>
             </div>
-
             <img src="thirdpic/cloud.png" id="sat-cloud" class="anim-float">
             <img src="thirdpic/inter.png" id="sat-inter">
             <img src="thirdpic/red.png" id="sat-red">
-            
-            <a href="dinosaur.html" id="sat-cat-link">
-                <img src="thirdpic/cat.png" id="sat-cat">
-            </a>
+            <a href="dinosaur.html" id="sat-cat-link"><img src="thirdpic/cat.png" id="sat-cat"></a>
             <img src="thirdpic/word61.png" id="sat-word61">
         </div>
 
         <div class="scene-container" id="scene-sunday">
             <img src="thirdpic/word7.png" id="sun-word7">
-            
-            <div class="interact-box" id="wrap-post">
-                <img src="thirdpic/post.png" class="base-img anim-shake" id="sun-post">
-                <img src="thirdpic/post0.png" class="popup-img">
-            </div>
-            
-            <div class="interact-box" id="wrap-bird">
-                <img src="thirdpic/bird.png" class="base-img anim-shake" id="sun-bird">
-                <img src="thirdpic/bird0.png" class="popup-img">
-            </div>
-
+            <div class="interact-box" id="wrap-post"><img src="thirdpic/post.png" class="base-img anim-shake" id="sun-post"><img src="thirdpic/post0.png" class="popup-img"></div>
+            <div class="interact-box" id="wrap-bird"><img src="thirdpic/bird.png" class="base-img anim-shake" id="sun-bird"><img src="thirdpic/bird0.png" class="popup-img"></div>
             <img src="thirdpic/green.png" id="sun-green">
             <img src="thirdpic/bird1.png" id="sun-bird1">
+        </div>
+
+        <div class="scene-container" id="scene-story-img">
+            <img src="thirdpic/type.png" id="story-type-img" alt="Story Text">
         </div>
 
         <div class="scene-container" id="scene-end">
             <a href="index.html?skip=true">
                 <img src="thirdpic/logo.png" id="end-logo" alt="Logo">
             </a>
-            <img src="thirdpic/eye.png" id="end-eye" alt="Eye">
+            <img src="thirdpic/eye.png" id="end-eye">
         </div>
 
     </div>
 
     <script>
-        // ==========================================
-        // UI 選單與活動彈窗邏輯
-        // ==========================================
         function toggleMenu() {
             document.getElementById('menuList').classList.toggle('show');
             document.getElementById('menuContainer').classList.toggle('active');
@@ -421,17 +261,10 @@
             });
         }
 
-        // ==========================================
-        // 週末全局動畫控制邏輯 (Global Steps)
-        // ==========================================
         let currentStep = 0; 
-        
-        // 用來判斷是否可以進行下一步的鎖 (防抖機制)
         let isReadyForNext = true; 
-        // 用來記錄前一次滾輪事件的時間，防止一次滾動觸發多次
         let lastWheelTime = 0;
 
-        // 互動彩蛋點擊邏輯 (共用於椅子、豆腐、建築物、郵筒、小鳥)
         document.querySelectorAll('.base-img.anim-shake').forEach(img => {
             img.addEventListener('click', function() {
                 const popup = this.nextElementSibling;
@@ -439,39 +272,26 @@
             });
         });
 
-        // 監聽滑鼠滾輪 (優化版：防抖與節流)
         window.addEventListener('wheel', (e) => {
             const currentTime = new Date().getTime();
-            
-            // 如果還在鎖定狀態，或者距離上次滾動不到 800 毫秒，就忽略這次滾動
-            if (!isReadyForNext || currentTime - lastWheelTime < 800) {
-                return;
-            }
-
-            if (e.deltaY > 0) { // 向下滾動
-                lastWheelTime = currentTime; // 記錄這次有效滾動的時間
+            if (!isReadyForNext || currentTime - lastWheelTime < 800) return;
+            if (e.deltaY > 0) { 
+                lastWheelTime = currentTime;
                 currentStep++;
                 executeStep(currentStep);
             }
         });
 
-        // 防呆機制：鎖住滾輪一段時間等待動畫完成
         function lockScroll(lockDuration) {
             isReadyForNext = false;
-            setTimeout(() => { 
-                isReadyForNext = true; 
-            }, lockDuration);
+            setTimeout(() => { isReadyForNext = true; }, lockDuration);
         }
 
-        // 執行每一個步驟 (移除了 ppword)
         function executeStep(step) {
             switch(step) {
-                // ================= 過度頁 =================
                 case 1:
                     lockScroll(1500);
-                    // 1. allgray 向上移出
                     document.getElementById('scene-allgray').classList.add('slide-up-out');
-                    // 2. 過度頁背景與椅子豆腐顯示
                     const trans = document.getElementById('scene-transition');
                     trans.classList.add('scene-active');
                     document.getElementById('trans-bg').style.opacity = 1;
@@ -480,48 +300,37 @@
                     break;
                 case 2:
                     lockScroll(2500);
-                    // 3. ppp 滾動離開 (原本的 ppword 移除了，這個往前遞補)
                     document.getElementById('trans-ppp').classList.add('roll-right');
                     break;
-
-                // ================= 星期六 =================
                 case 3:
                     lockScroll(1000);
-                    // 過度頁消失，星期六 word6 出現
                     document.getElementById('scene-transition').classList.remove('scene-active');
                     document.getElementById('scene-saturday').classList.add('scene-active');
                     document.getElementById('sat-word6').style.opacity = 1;
                     break;
                 case 4:
                     lockScroll(1000);
-                    // 背景、建築、雲朵出現
                     document.getElementById('sat-bg').style.opacity = 1;
                     document.getElementById('sat-build-group').style.opacity = 1;
                     document.getElementById('sat-cloud').style.opacity = 1;
                     break;
                 case 5:
                     lockScroll(1000);
-                    // inter 滑入，red 出現
                     document.getElementById('sat-inter').classList.add('slide-in');
                     document.getElementById('sat-red').style.opacity = 1;
                     break;
                 case 6:
                     lockScroll(1000);
-                    // cat 掉入，word61 浮現
                     document.getElementById('sat-cat-link').classList.add('drop-in');
                     document.getElementById('sat-word61').style.opacity = 1;
                     break;
                 case 7:
                     lockScroll(1500);
-                    // 星期六消失，掉下 sat.png
                     document.getElementById('scene-saturday').classList.remove('scene-active');
                     document.getElementById('banner-sat').classList.add('show-banner');
                     break;
-
-                // ================= 星期日 =================
                 case 8:
                     lockScroll(1000);
-                    // 收起 sat.png，星期日 word7 出現
                     document.getElementById('banner-sat').classList.remove('show-banner');
                     setTimeout(() => {
                         document.getElementById('scene-sunday').classList.add('scene-active');
@@ -530,69 +339,60 @@
                     break;
                 case 9:
                     lockScroll(1000);
-                    // post 和 bird 滑入
                     document.getElementById('wrap-post').classList.add('slide-in');
                     document.getElementById('wrap-bird').classList.add('slide-in');
                     break;
                 case 10:
                     lockScroll(1000);
-                    // green 滑入
                     document.getElementById('sun-green').classList.add('slide-in');
                     break;
                 case 11:
                     lockScroll(1000);
-                    // bird 消失，bird1 出現
                     document.getElementById('sun-bird').style.opacity = 0;
                     document.getElementById('sun-bird1').style.opacity = 1;
                     break;
                 case 12:
                     lockScroll(1500);
-                    // bird1 往左飛走
                     document.getElementById('sun-bird1').classList.add('fly-left');
                     break;
                 case 13:
                     lockScroll(1500);
-                    // 星期日消失，掉下 sun.png
                     document.getElementById('scene-sunday').classList.remove('scene-active');
                     document.getElementById('banner-sun').classList.add('show-banner');
                     break;
-
-                // ================= 結尾頁 =================
                 case 14:
-                    lockScroll(1000);
-                    // 收起 sun.png，顯示結尾頁
+                    // 呼叫圖片頁面
+                    lockScroll(1500);
                     document.getElementById('banner-sun').classList.remove('show-banner');
                     setTimeout(() => {
-                        document.getElementById('scene-end').classList.add('scene-active');
-                        activateEyeParallax();
+                        document.getElementById('scene-story-img').classList.add('scene-active');
+                        document.getElementById('story-type-img').style.opacity = 1;
                     }, 500);
                     break;
+                case 15:
+                    // 圖片淡出，進入最終頁面
+                    lockScroll(1500);
+                    document.getElementById('story-type-img').style.opacity = 0;
+                    setTimeout(() => {
+                        document.getElementById('scene-story-img').classList.remove('scene-active');
+                        document.getElementById('scene-end').classList.add('scene-active');
+                        activateEyeParallax();
+                    }, 800);
+                    break;
                 default:
-                    // 到底了，不再觸發新動作
                     break;
             }
         }
 
-        // ==========================================
-        // 眼睛視差跟隨效果
-        // ==========================================
         function activateEyeParallax() {
             const eye = document.getElementById('end-eye');
             document.addEventListener('mousemove', (e) => {
-                const mouseX = e.clientX;
-                const mouseY = e.clientY;
-                const windowWidth = window.innerWidth;
-                const windowHeight = window.innerHeight;
-
-                // 最大偏移量限制在 20px 內，避免跑太遠
-                const moveX = ((mouseX / windowWidth) - 0.5) * 40; 
-                const moveY = ((mouseY / windowHeight) - 0.5) * 40;
-
-                // 結合置中用的 translate(-50%, -50%) 加上滑鼠偏移量
+                const mouseX = e.clientX, mouseY = e.clientY;
+                const moveX = ((mouseX / window.innerWidth) - 0.5) * 40; 
+                const moveY = ((mouseY / window.innerHeight) - 0.5) * 40;
                 eye.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
             });
         }
-
     </script>
 </body>
 </html>

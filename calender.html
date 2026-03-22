@@ -25,7 +25,7 @@
             overflow-x: hidden; 
         }
 
-        /* --- Header (保持不變) --- */
+        /* --- Header --- */
         .ui-header {
             position: fixed;
             top: 0;
@@ -75,7 +75,6 @@
         .hero-text p { font-size: 14px; line-height: 2; margin-bottom: 25px; text-align: justify; }
         .hero-tags { margin-top: 30px; font-size: 14px; font-weight: bold; color: #009966; }
 
-        /* 固定角色 (Mr. Green) */
         #fixed-green {
             position: absolute; 
             bottom: -150px; 
@@ -84,7 +83,7 @@
             z-index: 10; 
         }
 
-        /* --- 共用 Story Section 樣式 --- */
+        /* --- Story Section 樣式 --- */
         .story-section {
             position: relative;
             width: 100%;
@@ -93,65 +92,50 @@
             z-index: 1;
         }
 
-        /* =========================================
-           共用的可滾動箱子與客製化滾輪樣式
-           ========================================= */
         .story-scroll-box {
-            height: 400px; /* 固定高度，超過這個高度就會出現滾輪 */
-            overflow-y: auto; /* 垂直方向超出時出現滾輪 */
+            height: 400px;
+            overflow-y: auto;
             overflow-x: hidden;
-            border: 4px solid #333; /* 加上黑框更有彈窗的感覺 */
+            border: 4px solid #333;
             background-color: #fff;
-            opacity: 0; /* 配合滑入動畫 */
+            opacity: 0;
             transition: all 1s ease-out;
         }
 
-        /* 確保裡面的長圖寬度自動填滿箱子 */
         .inner-story-img {
             width: 100%;
             height: auto;
             display: block;
         }
 
-        /* --- 客製化「復古黑白」滾輪樣式 --- */
+        /* 滾輪樣式 */
         .story-scroll-box::-webkit-scrollbar { width: 18px; }
         .story-scroll-box::-webkit-scrollbar-track { background: #fff; border-left: 3px solid #333; }
         .story-scroll-box::-webkit-scrollbar-thumb { background: #333; border: 3px solid #fff; }
 
-        /* ========================================= */
-        
-        /* 【新增】左邊 Story 1 (改成滾動箱子) */
+        /* --- 【修改】Story 1 特殊設定：拿掉黑框與白底 --- */
         #story1-box {
             width: 80%;       
             display: block;   
             margin: 0 auto;   
-            margin-top: 0px;  
             transform: translateX(-100px); 
+            border: none !important;        /* 移除黑框 */
+            background-color: transparent !important; /* 移除白底 */
+            height: auto !important;        /* 恢復原始高度 */
+            overflow: visible !important;   /* 隱藏滾動條 */
         }
 
-        /* 左邊 Story 3 */
-        #story3-img {
-            width: 40%;       
-            display: block;   
-            margin: 0 auto;   
-            margin-top: 0px;  
-            transform: translateX(-100px); 
-        }
+        #story3-img { width: 40%; display: block; margin: 0 auto; transform: translateX(-100px); }
 
-        /* 右邊 Story 4 (改成滾動箱子) */
         #story4-box {
             width: 80%;       
             display: block;   
             margin: 0 auto;   
             margin-top: 50px; 
             margin-left: -30px;
-            transform: translateX(100px); /* 保持動畫初始位置 */
+            transform: translateX(100px);
         }
 
-
-        /* === 這一區是 Story 5 & 6 (結尾區) === */
-
-        /* 左邊 Story 5 (改成滾動箱子) */
         #story5-box {
             width: 80%;       
             display: block;
@@ -161,75 +145,54 @@
             transform: translateX(-100px);
         }
 
-        /* 右邊 Story 6 */
-        #story6-img {
-            width: 30%;
-            display: block;
-            margin: 0 auto;
-            margin-top: 20px;  
-            margin-left: 0px;
-            transform: translateX(100px);
-        }
+        #story6-img { width: 30%; display: block; margin: 0 auto; margin-top: 20px; transform: translateX(100px); }
 
-        /* 第一段：灰色背景 */
         .bg-gray-intro {
             background-image: url('secpic/gray.png');
             background-size: cover;
             background-position: top center;
-            background-repeat: no-repeat;
             padding-top: 350px; 
         }
 
-        /* 白色背景 */
-        .bg-white {
-            background-color: #ffffff;
-        }
+        .bg-white { background-color: #ffffff; }
 
         .story-row {
-            display: flex;           
-            justify-content: center; 
-            align-items: flex-start; 
-            gap: 80px;               
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative; 
-            z-index: 2; 
+            display: flex; justify-content: center; align-items: flex-start; gap: 80px; max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; 
         }
 
-        .story-img-box {
-            flex: 1; 
-            max-width: 500px; 
-        }
+        .story-img-box { flex: 1; max-width: 500px; }
 
-        .story-img {
-            width: 100%;
-            height: auto;
-            opacity: 0; 
-            transition: all 1s ease-out;
-        }
+        .story-img { width: 100%; height: auto; opacity: 0; transition: all 1s ease-out; }
 
-        /* --- 角色過場區塊 (green1) --- */
+        /* --- 【修改】角色橫穿動畫區塊 (GIF 從右往左跑) --- */
         .interlude-section {
             width: 100%;
             padding: 80px 0;
             background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative;
+            overflow: hidden; 
+            height: 150px;
         }
-        .green-character {
-            width: 1050px; 
-            height: auto;
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease;
+        .green-walking-gif {
+            position: absolute;
+            height: 100px; /* 依照你的 gif 大小微調 */
+            width: auto;
+            bottom: 50px;
+            opacity: 0; /* 預設隱藏，配合 JS 滑到才跑 */
+            right: -20%; /* 起點在右側畫面外 */
         }
-        .green-character.active {
+        /* 當 active 被加入時執行無限循環動畫 */
+        .green-walking-gif.active {
             opacity: 1;
-            transform: translateY(0);
+            animation: walkAcross 12s linear infinite; 
         }
 
-        /* --- 頁尾連結區塊 (Footer) --- */
+        @keyframes walkAcross {
+            0% { right: -20%; }
+            100% { right: 120%; }
+        }
+
+        /* --- Footer --- */
         .footer-section {
             position: relative;
             width: 100%;
@@ -245,93 +208,29 @@
 
         #green2-img {
             position: absolute; 
-            bottom: 0; 
-            left: 50%;
-            transform: translateX(-50%) scale(0.8); 
-            width: 1280px;
-            opacity: 0;
-            transition: all 0.8s ease;
-            z-index: 0; 
+            bottom: 0; left: 50%; transform: translateX(-50%) scale(0.8); width: 1280px; opacity: 0; transition: all 0.8s ease; z-index: 0; 
         }
-        
-        #green2-img.active { 
-            opacity: 1; 
-            transform: translateX(-50%) scale(1); 
-        }
+        #green2-img.active { opacity: 1; transform: translateX(-50%) scale(1); }
 
         .social-links {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            transform: translateX(200px);
-            transform: translateY(230px);
+            position: relative; z-index: 10; display: flex; justify-content: center; gap: 30px; transform: translateY(230px);
         }
+        .social-icon { width: 30px; transition: transform 0.2s; cursor: pointer; }
+        .social-icon:hover { transform: scale(1.1); }
 
-        .social-icon {
-            width: 30px;
-            transition: transform 0.2s;
-            cursor: pointer;
-        }
-        .social-icon:hover {
-            transform: scale(1.1);
-        }
-
-        /* --- 動畫效果 --- */
+        /* 動畫輔助 */
         .slide-left { transform: translateX(-100px); }
-        .slide-left.active { opacity: 1; transform: translateX(0); }
-
+        .slide-left.active { opacity: 1 !important; transform: translateX(0) !important; }
         .slide-right { transform: translateX(100px); }
-        .slide-right.active { opacity: 1; transform: translateX(0); }
+        .slide-right.active { opacity: 1 !important; transform: translateX(0) !important; }
 
-        /* 手機版 RWD */
-        @media (max-width: 900px) {
-            .content-container { flex-direction: column; text-align: center; gap: 40px; }
-            .hero-logo { justify-content: center; padding-left: 0; }
-            .hero-text { text-align: center; padding: 0 20px; transform: none; }
-            .hero-text p { text-align: left; }
-            .story-row { flex-direction: column; gap: 40px;}
-            #fixed-green { width: 100px; right: 10px; } 
-            .bg-gray-intro { padding-top: 150px; } 
-        }
-
-        /* =========================================
-           Activity 彈窗與六張圖層設定
-           ========================================= */
+        /* Activity 彈窗 (保持不變) */
         #activity-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(255, 255, 255, 0.85); 
-            z-index: 20000; 
-            opacity: 0;
-            pointer-events: none; 
-            transition: opacity 0.5s ease;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(255, 255, 255, 0.85); z-index: 20000; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
-
-        #activity-popup.show-popup {
-            opacity: 1;
-            pointer-events: auto; 
-        }
-
-        .popup-layer {
-            position: absolute;
-            opacity: 0;
-            transform: scale(0.8); 
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            cursor: pointer;
-            pointer-events: none; 
-        }
-
-        .popup-layer.layer-visible {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: auto; 
-        }
-
+        #activity-popup.show-popup { opacity: 1; pointer-events: auto; }
+        .popup-layer { position: absolute; opacity: 0; transform: scale(0.8); transition: opacity 0.4s ease, transform 0.4s ease; cursor: pointer; pointer-events: none; }
+        .popup-layer.layer-visible { opacity: 1; transform: scale(1); pointer-events: auto; }
         #pop-layer1 { z-index: 16; top: 16%; left: 40%; width: 27%; }
         #pop-layer2 { z-index: 15; top: 40%; left: 27%; width: 35%; }
         #pop-layer3 { z-index: 14; top: 23%; left: 60%; width: 23%; }
@@ -352,9 +251,7 @@
             </div>
             <div class="menu-list" id="menuList">
                 <a href="bookri.html">關於</a><a href="bookle.html">周邊</a>
-                
-                <a href="#" id="obj-activity" class="obj-container">活動</a>
-                
+                <a href="#" id="obj-activity">活動</a>
                 <a href="calender.html">品牌</a><a href="computer.html">地圖</a>
             </div>
         </div>
@@ -379,7 +276,7 @@
                 <div class="hero-tags">#交通號誌 #地方文化 #品牌塑造</div>
             </div>
         </div>
-        <img src="secpic/green.png" id="fixed-green" alt="Mr. Green">
+        <img src="secpic/Green.png" id="fixed-green" alt="Mr. Green">
     </div>
 
     <div class="story-section bg-gray-intro">  
@@ -400,7 +297,6 @@
             <div class="story-img-box">
                 <img src="secpic/story3.png" class="story-img slide-left" id="story3-img" alt="Story 3">
             </div>
-            
             <div class="story-img-box">
                 <div class="story-scroll-box slide-right" id="story4-box">
                     <img src="secpic/story4.png" class="inner-story-img" alt="Story 4">
@@ -410,7 +306,7 @@
     </div>
 
     <div class="interlude-section">
-        <img src="secpic/green1.png" class="green-character" id="green1-img" alt="Mr. Green Walking">
+        <img src="secpic/walk_2.gif" class="green-walking-gif" id="green1-img" alt="Mr. Green Walking">
     </div>
 
     <div class="story-section bg-white">
@@ -428,14 +324,9 @@
 
     <div class="footer-section">
         <img src="secpic/green2.png" id="green2-img" alt="Mr. Green Ending">
-        
         <div class="social-links">
-            <a href="https://instagram.com" target="_blank">
-                <img src="secpic/insta.png" class="social-icon" alt="Instagram">
-            </a>
-            <a href="https://threads.net" target="_blank">
-                <img src="secpic/threa.png" class="social-icon" alt="Threads">
-            </a>
+            <a href="https://instagram.com" target="_blank"><img src="secpic/insta.png" class="social-icon" alt="Instagram"></a>
+            <a href="https://threads.net" target="_blank"><img src="secpic/threa.png" class="social-icon" alt="Threads"></a>
         </div>
     </div>
 
@@ -444,33 +335,21 @@
             document.getElementById('menuList').classList.toggle('show');
             document.getElementById('menuContainer').classList.toggle('active');
         }
-        document.addEventListener('click', (e) => {
-            if (!document.getElementById('menuContainer').contains(e.target)) {
-                document.getElementById('menuList').classList.remove('show');
-                document.getElementById('menuContainer').classList.remove('active');
-            }
-        });
-
-        // --- 捲動觸發動畫邏輯 ---
+        
         window.addEventListener('scroll', revealOnScroll);
 
         function revealOnScroll() {
             const windowHeight = window.innerHeight;
-            // 設定觸發點：元素頂部進入視窗下方 150px 時觸發
             const revealPoint = 150;
 
-            // 【修改點 2】更新這裡的 ID，讓滾動動畫抓得到新建立的 box
             const animElementIds = [
-                'story1-box', 'story2-img', // <- 這裡改為 box
-                'story3-img', 'story4-box', 
-                'green1-img',
-                'story5-box', 'story6-img', 
-                'green2-img'
+                'story1-box', 'story2-img', 'story3-img', 'story4-box', 
+                'green1-img', 'story5-box', 'story6-img', 'green2-img'
             ];
 
             animElementIds.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) { // 確保元素存在才執行
+                if (el) {
                     const elementTop = el.getBoundingClientRect().top;
                     if (elementTop < windowHeight - revealPoint) {
                         el.classList.add('active');
@@ -478,56 +357,33 @@
                 }
             });
         }
-        
-        // 頁面載入時先執行一次，確保重新整理時在視野內的元素會顯示
         revealOnScroll();
 
-        // =========================================
-        // Activity 彈窗互動邏輯
-        // =========================================
+        // Activity 彈窗邏輯
         const btnActivity = document.getElementById('obj-activity');
         const activityPopup = document.getElementById('activity-popup');
-        
-        // 按照 6 到 1 的順序排好，方便等一下「依序發牌」
         const popLayers = [
-            document.getElementById('pop-layer6'),
-            document.getElementById('pop-layer5'),
-            document.getElementById('pop-layer4'),
-            document.getElementById('pop-layer3'),
-            document.getElementById('pop-layer2'),
-            document.getElementById('pop-layer1')
+            document.getElementById('pop-layer6'), document.getElementById('pop-layer5'),
+            document.getElementById('pop-layer4'), document.getElementById('pop-layer3'),
+            document.getElementById('pop-layer2'), document.getElementById('pop-layer1')
         ];
 
-        // 1. 點擊 activity 按鈕：打開彈窗並依序顯示圖片
         btnActivity.addEventListener('click', function(e) {
-            e.preventDefault(); // 防止網址跳轉
-            activityPopup.classList.add('show-popup'); // 背景淡入
-            
-            // 延遲發牌動畫 (每隔 0.15 秒出現一張，6 -> 5 -> 4 -> 3 -> 2 -> 1)
+            e.preventDefault();
+            activityPopup.classList.add('show-popup');
             popLayers.forEach((layer, index) => {
-                setTimeout(() => {
-                    layer.classList.add('layer-visible');
-                }, 300 + (index * 150)); 
+                setTimeout(() => { layer.classList.add('layer-visible'); }, 300 + (index * 150)); 
             });
         });
 
-        // 2. 點擊圖片：讓它消失。如果是最後一張 (6.png)，就關閉整個彈窗
         popLayers.forEach((layer, index) => {
             layer.addEventListener('click', function() {
-                // 點擊後把自己隱藏
                 this.classList.remove('layer-visible');
-                
-                // 檢查是不是點到 6.png (在陣列裡 index 是 0)
                 if (index === 0) {
-                    // 等 6.png 縮小的動畫跑完 (約 0.4秒) 後，關閉整個彈窗背景
-                    setTimeout(() => {
-                        activityPopup.classList.remove('show-popup');
-                    }, 400); 
+                    setTimeout(() => { activityPopup.classList.remove('show-popup'); }, 400); 
                 }
             });
         });
-
     </script>
-
 </body>
 </html>
