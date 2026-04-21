@@ -288,7 +288,7 @@
         .dialogue-show { opacity: 1; transform: scale(1); }
         .obj-bubble-tues { position: absolute; opacity: 0; transition: opacity 0.5s ease; z-index: 20; pointer-events: none; width: 230px; height: auto; }
         #btn-greenma { cursor: pointer; pointer-events: auto; }
-        #txt-greenma { top: -100px; left: -250px; }
+        #txt-greenma { width: 300px; top: -100px; left: -200px; }
         #btn-bag { cursor: pointer; pointer-events: auto; z-index: 15; }
         #txt-bag { top: -120px; right: 0px; }
         .bubble-show { opacity: 1; }
@@ -345,7 +345,7 @@
         .video-in { opacity: 1; transform: scale(1); }
         #thurs-license { position: absolute; top: -100%; left: 50%; transform: translateX(-50%); width: 400px; transition: top 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 85; }
         .license-drop { top: 30% !important; }
-        #thurs-no { position: absolute; top: 95%; left: 65%; width: 100px; margin-left: -200px; margin-top: -200px; transform: scale(5); opacity: 0; transition: all 1s ease-in; z-index: 90; }
+        #thurs-no { position: absolute; top: 80%; left: 60%; width: 100px; margin-left: -200px; margin-top: -200px; transform: scale(5); opacity: 0; transition: all 1s ease-in; z-index: 90; }
         .no-shrink { transform: scale(1) !important; opacity: 1 !important; }
 
         /* 第二階段：牛奶影片與樹葉花朵 */
